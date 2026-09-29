@@ -1,0 +1,1154 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>메디컬 브릿지</title>
+<style>
+:root{
+  --bg:#F4F6F5; --surface:#FFFFFF; --surface-2:#EAEFEE; --ink:#16302E; --ink-soft:#51655F;
+  --border:#DCE4E1; --primary:#0F4C46; --primary-soft:#E3EEEC; --accent:#C07A38; --accent-soft:#F5E8D6;
+  --star:#B5442E; --star-soft:#F7E4DE; --good:#2E7D5B; --good-soft:#E1F0E7; --radius:14px;
+  --shadow:0 1px 2px rgba(15,76,70,.07),0 6px 20px rgba(15,76,70,.06);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1917; --surface:#13221F; --surface-2:#1A2C29; --ink:#E8F2EF; --ink-soft:#9AB2AC;
+    --border:#25413C; --primary:#7BD9C4; --primary-soft:#1B3430; --accent:#E3A467; --accent-soft:#2E2313;
+    --star:#E68B73; --star-soft:#33201B; --good:#7FD8AE; --good-soft:#153327;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1917; --surface:#13221F; --surface-2:#1A2C29; --ink:#E8F2EF; --ink-soft:#9AB2AC;
+  --border:#25413C; --primary:#7BD9C4; --primary-soft:#1B3430; --accent:#E3A467; --accent-soft:#2E2313;
+  --star:#E68B73; --star-soft:#33201B; --good:#7FD8AE; --good-soft:#153327;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:'Noto Sans KR',system-ui,sans-serif;line-height:1.55;padding-inline:16px}
+h1,h2,h3,.disp{font-family:'Noto Serif KR',serif;text-wrap:balance}
+.wrap{max-width:840px;margin:0 auto}
+a{color:var(--primary)}
+button{font-family:inherit;cursor:pointer}
+
+/* ===== Homepage-style header ===== */
+.wrap{max-width:1040px}
+body{padding-inline:0}
+.wrap{padding-inline:20px}
+.hdr{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;margin:0 -20px 0;padding:0 20px;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0 4px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:36px;height:36px;flex:0 0 auto}
+.brand .name{font-size:20px;font-weight:700;font-family:'Noto Serif KR',serif;letter-spacing:.2px;color:var(--primary)}
+.themebtn{border:1px solid var(--border);background:var(--surface);color:var(--ink-soft);border-radius:999px;padding:6px 12px;font-size:12.5px}
+.tabs{display:flex;gap:2px;overflow-x:auto;padding-bottom:0;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;border:none;border-bottom:3px solid transparent;background:none;color:var(--ink-soft);border-radius:0;padding:10px 13px 9px;font-size:14px;font-weight:600;white-space:nowrap;transition:.15s}
+.tab:hover{color:var(--primary)}
+.tab[aria-selected="true"]{color:var(--primary);border-bottom-color:var(--accent)}
+.tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.panel{display:none;padding-bottom:56px}
+.panel.active{display:block}
+.searchbar{display:flex;gap:8px;margin-bottom:14px}
+.searchbar input{flex:1;padding:11px 14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font-size:14.5px}
+.searchbar input:focus-visible{outline:2px solid var(--accent)}
+.chiprow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.chip{border:1px solid var(--border);background:var(--surface);color:var(--ink-soft);border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:600}
+.chip[aria-pressed="true"]{background:var(--primary-soft);border-color:var(--primary);color:var(--primary)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
+.section-title{font-size:20px;font-weight:700;margin:26px 0 10px}
+.section-title:first-child{margin-top:0}
+.lead{color:var(--ink-soft);font-size:14px;margin-bottom:16px}
+.role-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(max-width:480px){.role-grid{grid-template-columns:1fr}}
+.role-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
+.role-card .k{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--primary);background:var(--primary-soft);border-radius:6px;padding:2px 7px;margin-bottom:8px}
+.role-card h3{font-size:15.5px;margin:0 0 5px}
+.role-card p{font-size:13px;color:var(--ink-soft);margin:0}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+.tblwrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--surface-2);font-size:12.5px;color:var(--ink-soft);font-weight:700}
+tr:last-child td{border-bottom:none}
+.numlist{display:grid;gap:8px;padding:0;margin:0;list-style:none;counter-reset:n}
+.numlist li{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:11px 13px;box-shadow:var(--shadow);font-size:14px}
+.numlist li::before{counter-increment:n;content:counter(n);flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.plainlist{display:grid;gap:7px;padding:0;margin:0;list-style:none}
+.plainlist li{position:relative;padding-left:16px;font-size:14px;color:var(--ink)}
+.plainlist li::before{content:"";position:absolute;left:0;top:9px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.callout{background:var(--accent-soft);border:1px solid color-mix(in srgb, var(--accent) 35%, var(--border));border-radius:var(--radius);padding:14px 16px;font-size:14px;margin:14px 0}
+.callout b{color:var(--accent)}
+.formula{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:'Noto Serif KR',serif;font-size:15px;font-weight:600;background:var(--primary-soft);color:var(--primary);border-radius:var(--radius);padding:16px;margin:14px 0}
+.formula .arrow{color:var(--ink-soft);font-weight:400}
+.dialog{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:10px 0;background:var(--surface)}
+.dialog .row{display:flex;gap:10px;padding:10px 13px;border-bottom:1px solid var(--border)}
+.dialog .row:last-child{border-bottom:none}
+.dialog .who{flex:0 0 58px;font-size:11.5px;font-weight:700;color:var(--ink-soft);padding-top:2px}
+.dialog .txt{flex:1;font-size:14px}
+.dialog .jp{margin-bottom:2px}
+.dialog .kr{color:var(--ink-soft);font-size:13px}
+
+/* Glossary */
+.term-list{display:grid;gap:8px}
+.term{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
+.term.starred{border-color:color-mix(in srgb, var(--star) 40%, var(--border))}
+.term-jp{flex:1;min-width:0}
+ruby{ruby-position:over}
+rt{font-size:10.5px;color:var(--ink-soft);font-weight:500;font-family:'Noto Sans KR',sans-serif}
+.term-jp .word{font-size:19px;font-weight:600}
+.term-cat{font-size:11px;color:var(--ink-soft);margin-top:3px}
+.star-badge{display:inline-block;font-size:10px;font-weight:700;color:var(--star);background:var(--star-soft);border-radius:5px;padding:1px 5px;margin-left:6px;vertical-align:middle}
+.term-kr{flex:1;font-size:14.5px;color:var(--ink)}
+.iconbtn{flex:0 0 auto;width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--primary)}
+.iconbtn:disabled{opacity:.35;cursor:not-allowed}
+.iconbtn svg{width:17px;height:17px}
+.empty{padding:30px 10px;text-align:center;color:var(--ink-soft);font-size:14px}
+
+/* Sentences */
+.sent-group{margin-bottom:22px}
+.sent-group h3{font-size:15px;color:var(--primary);margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.sent-group h3 .cnt{font-size:11.5px;color:var(--ink-soft);font-weight:500}
+.sent-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 14px;box-shadow:var(--shadow);margin-bottom:8px}
+.sent-jp{font-size:15px;font-weight:500;margin-bottom:5px}
+.sent-kr{font-size:13.5px;color:var(--ink-soft);margin-bottom:9px}
+.sent-actions{display:flex;gap:6px}
+.pillbtn{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--border);background:var(--surface-2);color:var(--ink-soft);border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600}
+.pillbtn svg{width:13px;height:13px}
+.pillbtn.copied{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+
+/* checklist */
+.cl-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 16px;margin-bottom:14px}
+.cl-card h3{font-size:15px;margin:0 0 4px}
+.cl-desc{font-size:12.5px;color:var(--ink-soft);margin-bottom:10px}
+.cl-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;cursor:pointer}
+.cl-item:last-child{border-bottom:none}
+.cl-item input{width:18px;height:18px;accent-color:var(--primary);flex:0 0 auto}
+.cl-item.done span{color:var(--ink-soft);text-decoration:line-through}
+.cl-progress{height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin-bottom:10px}
+.cl-progress i{display:block;height:100%;background:var(--primary);border-radius:99px;transition:.25s}
+.cl-reset{font-size:11.5px;color:var(--ink-soft);border:none;background:none;text-decoration:underline;padding:0;margin-top:6px}
+.form-field{margin-bottom:9px}
+.form-field label{display:block;font-size:12.5px;color:var(--ink-soft);margin-bottom:4px;font-weight:600}
+.form-field textarea,.form-field input[type=text]{width:100%;border:1px solid var(--border);background:var(--surface-2);color:var(--ink);border-radius:8px;padding:8px 10px;font-size:13.5px;font-family:inherit;resize:vertical}
+
+/* quiz */
+.quiz-wrap{text-align:center}
+.quiz-modebar{display:flex;justify-content:center;gap:8px;margin-bottom:18px}
+.quiz-stats{display:flex;justify-content:center;gap:18px;margin-bottom:16px;font-size:13px;color:var(--ink-soft)}
+.quiz-stats b{color:var(--ink);font-size:16px;display:block;font-family:'Noto Serif KR',serif}
+.flip-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:34px 22px;min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.flip-cat{font-size:11.5px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em}
+.flip-jp{font-size:23px;font-weight:600;font-family:'Noto Serif KR',serif}
+.flip-yomi{font-size:14px;color:var(--primary)}
+.flip-kr{font-size:16px;color:var(--ink-soft);margin-top:6px}
+.quiz-actions{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.btn{border-radius:11px;padding:11px 18px;font-size:14px;font-weight:700;border:1px solid var(--border);background:var(--surface)}
+.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn.good{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.btn.bad{background:var(--star-soft);color:var(--star);border-color:var(--star)}
+footer{color:var(--ink-soft);font-size:12px;text-align:center;padding:26px 0 40px;border-top:1px solid var(--border);margin-top:10px}
+
+/* ===== Hero & page banners ===== */
+.hero[hidden]{display:none!important}
+.hero{position:relative;overflow:hidden;margin:0 -20px 28px;padding:56px 20px 64px;color:#fff;background:linear-gradient(135deg,#0B3B36 0%,#0F4C46 45%,#1B7A6E 100%)}
+.hero-inner{position:relative;z-index:2;max-width:1040px;margin:0 auto}
+.hero .eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.14em;color:#F5E8D6;border:1px solid rgba(245,232,214,.5);border-radius:999px;padding:4px 12px;margin-bottom:16px}
+.hero h1{font-size:clamp(28px,5.4vw,46px);line-height:1.25;margin:0 0 14px;max-width:16em}
+.hero p{max-width:30em;font-size:15.5px;color:rgba(255,255,255,.86);margin:0 0 24px}
+.hero-cta{display:flex;gap:10px;flex-wrap:wrap}
+.hero-cta a{text-decoration:none;font-weight:700;font-size:14px;padding:12px 20px;border-radius:999px}
+.hero-cta .p{background:var(--accent);color:#fff}
+.hero-cta .s{border:1px solid rgba(255,255,255,.55);color:#fff}
+.hero-art{position:absolute;right:-60px;bottom:0;width:min(700px,100%);height:100%;z-index:1;opacity:.95;pointer-events:none}
+@media(max-width:900px){.hero-art{opacity:.3}}
+.hero-stats{display:flex;gap:26px;margin-top:30px;flex-wrap:wrap}
+.hero-stats b{display:block;font-family:'Noto Serif KR',serif;font-size:24px}
+.hero-stats span{font-size:12px;color:rgba(255,255,255,.75)}
+.banner{position:relative;overflow:hidden;margin:0 0 22px;padding:26px 24px;border-radius:18px;color:#fff;background:linear-gradient(120deg,#0F4C46,#1B7A6E)}
+.banner h2{position:relative;z-index:2;margin:0 0 4px;font-size:24px}
+.banner p{position:relative;z-index:2;margin:0;font-size:13.5px;color:rgba(255,255,255,.85);max-width:30em}
+.banner svg{position:absolute;right:-10px;bottom:-10px;height:150%;width:auto;opacity:.9;z-index:1}
+.banner.b2{background:linear-gradient(120deg,#8A5524,#C07A38)}
+.banner.b3{background:linear-gradient(120deg,#123F5C,#2F7CA8)}
+.banner.b4{background:linear-gradient(120deg,#3B3F73,#6B6FBF)}
+/* photo slots (images/*.jpg; falls back to illustration if missing) */
+.hero-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.hero.has-photo::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(8,44,40,.92) 0%,rgba(8,44,40,.72) 45%,rgba(8,44,40,.25) 100%)}
+.hero.has-photo .hero-art{display:none}
+.banner-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.banner.has-photo::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(8,44,40,.85),rgba(8,44,40,.35))}
+.banner.has-photo svg{display:none}
+/* cards with picture backdrops */
+.card,.role-card,.cl-card,.sent-card,.term,.numlist li{position:relative;overflow:hidden}
+.role-card{padding:18px;background-repeat:no-repeat;background-position:right -14px bottom -14px;background-size:110px}
+.role-card>*{position:relative;z-index:1}
+.role-card:nth-child(1){background-image:var(--art-mic)}
+.role-card:nth-child(2){background-image:var(--art-map)}
+.role-card:nth-child(3){background-image:var(--art-clip)}
+.role-card:nth-child(4){background-image:var(--art-heart)}
+.role-card:hover,.cl-card:hover,.sent-card:hover{transform:translateY(-2px);transition:.2s}
+.cl-card,.sent-card,.callout,.formula{background-image:var(--art-cross);background-repeat:no-repeat;background-position:right -18px center;background-size:90px}
+.callout{background-color:var(--accent-soft)}
+.formula{background-color:var(--primary-soft);background-image:var(--art-pulse);background-position:right 10px bottom 6px;background-size:160px}
+.section-title{position:relative;padding-left:14px}
+.section-title::before{content:"";position:absolute;left:0;top:.2em;bottom:.2em;width:4px;border-radius:4px;background:var(--accent)}
+.flip-card{background-image:var(--art-cross);background-repeat:no-repeat;background-position:right -20px bottom -20px;background-size:130px}
+footer{background:var(--surface-2);margin:20px -20px 0;padding:30px 20px 44px;border-top:none}
+:root{
+ --art-cross:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M38 8h24v30h30v24H62v30H38V62H8V38h30z' fill='%230F4C46' fill-opacity='.06'/%3E%3C/svg%3E");
+ --art-pulse:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 60'%3E%3Cpath d='M0 32h40l10-24 16 46 14-34 10 12h70' fill='none' stroke='%230F4C46' stroke-opacity='.18' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+ --art-mic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%230F4C46' stroke-opacity='.13' stroke-width='6' stroke-linecap='round'%3E%3Crect x='36' y='8' width='28' height='50' rx='14'/%3E%3Cpath d='M22 46c0 20 12 30 28 30s28-10 28-30M50 76v18M34 94h32'/%3E%3C/svg%3E");
+ --art-map:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%230F4C46' stroke-opacity='.13' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M50 92S20 60 20 38a30 30 0 0 1 60 0c0 22-30 54-30 54z'/%3E%3Ccircle cx='50' cy='38' r='11'/%3E%3C/svg%3E");
+ --art-clip:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%230F4C46' stroke-opacity='.13' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='20' y='14' width='60' height='78' rx='8'/%3E%3Crect x='36' y='6' width='28' height='16' rx='5'/%3E%3Cpath d='M34 44h32M34 60h32M34 76h20'/%3E%3C/svg%3E");
+ --art-heart:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%230F4C46' stroke-opacity='.13' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M50 88C18 64 10 44 10 32a20 20 0 0 1 40-4 20 20 0 0 1 40 4c0 12-8 32-40 56z'/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .role-card,:root:not([data-theme="light"]) .cl-card{filter:none}}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<div class="wrap">
+  <header class="hdr">
+    <div class="hdr-top">
+      <div class="brand"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#0F4C46"/><path d="M8 27c4-9 20-9 24 0" fill="none" stroke="#F5E8D6" stroke-width="2.6" stroke-linecap="round"/><path d="M12 27v-6M20 27v-9M28 27v-6" stroke="#F5E8D6" stroke-width="2.2" stroke-linecap="round"/><path d="M18 9h4v5h5v4h-5v0h-4v0h-5v-4h5z" fill="#C07A38"/></svg><span class="name">메디컬 브릿지</span></div>
+      <button class="themebtn" id="themeToggle" type="button">다크모드</button>
+    </div>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="섹션"></nav>
+  </header>
+
+  <section class="hero" id="hero"><img class="hero-photo" src="images/hero.jpg" alt="" hidden>
+    <div class="hero-inner">
+      <span class="eyebrow">MEDICAL INTERPRETER COORDINATOR</span>
+      <h1 class="disp">말과 마음을 잇는<br>의료통역 코디네이터</h1>
+      <p>일본인 환자가 낯선 병원에서도 안심하고 진료받을 수 있도록. 정확한 통역, 병원 동선 안내, 진료 조정, 심리 지원까지 현장에서 바로 쓰는 실전 가이드입니다.</p>
+      <div class="hero-cta"><a class="p" href="#terms" data-go="terms">용어사전 보기</a><a class="s" href="#sent" data-go="sent">실전 문장 보기</a></div>
+      <div class="hero-stats"><div><b>4</b><span>핵심 역할</span></div><div><b>10</b><span>계명</span></div><div><b id="statTerms">-</b><span>의료 용어</span></div><div><b id="statSent">-</b><span>실전 문장</span></div></div>
+    </div>
+    <svg class="hero-art" viewBox="0 0 780 420" preserveAspectRatio="xMaxYMax slice" aria-hidden="true">
+  <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity=".02"/></linearGradient></defs>
+  <circle cx="600" cy="120" r="150" fill="url(#sky)"/><circle cx="600" cy="120" r="100" fill="#fff" fill-opacity=".06"/>
+  <!-- hospital -->
+  <g transform="translate(470 120)">
+    <rect x="0" y="60" width="230" height="240" rx="6" fill="#F4F6F5" fill-opacity=".95"/>
+    <rect x="70" y="0" width="90" height="90" rx="6" fill="#fff"/>
+    <path d="M105 14h20v22h22v20h-22v22h-20V56H83V36h22z" fill="#B5442E"/>
+    <g fill="#9CC9C1">
+      <rect x="18" y="90" width="34" height="34" rx="4"/><rect x="66" y="110" width="34" height="34" rx="4"/><rect x="130" y="110" width="34" height="34" rx="4"/><rect x="178" y="90" width="34" height="34" rx="4"/>
+      <rect x="18" y="146" width="34" height="34" rx="4"/><rect x="66" y="166" width="34" height="34" rx="4"/><rect x="130" y="166" width="34" height="34" rx="4"/><rect x="178" y="146" width="34" height="34" rx="4"/>
+    </g>
+    <rect x="92" y="230" width="46" height="70" rx="4" fill="#0F4C46"/>
+  </g>
+  <g transform="translate(150 0)">
+  <!-- bridge -->
+  <g fill="none" stroke="#F5E8D6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M0 360h630" stroke-width="6" stroke-opacity=".9"/>
+    <path d="M60 360C140 250 300 250 380 360" stroke-width="5"/>
+    <path d="M120 320v40M180 296v64M240 296v64M300 320v40" stroke-width="3" stroke-opacity=".7"/>
+  </g>
+  <!-- two people -->
+  <g transform="translate(250 240)">
+    <circle cx="0" cy="0" r="20" fill="#F5E8D6"/><path d="M-28 100c0-40 12-66 28-66s28 26 28 66z" fill="#C07A38"/>
+  </g>
+  <g transform="translate(330 250)">
+    <circle cx="0" cy="0" r="18" fill="#fff"/><path d="M-26 92c0-36 11-60 26-60s26 24 26 60z" fill="#7BD9C4"/>
+    <path d="M-8 34l8 26 8-26" fill="#fff"/>
+  </g>
+  <path d="M275 214c12-22 34-22 46 0" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round"/>
+  <g fill="#fff" fill-opacity=".9"><rect x="262" y="176" width="70" height="30" rx="14"/><path d="M290 205l-4 12 14-12z"/></g>
+  <text x="297" y="196" font-size="15" font-weight="700" text-anchor="middle" fill="#0F4C46" font-family="sans-serif">通訳</text>
+  </g>
+</svg>
+  </section>
+
+  <main id="panels"></main>
+
+  <footer>
+    《일본인 환자를 위한 의료통역 코디네이터 실전 매뉴얼》(채기석 저)의 내용을 재구성한 학습·현장 참고용 앱입니다.<br>
+    약 이름·검사 절차·수가는 병원마다 다를 수 있으니 반드시 소속 기관의 최신 안내를 우선 확인하세요. 법률·의료 자문을 대체하지 않습니다.
+  </footer>
+</div>
+
+<script>
+/* ============ DATA ============ */
+const TERMS = [
+["병원·진료 기본","病院","びょういん","병원"],
+["병원·진료 기본","医療機関","いりょうきかん","의료기관"],
+["병원·진료 기본","受診","じゅしん","진료를 받음"],
+["병원·진료 기본","診察","しんさつ","진찰 (의사가 환자를 보는 것)",1],
+["병원·진료 기본","診療","しんりょう","진찰·검사·치료를 포함하는 넓은 의미의 진료",1],
+["병원·진료 기본","初診","しょしん","초진"],
+["병원·진료 기본","再診","さいしん","재진"],
+["병원·진료 기본","受付","うけつけ","접수"],
+["병원·진료 기본","予約","よやく","예약"],
+["병원·진료 기본","待合室","まちあいしつ","대기실"],
+["병원·진료 기본","診察室","しんさつしつ","진료실"],
+["병원·진료 기본","診療科","しんりょうか","진료과"],
+["병원·진료 기본","医療通訳","いりょうつうやく","의료통역"],
+["병원·진료 기본","患者","かんじゃ","환자"],
+["병원·진료 기본","保護者","ほごしゃ","보호자"],
+["신체 부위","頭","あたま","머리"],
+["신체 부위","顔","かお","얼굴"],
+["신체 부위","目","め","눈"],
+["신체 부위","耳","みみ","귀"],
+["신체 부위","鼻","はな","코"],
+["신체 부위","口","くち","입"],
+["신체 부위","喉","のど","목 (인후)"],
+["신체 부위","首","くび","목"],
+["신체 부위","肩","かた","어깨"],
+["신체 부위","胸","むね","가슴"],
+["신체 부위","背中","せなか","등"],
+["신체 부위","腹部","ふくぶ","복부"],
+["신체 부위","胃","い","위"],
+["신체 부위","腰","こし","허리"],
+["신체 부위","膝","ひざ","무릎"],
+["증상·통증","症状","しょうじょう","증상"],
+["증상·통증","痛み","いたみ","통증"],
+["증상·통증","発熱","はつねつ","발열"],
+["증상·통증","熱","ねつ","열"],
+["증상·통증","頭痛","ずつう","두통"],
+["증상·통증","めまい","めまい","어지럼증"],
+["증상·통증","吐き気","はきけ","메스꺼움"],
+["증상·통증","倦怠感","けんたいかん","권태감·피로감"],
+["증상·통증","悪寒","おかん","오한"],
+["증상·통증","腫れ","はれ","부기"],
+["증상·통증","かゆみ","かゆみ","가려움"],
+["증상·통증","しびれ","しびれ","저림·감각이상"],
+["증상·통증","出血","しゅっけつ","출혈"],
+["호흡기·소화기","咳","せき","기침"],
+["호흡기·소화기","痰","たん","가래"],
+["호흡기·소화기","鼻水","はなみず","콧물"],
+["호흡기·소화기","息苦しさ","いきぐるしさ","호흡곤란"],
+["호흡기·소화기","呼吸困難","こきゅうこんなん","호흡곤란"],
+["호흡기·소화기","肺炎","はいえん","폐렴"],
+["호흡기·소화기","腹痛","ふくつう","복통"],
+["호흡기·소화기","嘔吐","おうと","구토"],
+["호흡기·소화기","下痢","げり","설사"],
+["호흡기·소화기","便秘","べんぴ","변비"],
+["호흡기·소화기","食欲","しょくよく","식욕"],
+["호흡기·소화기","脱水","だっすい","탈수"],
+["순환기·신경","心臓","しんぞう","심장"],
+["순환기·신경","血圧","けつあつ","혈압"],
+["순환기·신경","脈拍","みゃくはく","맥박"],
+["순환기·신경","動悸","どうき","두근거림·심계항진"],
+["순환기·신경","胸痛","きょうつう","흉통"],
+["순환기·신경","むくみ","むくみ","부종"],
+["순환기·신경","意識","いしき","의식"],
+["순환기·신경","けいれん","けいれん","경련"],
+["순환기·신경","麻痺","まひ","마비"],
+["순환기·신경","アレルギー","アレルギー","알레르기"],
+["검사","検査","けんさ","검사"],
+["검사","血液検査","けつえきけんさ","혈액검사"],
+["검사","尿検査","にょうけんさ","소변검사"],
+["검사","レントゲン検査","レントゲンけんさ","엑스레이 검사"],
+["검사","CT検査","シーティーけんさ","CT 검사"],
+["검사","MRI検査","エムアールアイけんさ","MRI 검사"],
+["검사","超音波検査","ちょうおんぱけんさ","초음파검사"],
+["검사","内視鏡検査","ないしきょうけんさ","내시경검사"],
+["검사","採血","さいけつ","채혈"],
+["검사","検査結果","けんさけっか","검사결과"],
+["검사결과·진단","正常","せいじょう","정상"],
+["검사결과·진단","異常","いじょう","이상"],
+["검사결과·진단","炎症反応","えんしょうはんのう","염증 반응"],
+["검사결과·진단","陽性","ようせい","양성"],
+["검사결과·진단","陰性","いんせい","음성"],
+["검사결과·진단","所見","しょけん","소견"],
+["검사결과·진단","疑い","うたがい","의심 (확정 진단 전)",1],
+["검사결과·진단","可能性","かのうせい","가능성",1],
+["검사결과·진단","確定","かくてい","확정",1],
+["검사결과·진단","合併症","がっぺいしょう","합병증"],
+["검사결과·진단","既往症","きおうしょう","과거 병력·기왕력"],
+["치료·약","治療","ちりょう","치료"],
+["치료·약","治療方針","ちりょうほうしん","치료방침"],
+["치료·약","点滴","てんてき","수액·링거"],
+["치료·약","手術","しゅじゅつ","수술"],
+["치료·약","処方","しょほう","처방 (의사가 약을 주는 것)"],
+["치료·약","処方箋","しょほうせん","처방전"],
+["치료·약","服用","ふくよう","복용 (환자가 약을 먹는 것)"],
+["치료·약","食前","しょくぜん","식전"],
+["치료·약","食後","しょくご","식후"],
+["치료·약","副作用","ふくさよう","부작용 (약물의 원치 않는 작용)"],
+["치료·약","頓服","とんぷく","필요시 복용약"],
+["입원·수술·마취","入院","にゅういん","입원"],
+["입원·수술·마취","退院","たいいん","퇴원"],
+["입원·수술·마취","病室","びょうしつ","병실"],
+["입원·수술·마취","主治医","しゅじい","주치의"],
+["입원·수술·마취","担当医","たんとうい","담당의"],
+["입원·수술·마취","全身麻酔","ぜんしんますい","전신마취"],
+["입원·수술·마취","局所麻酔","きょくしょますい","국소마취"],
+["입원·수술·마취","同意書","どういしょ","동의서"],
+["입원·수술·마취","術後","じゅつご","수술 후"],
+["입원·수술·마취","術前","じゅつぜん","수술 전"],
+["응급의료","救急","きゅうきゅう","응급"],
+["응급의료","救急外来","きゅうきゅうがいらい","응급실"],
+["응급의료","救急車","きゅうきゅうしゃ","구급차"],
+["응급의료","緊急","きんきゅう","긴급"],
+["응급의료","重症","じゅうしょう","중증"],
+["응급의료","安定","あんてい","안정"],
+["보험·진료비·서류","保険","ほけん","보험"],
+["보험·진료비·서류","保険会社","ほけんがいしゃ","보험회사"],
+["보험·진료비·서류","保険金","ほけんきん","보험금"],
+["보험·진료비·서류","審査","しんさ","심사 (보험사의 청구 심사)",1],
+["보험·진료비·서류","支払い保証","しはらいほしょう","지불보증"],
+["보험·진료비·서류","自己負担","じこふたん","본인 부담금"],
+["보험·진료비·서류","診療費","しんりょうひ","진료비"],
+["보험·진료비·서류","医療費","いりょうひ","의료비"],
+["보험·진료비·서류","領収書","りょうしゅうしょ","영수증"],
+["보험·진료비·서류","診療明細書","しんりょうめいさいしょ","진료비 세부내역서"],
+["보험·진료비·서류","診断書","しんだんしょ","진단서"],
+["의료진·병원 직종","医師","いし","의사 (공식적 표현)"],
+["의료진·병원 직종","医者","いしゃ","의사 (일상적 표현)"],
+["의료진·병원 직종","先生","せんせい","선생님 (호칭)"],
+["의료진·병원 직종","看護師","かんごし","간호사"],
+["의료진·병원 직종","薬剤師","やくざいし","약사"],
+["의료진·병원 직종","麻酔科医","ますいかい","마취과 의사"],
+["의료진·병원 직종","放射線技師","ほうしゃせんぎし","방사선사"],
+["의료진·병원 직종","理学療法士","りがくりょうほうし","물리치료사"],
+["정형외과·근골격계","整形外科","せいけいげか","정형외과"],
+["정형외과·근골격계","骨折","こっせつ","골절"],
+["정형외과·근골격계","捻挫","ねんざ","염좌 (삠)"],
+["정형외과·근골격계","脱臼","だっきゅう","탈구"],
+["정형외과·근골격계","靭帯","じんたい","인대"],
+["정형외과·근골격계","骨粗鬆症","こつそしょうしょう","골다공증"],
+["정형외과·근골격계","ギプス","ギプス","깁스"],
+["정형외과·근골격계","松葉杖","まつばづえ","목발"],
+["정형외과·근골격계","リハビリ","リハビリ","재활치료"],
+["정형외과·근골격계","関節","かんせつ","관절"],
+["산부인과·소아과","産婦人科","さんふじんか","산부인과"],
+["산부인과·소아과","妊娠","にんしん","임신"],
+["산부인과·소아과","出産","しゅっさん","출산"],
+["산부인과·소아과","月経","げっけい","월경"],
+["산부인과·소아과","生理痛","せいりつう","생리통"],
+["산부인과·소아과","切迫流産","せっぱくりゅうざん","유산 징후"],
+["산부인과·소아과","小児科","しょうにか","소아과"],
+["산부인과·소아과","予防接種","よぼうせっしゅ","예방접종"],
+["산부인과·소아과","乳児","にゅうじ","영아"],
+["산부인과·소아과","発育","はついく","발육"],
+["안과·이비인후과·피부과·치과","眼科","がんか","안과"],
+["안과·이비인후과·피부과·치과","視力","しりょく","시력"],
+["안과·이비인후과·피부과·치과","結膜炎","けつまくえん","결막염"],
+["안과·이비인후과·피부과·치과","耳鼻咽喉科","じびいんこうか","이비인후과"],
+["안과·이비인후과·피부과·치과","聴力","ちょうりょく","청력"],
+["안과·이비인후과·피부과·치과","中耳炎","ちゅうじえん","중이염"],
+["안과·이비인후과·피부과·치과","皮膚科","ひふか","피부과"],
+["안과·이비인후과·피부과·치과","発疹","ほっしん","발진"],
+["안과·이비인후과·피부과·치과","じんましん","じんましん","두드러기"],
+["안과·이비인후과·피부과·치과","歯科","しか","치과"],
+["안과·이비인후과·피부과·치과","虫歯","むしば","충치"],
+["안과·이비인후과·피부과·치과","抜歯","ばっし","발치"],
+["정신건강","精神科","せいしんか","정신과"],
+["정신건강","心療内科","しんりょうないか","심료내과 (심신의학과)"],
+["정신건강","不眠","ふみん","불면"],
+["정신건강","不安","ふあん","불안"],
+["정신건강","ストレス","ストレス","스트레스"],
+["응급처치·행정서류","心肺蘇生","しんぱいそせい","심폐소생술"],
+["응급처치·행정서류","止血","しけつ","지혈"],
+["응급처치·행정서류","やけど","やけど","화상"],
+["응급처치·행정서류","紹介状","しょうかいじょう","소개장 (진료의뢰서)"],
+["응급처치·행정서류","身分証明書","みぶんしょうめいしょ","신분증명서"],
+["응급처치·행정서류","委任状","いにんじょう","위임장"],
+["응급처치·행정서류","本人確認","ほんにんかくにん","본인 확인"],
+["숫자·시간·병원 표지판","午前","ごぜん","오전"],
+["숫자·시간·병원 표지판","午後","ごご","오후"],
+["숫자·시간·병원 표지판","空腹時","くうふくじ","공복 시"],
+["숫자·시간·병원 표지판","絶食","ぜっしょく","금식"],
+["숫자·시간·병원 표지판","受付時間","うけつけじかん","접수시간"],
+["숫자·시간·병원 표지판","非常口","ひじょうぐち","비상구"],
+["숫자·시간·병원 표지판","立入禁止","たちいりきんし","출입금지"],
+["숫자·시간·병원 표지판","面会時間","めんかいじかん","면회시간"],
+["숫자·시간·병원 표지판","会計","かいけい","수납 (회계)"],
+["숫자·시간·병원 표지판","両替","りょうがえ","환전"],
+["감염관리·격리","感染症","かんせんしょう","감염증"],
+["감염관리·격리","隔離","かくり","격리"],
+["감염관리·격리","防護服","ぼうごふく","보호장구·방호복"],
+["감염관리·격리","消毒","しょうどく","소독"],
+["감염관리·격리","面会制限","めんかいせいげん","면회 제한"],
+["미용·성형·시술","美容外科","びようげか","미용성형외과"],
+["미용·성형·시술","施術","せじゅつ","시술"],
+["미용·성형·시술","内出血","ないしゅっけつ","멍 (내출혈)"],
+["미용·성형·시술","ダウンタイム","ダウンタイム","회복기간 (다운타임)"],
+["미용·성형·시술","分割払い","ぶんかつばらい","분할결제"],
+["통역·코디네이션","確認","かくにん","확인"],
+["통역·코디네이션","説明","せつめい","설명"],
+["통역·코디네이션","案内","あんない","안내"],
+["통역·코디네이션","通訳","つうやく","통역"],
+["통역·코디네이션","伝える","つたえる","전달하다"],
+["통역·코디네이션","理解","りかい","이해"],
+["통역·코디네이션","同意","どうい","동의"],
+["통역·코디네이션","不明な点","ふめいなてん","불명확한 점"],
+["통역·코디네이션","正確に","せいかくに","정확하게"],
+["통역·코디네이션","お大事に","おだいじに","몸조리 잘하세요 (배웅 인사)"]
+].map(([cat,jp,yomi,kr,star],i)=>({cat,jp,yomi,kr,star:!!star,id:'t_'+i}));
+
+const CATS = ["전체", ...Array.from(new Set(TERMS.map(t=>t.cat)))];
+
+const SENTENCES = [
+["첫 만남과 환자 응대","こんにちは。〇〇様でいらっしゃいますか。","안녕하세요. ○○님 맞으십니까?"],
+["첫 만남과 환자 응대","はじめまして。〇〇と申します。","처음 뵙겠습니다. ○○라고 합니다."],
+["첫 만남과 환자 응대","本日、医療通訳とご受診のサポートを担当いたします。","오늘 의료통역과 진료 지원을 담당하겠습니다."],
+["첫 만남과 환자 응대","何かご不安なことがございましたら、遠慮なくおっしゃってください。","걱정되는 일이 있으시면 부담 없이 말씀해 주세요."],
+["첫 만남과 환자 응대","こちらが受付です。","여기가 접수처입니다."],
+["첫 만남과 환자 응대","パスポートをお預かりしてもよろしいでしょうか。","여권을 받아도 괜찮을까요?"],
+["첫 만남과 환자 응대","受付が完了しましたので、こちらで少々お待ちください。","접수가 완료되었으니 여기에서 잠시 기다려 주세요."],
+["첫 만남과 환자 응대","それでは、診察室へご案内いたします。","그럼 진료실로 안내해 드리겠습니다."],
+["첫 만남과 환자 응대","何かご不明な点があれば、いつでもお声がけください。","궁금한 점이 있으시면 언제든지 말씀해 주세요."],
+["첫 만남과 환자 응대","お手洗いはあちらにございます。","화장실은 저쪽에 있습니다."],
+["진료 시작과 확인","本日、〇〇様の医療通訳を担当いたします。","오늘 ○○님의 의료통역을 담당하겠습니다."],
+["진료 시작과 확인","先生が、今日はどうされたのかお聞きになっています。","의사 선생님께서 오늘 어떻게 오셨는지 물어보십니다."],
+["진료 시작과 확인","患者様は、〇〇とのことです。","환자분께서는 ○○라고 말씀하십니다."],
+["진료 시작과 확인","もう一度確認させていただきます。","다시 한 번 확인하겠습니다."],
+["진료 시작과 확인","ということでよろしいでしょうか。","그런 내용으로 이해하면 될까요?"],
+["진료 시작과 확인","先生のお話を、そのまま正確にお伝えいたします。","의사 선생님의 말씀을 그대로 정확하게 전달해 드리겠습니다."],
+["진료 시작과 확인","聞き取れなかった部分がありますので、もう一度お願いできますか。","잘 듣지 못한 부분이 있어서 다시 한 번 말씀해 주시겠습니까?"],
+["진료 시작과 확인","今のお話を整理しますと、次のとおりです。","지금 말씀을 정리하면 다음과 같습니다."],
+["진료 시작과 확인","こちらの内容で間違いないか、確認させてください。","이 내용이 맞는지 확인시켜 주십시오."],
+["진료 시작과 확인","通訳の内容に間違いがあれば、いつでもおっしゃってください。","통역 내용에 잘못된 부분이 있으면 언제든지 말씀해 주세요."],
+["증상 확인","いつ頃から症状が出ましたか。","언제쯤부터 증상이 나타났습니까?"],
+["증상 확인","どこが痛いですか。","어디가 아프십니까?"],
+["증상 확인","痛みを10段階でいうと、どのくらいですか。","통증을 10단계로 한다면 어느 정도입니까?"],
+["증상 확인","痛みはずっと続いていますか。","통증이 계속되고 있습니까?"],
+["증상 확인","熱はありましたか。一番高いときで何度くらいでしたか。","열이 있었습니까? 가장 높았을 때 몇 도 정도였습니까?"],
+["증상 확인","咳は出ていますか。息苦しさはありますか。","기침이 나옵니까? 호흡곤란이 있습니까?"],
+["증상 확인","吐き気はありますか。吐いたり、下痢をしたりしていませんか。","메스꺼움이 있습니까? 토하거나 설사하지는 않았습니까?"],
+["증상 확인","食欲はありますか。水分は取れていますか。","식욕은 있습니까? 수분은 섭취하고 있습니까?"],
+["증상 확인","同じような症状は、以前にもありましたか。","비슷한 증상이 예전에도 있었습니까?"],
+["증상 확인","症状は良くなっていますか、悪くなっていますか。","증상이 나아지고 있습니까, 나빠지고 있습니까?"],
+["환자 정보를 의사에게 전달","昨日の夜から症状が出たとのことです。","어제 저녁부터 증상이 나타났다고 합니다."],
+["환자 정보를 의사에게 전달","最高で39度くらいだったそうです。","최고 39도 정도였다고 합니다."],
+["환자 정보를 의사에게 전달","痛みは7程度とのことです。","통증은 7 정도라고 합니다."],
+["환자 정보를 의사에게 전달","これまで大きな病気はなかったとのことです。","지금까지 큰 질병은 없었다고 합니다."],
+["환자 정보를 의사에게 전달","薬のアレルギーはないとのことです。","약물 알레르기는 없다고 합니다."],
+["환자 정보를 의사에게 전달","現在、血圧の薬を服用しているとのことです。","현재 혈압약을 복용하고 있다고 합니다."],
+["환자 정보를 의사에게 전달","以前、同じような症状で入院したことがあるとのことです。","예전에 비슷한 증상으로 입원한 적이 있다고 합니다."],
+["환자 정보를 의사에게 전달","市販薬を服用してみたが、効果はなかったとのことです。","시판약을 복용해 봤지만 효과가 없었다고 합니다."],
+["환자 정보를 의사에게 전달","家族にも同じ症状の人がいるとのことです。","가족 중에도 같은 증상이 있는 사람이 있다고 합니다."],
+["환자 정보를 의사에게 전달","妊娠の可能性はないとのことです。","임신 가능성은 없다고 합니다."],
+["검사 통역","先生から、血液検査を受けていただくとのことです。","의사 선생님께서 혈액검사를 받으라고 하십니다."],
+["검사 통역","検査の6時間前から食事を控えてください。","검사 6시간 전부터 음식 섭취를 자제해 주세요."],
+["검사 통역","検査が終わりましたら、こちらでお待ちください。","검사가 끝나면 여기에서 기다려 주세요."],
+["검사 통역","検査結果が出ましたら、先生からご説明があります。","검사 결과가 나오면 의사 선생님께서 설명해 주십니다."],
+["검사 통역","CT検査を行います。MRI検査を行います。","CT 검사를 실시합니다. MRI 검사를 실시합니다."],
+["검사 통역","検査中は、体を動かさないようにしてください。","검사 중에는 몸을 움직이지 말아 주세요."],
+["검사 통역","造影剤を使用しますが、アレルギーはありますか。","조영제를 사용하는데, 알레르기가 있으십니까?"],
+["검사 통역","採血をいたします。腕を出していただけますか。","채혈을 하겠습니다. 팔을 내밀어 주시겠습니까?"],
+["검사 통역","検査着に着替えていただきます。","검사복으로 갈아입으시겠습니다."],
+["검사 통역","検査結果は、次回の診察でご説明いたします。","검사 결과는 다음 진료 때 설명드리겠습니다."],
+["진단·검사결과 통역","炎症反応が少し高くなっています。","염증 반응 수치가 조금 높아져 있습니다."],
+["진단·검사결과 통역","現時点では、緊急性の高い所見はないとのことです。","현재로서는 긴급성이 높은 소견은 없다고 합니다."],
+["진단·검사결과 통역","肺炎の疑いがあるとのことです。","폐렴이 의심된다고 합니다."],
+["진단·검사결과 통역","先生は、インフルエンザA型と診断されています。","의사 선생님께서는 A형 인플루엔자로 진단하셨습니다."],
+["진단·검사결과 통역","診断について、もう少し詳しくご説明いただけますでしょうか。","진단에 대해 조금 더 자세히 설명해 주실 수 있을까요?"],
+["진단·검사결과 통역","検査の数値は正常範囲内とのことです。","검사 수치는 정상 범위 내라고 합니다."],
+["진단·검사결과 통역","念のため、追加の検査を行う可能性があるとのことです。","만약을 위해 추가 검사를 실시할 가능성이 있다고 합니다."],
+["진단·검사결과 통역","症状の原因については、もう少し経過を見る必要があるとのことです。","증상의 원인에 대해서는 조금 더 경과를 지켜볼 필요가 있다고 합니다."],
+["진단·검사결과 통역","画像上、特に異常な所見は見られないとのことです。","영상에서 특별히 이상 소견은 보이지 않는다고 합니다."],
+["진단·검사결과 통역","他の病院での検査結果があれば、見せていただけますか。","다른 병원에서 받은 검사 결과가 있으면 보여주시겠습니까?"],
+["치료·약 통역","今回は、お薬で治療していきましょうとのことです。","이번에는 약으로 치료해 나가자고 하십니다."],
+["치료·약 통역","この薬を一日3回、食後に服用してください。","이 약을 하루 3회, 식후에 복용해 주세요."],
+["치료·약 통역","症状が改善しても、指示された期間は服用してください。","증상이 좋아지더라도 지시받은 기간 동안 복용해 주세요."],
+["치료·약 통역","自己判断で薬を中止せず、先生に確認してください。","임의로 약을 중단하지 말고 의사 선생님께 확인해 주세요."],
+["치료·약 통역","この薬は、痛みがあるときだけ服用してください。","이 약은 통증이 있을 때만 복용해 주세요."],
+["치료·약 통역","眠くなる可能性がありますので、運転は控えてください。","졸음이 올 수 있으니 운전은 삼가 주세요."],
+["치료·약 통역","他に服用している薬があれば教えてください。","다른 복용 중인 약이 있으면 알려주세요."],
+["치료·약 통역","症状が改善しない場合は、再度受診してください。","증상이 나아지지 않으면 다시 진료를 받아 주세요."],
+["치료·약 통역","薬の飲み合わせに注意が必要な場合があります。","약을 함께 복용할 때 주의가 필요한 경우가 있습니다."],
+["치료·약 통역","処方箋は、こちらの薬局でお受け取りください。","처방전은 이쪽 약국에서 받아주세요."],
+["수술·입원·퇴원","今回の手術について、先生から説明があります。","이번 수술에 대해 의사 선생님께서 설명해 주십니다."],
+["수술·입원·퇴원","全身麻酔で行います。","전신마취로 시행합니다."],
+["수술·입원·퇴원","手術には、出血や感染などの合併症が起こる可能性があります。","수술에는 출혈이나 감염 등의 합병증이 발생할 가능성이 있습니다."],
+["수술·입원·퇴원","内容を十分にご理解いただいた上で、署名をお願いいたします。","내용을 충분히 이해하신 후 서명해 주시기 바랍니다."],
+["수술·입원·퇴원","何かございましたら、ナースコールを押してください。","무슨 일이 있으면 간호사 호출벨을 눌러 주세요."],
+["수술·입원·퇴원","退院後の注意事項について説明があります。","퇴원 후 주의사항에 대한 설명이 있습니다."],
+["수술·입원·퇴원","手術は何時間ほどかかる予定ですか。","수술은 몇 시간 정도 걸릴 예정입니까?"],
+["수술·입원·퇴원","手術後は、しばらく安静にしていただきます。","수술 후에는 당분간 안정을 취하셔야 합니다."],
+["수술·입원·퇴원","傷口が赤くなったり、熱を持ったりした場合はご連絡ください。","상처 부위가 붉어지거나 열감이 느껴지면 연락해 주세요."],
+["수술·입원·퇴원","退院当日は、付き添いの方がいらっしゃいますか。","퇴원 당일에 동행하실 분이 계십니까?"],
+["보험·진료비","今回の診療が保険の対象になるか確認したいとのことです。","이번 진료가 보험 적용 대상인지 확인하고 싶다고 하십니다."],
+["보험·진료비","病院では、保険会社からの支払い保証が必要とのことです。","병원에서는 보험회사의 지불보증이 필요하다고 합니다."],
+["보험·진료비","保険金のお支払いについては、保険会社による審査が必要です。","보험금 지급에 대해서는 보험회사의 심사가 필요합니다."],
+["보험·진료비","領収書と診療明細書を発行していただけますでしょうか。","영수증과 진료비 세부내역서를 발급해 주실 수 있을까요?"],
+["보험·진료비","診断書の発行には、1日から3日ほどかかる場合があります。","진단서 발급에는 하루에서 사흘 정도 걸릴 수 있습니다."],
+["보험·진료비","概算の金額は、日本円で約1万円ほどになる見込みです。","예상 금액은 일본 엔으로 약 1만 엔 정도가 될 것으로 보입니다."],
+["보험·진료비","保険会社の連絡先を教えていただけますか。","보험회사 연락처를 알려주시겠습니까?"],
+["보험·진료비","支払い方法は、現金またはクレジットカードがご利用いただけます。","결제 방법은 현금 또는 신용카드를 이용하실 수 있습니다."],
+["보험·진료비","保険証券番号をもう一度確認させてください。","보험증권 번호를 다시 한 번 확인시켜 주십시오."],
+["보험·진료비","請求に必要な書類は、退院時にまとめてお渡しいたします。","청구에 필요한 서류는 퇴원 시 한꺼번에 드리겠습니다."],
+["컴플레인·응급·마무리","ご不快な思いをさせてしまい、申し訳ございません。まず事実関係を確認いたします。","불편한 일을 겪게 해 드려 죄송합니다. 우선 사실관계를 확인하겠습니다."],
+["컴플레인·응급·마무리","どの部分についてご不満を感じられたのか、確認させていただけますか。","어떤 부분 때문에 불편을 느끼셨는지 확인해도 될까요?"],
+["컴플레인·응급·마무리","患者様が強い痛みを訴えています。","환자분께서 심한 통증을 호소하고 있습니다."],
+["컴플레인·응급·마무리","呼吸が苦しいとおっしゃっています。","숨쉬기가 힘들다고 말씀하십니다."],
+["컴플레인·응급·마무리","本日のご受診は以上です。どうぞお大事になさってください。","오늘 진료는 이것으로 마치겠습니다. 부디 몸조리 잘하시기 바랍니다."],
+["컴플레인·응급·마무리","担当の者に確認し、改めてご連絡いたします。","담당자에게 확인 후 다시 연락드리겠습니다."],
+["컴플레인·응급·마무리","ご協力いただき、ありがとうございます。","협조해 주셔서 감사합니다."],
+["컴플레인·응급·마무리","意識がはっきりしないようです。すぐに医師を呼びます。","의식이 뚜렷하지 않은 것 같습니다. 바로 의사를 부르겠습니다."],
+["컴플레인·응급·마무리","救急車を呼びますので、少々お待ちください。","구급차를 부르겠으니 잠시만 기다려 주세요."],
+["컴플레인·응급·마무리","次回のご予約は〇月〇日です。お気をつけてお帰りください。","다음 예약은 ○월 ○일입니다. 조심히 돌아가세요."],
+["전화·화상 통역·격리 상황","感染対策のため、本日は電話でのご案内となります。","감염관리를 위해 오늘은 전화로 안내해 드리게 되었습니다."],
+["전화·화상 통역·격리 상황","少々聞き取りにくいので、もう一度お願いできますか。","조금 잘 안 들리는데 다시 한 번 말씀해 주시겠습니까?"],
+["전화·화상 통역·격리 상황","検査結果が陰性になるまで、隔離が必要とのことです。","검사 결과가 음성이 될 때까지 격리가 필요하다고 합니다."],
+["전화·화상 통역·격리 상황","ご家族とはお電話でお話しいただけます。","가족분과는 전화로 이야기하실 수 있습니다."],
+["전화·화상 통역·격리 상황","防護服を着用してご案内いたします。","보호장구를 착용하고 안내해 드리겠습니다."],
+["미용·검진·유치기관 상담","この施術のリスクについてもご説明いたします。","이 시술의 위험성에 대해서도 설명해 드리겠습니다."],
+["미용·검진·유치기관 상담","術後1週間ほど腫れが続くことがあります。","시술 후 일주일 정도 붓기가 지속될 수 있습니다."],
+["미용·검진·유치기관 상담","こちらは基本項目で、こちらは追加オプションです。","이것은 기본 항목이고, 이것은 추가 옵션입니다."],
+["미용·검진·유치기관 상담","概算のお見積りですので、確定金額は診察後にご案内いたします。","대략적인 견적이므로, 확정 금액은 진료 후 안내해 드리겠습니다."],
+["미용·검진·유치기관 상담","既往歴でお持ちの資料があれば、事前に共有をお願いいたします。","기존 진료기록이 있으시면 사전에 공유 부탁드립니다."]
+].map(([cat,jp,kr],i)=>({cat,jp,kr,id:'s_'+i}));
+
+const SENT_CATS = Array.from(new Set(SENTENCES.map(s=>s.cat)));
+
+const DEPTS = [
+["내과",[["どのような症状がありますか。","어떤 증상이 있으십니까?"],["いつからその症状がありますか。","언제부터 그 증상이 있으셨습니까?"],["持病はありますか。","지병이 있으십니까?"],["血圧を測りますね。","혈압을 재겠습니다."],["お薬手帳はお持ちですか。","복약수첩을 가지고 계십니까?"]]],
+["외과",[["傷の状態を見せてください。","상처 상태를 보여주세요."],["いつ、どのようにけがをしましたか。","언제, 어떻게 다치셨습니까?"],["消毒をします。少し染みるかもしれません。","소독하겠습니다. 조금 따가울 수 있습니다."],["縫合が必要です。","봉합이 필요합니다."],["抜糸は1週間後の予定です。","실밥 제거는 일주일 후 예정입니다."]]],
+["정형외과",[["どこが痛みますか。指で示していただけますか。","어디가 아프십니까? 손가락으로 가리켜 주시겠습니까?"],["動かすと痛みますか、じっとしていても痛みますか。","움직이면 아픕니까, 가만히 있어도 아픕니까?"],["レントゲンを撮りましょう。","엑스레이를 찍겠습니다."],["ギプスで固定します。","깁스로 고정하겠습니다."],["しばらく安静が必要です。","당분간 안정이 필요합니다."]]],
+["소아과",[["お子さんはいつから熱がありますか。","아이는 언제부터 열이 있습니까?"],["ミルクや食事はとれていますか。","분유나 식사는 하고 있습니까?"],["予防接種のスケジュールを確認します。","예방접종 일정을 확인하겠습니다."],["機嫌はいかがですか。","컨디션(기분)은 어떻습니까?"],["お口を大きく開けてね。","입을 크게 벌려 볼까?"]]],
+["응급실",[["一番つらい症状は何ですか。","가장 힘든 증상은 무엇입니까?"],["意識ははっきりしていますか。","의식은 뚜렷합니까?"],["今すぐ処置が必要です。","지금 바로 처치가 필요합니다."],["ご家族に連絡は可能ですか。","가족분께 연락이 가능합니까?"],["救急車で運ばれてきました。","구급차로 이송되어 오셨습니다."]]],
+["산부인과",[["最終月経はいつでしたか。","마지막 생리는 언제였습니까?"],["妊娠の可能性はありますか。","임신 가능성은 있습니까?"],["超音波検査をします。","초음파 검사를 하겠습니다."],["出血はありますか。","출혈은 있습니까?"]]],
+["치과·안과·이비인후과·피부과",[["どの歯が痛みますか。","어느 치아가 아프십니까?"],["視力検査をします。片目ずつ隠してください。","시력검사를 하겠습니다. 한쪽 눈씩 가려 주세요."],["耳の中を見てみますね。","귀 안을 살펴보겠습니다."],["いつから発疹が出ていますか。","언제부터 발진이 났습니까?"]]],
+["정신건강의학과·심료내과",[["最近、よく眠れていますか。","요즘 잠은 잘 주무십니까?"],["気分が落ち込むことはありますか。","기분이 가라앉는 일이 있습니까?"],["お薬は指示どおりに服用してください。","약은 지시받은 대로 복용해 주세요."],["無理に話さなくても大丈夫です。","무리해서 말씀하지 않으셔도 괜찮습니다."]]],
+["건강검진·재활의학과",[["検査は空腹の状態で受けていただきます。","검사는 공복 상태에서 받으시게 됩니다."],["結果は後日まとめてご説明いたします。","결과는 추후 종합적으로 설명해 드리겠습니다."],["リハビリは無理のない範囲で行いましょう。","재활치료는 무리하지 않는 범위에서 진행합시다."],["痛みがあれば、我慢せずお知らせください。","통증이 있으시면 참지 마시고 알려주세요."]]]
+];
+
+const CONFUSIONS = [
+["診察（しんさつ）","診察=의사가 환자를 진찰하는 것","審査（しんさ）","審査=보험회사 등이 서류·청구를 심사하는 것","「先生が診察します」와 「保険会社による審査が必要です」는 전혀 다른 주체·행위다."],
+["診察（しんさつ）","診察=환자를 진찰하는 행위 그 자체","診療（しんりょう）","診療=진찰·검사·치료를 포함하는 더 넓은 의료행위","그래서 「診療費」는 '진찰비'가 아니라 '진료비'로 옮기는 것이 자연스럽다."],
+["疑い（うたがい）","의심됩니다 — 肺炎の疑いがあります","可能性（かのうせい） / 確定（かくてい）","가능성이 있습니다 / 진단했습니다(확정)","세 표현을 같은 뜻으로 통역해서는 안 된다."],
+["症状（しょうじょう）","症状=환자에게 나타나는 증상","病気（びょうき）","病気=질병 그 자체","「症状はいつからですか」와 「病気について説明します」의 초점이 다르다."],
+["処方（しょほう）","処方=의사가 약을 처방하는 것","服用（ふくよう）","服用=환자가 약을 먹는 것","행위의 주체가 다르다."],
+["副作用（ふくさよう）","부작용=약물 등의 작용에 동반해 발생할 수 있는 원치 않는 작용","合併症（がっぺいしょう）","합병증=질병이나 치료·수술에 동반하여 발생할 수 있는 상태","서로 다른 의미로, 같은 말로 통역하지 않는다."],
+["医師（いし）","医師=전문적·공식적 표현","医者（いしゃ） / 先生（せんせい）","医者=일상적 표현 / 先生=환자에게 안내할 때 자연스러운 호칭","상황에 따라 「先生」을 쓰는 것이 자연스럽다."],
+["入院（にゅういん）","入院=병원에 들어가 머무는 것","退院（たいいん）","退院=병원에서 나가는 것","발음이 비슷해 혼동하기 쉬우므로 문맥과 함께 명확히 확인한다."],
+["既往症（きおうしょう）","既往症=환자가 과거에 앓았던 질환(과거 병력)","合併症（がっぺいしょう）","合併症=이번 질병이나 치료·수술에 동반해 새로 발생할 수 있는 상태","시제와 인과관계가 다르다."],
+["検査（けんさ）","検査=의학적 검사 (혈액검사, CT 등)","審査（しんさ）","審査=보험회사 등의 서류·청구 심사","발음이 비슷하지만 전혀 다른 영역의 용어이므로 특히 보험 관련 대화에서 주의한다."]
+];
+
+const CHECKLISTS = [
+["진료 전 준비 체크리스트",["성명·성별·생년월일·국적 확인","연락처·동행자 확인","일본어 사용 수준 파악","병원명·진료과·담당의 확인","예약일·예약시간·초진/재진 확인","진료 목적·예정된 검사·입원 여부 확인","여권 등 신원확인 서류 준비","보험 관련 서류 준비","기존 진료자료·검사 결과·처방전 확보","보험회사·연락처 확인","지불보증 필요 여부 확인","환자 선결제 여부 확인"]],
+["처방약 체크리스트",["약 이름·용량 확인","1회 복용량·하루 횟수 확인","복용 시간(식전/식후/취침 전) 확인","복용 기간 확인","필요시 복용 여부 확인","주의사항 확인"]],
+["수납·회계 체크리스트",["진료비 총액·세부 항목 확인","결제 수단(현금/카드/해외카드) 확인","영수증·세부내역서 수령 여부 확인","보험 관련 서류 추가 발급 필요 여부 확인","다음 진료 예약 및 비용 안내"]],
+["퇴원·귀가 체크리스트",["퇴원약 종류·복용법·기간 확인","상처·수술 부위 관리법 확인","재진 필요 여부 및 시기 확인","퇴원 요약서·진단서 수령 확인","보험 청구용 서류 완비 여부 확인","귀가 또는 귀국 교통편 확인","장거리 이동 시 주의사항(비행기 탑승 가능 여부 등) 의료진 확인"]],
+["업무 종료 전 10가지 최종 확인",["오늘 진료가 끝났는가?","추가 검사가 있는가?","약을 받아야 하는가?","다음 진료 예약이 있는가?","진료비를 결제했는가?","영수증을 받았는가?","필요한 서류를 받았는가?","보험회사에 추가로 제출할 것이 있는가?","환자가 오늘 해야 할 일을 이해했는가?","다음 단계가 무엇인지 알고 있는가?"]],
+["수술·시술 동의 확인 체크표",["시술명·방법 설명 통역 완료","위험성·합병증 설명 통역 완료","대안적 치료법 설명 통역 완료","환자의 질문·답변 통역 완료","동의서 서명 전 최종 이해 확인","서명 시각·입회자 기록"]],
+["현장용 한 장 체크리스트",["[진료 전] 환자 정보·서류·보험 확인","[진료 중] 3초 메모법으로 기록","[진료 중] 가능성과 확정을 구분해서 전달","[진료 후] 영수증·서류 확인","[진료 후] 다음 일정 확인 및 전달","[언제나] 판단하지 않는다","[언제나] 추측하지 않는다","[언제나] 확인되지 않은 것은 약속하지 않는다"]]
+];
+
+const FORMS = [
+["① 진료 전 환자 정보 확인표",["성명","성별 / 생년월일","국적 / 사용 언어","연락처","진료과 / 담당의","예약 일시 / 초진·재진","보호자·동행자","보험회사 / 증권번호","지불보증 필요 여부","특이사항"]],
+["② 진료실 통역 메모지",["P (환자 호소)","Hx (과거력)","T (검사)","Dx (진단)","Tx (치료)","Rx (처방)","F/U (추후 진료)","기타 특이사항"]],
+["③ 보험 업무 통화 기록표",["일시","보험회사 / 담당자명","상담 접수번호(콜 ID)","문의 내용","보험회사 답변","필요 서류","다음 조치 / 담당자"]],
+["④ 퇴원·귀국 인수인계표",["진단명","수술·시술명 및 일자","처방약(성분명)","향후 권장 진료과","담당 병원·의사 연락처","소개장·진료기록 사본 수령 여부"]],
+["⑤ 컴플레인·특이사항 기록표",["일시 / 장소","환자 발언(사실 그대로)","통역자 확인 내용","담당자 전달 여부","후속 조치"]],
+["⑥ 하루 업무 종료 기록",["환자명(이니셜) / 진료과","주요 내용 요약","특이사항","다음 조치 필요 여부"]]
+];
+
+const ROLES = [
+["I","Interpreter · 통역자","의사와 환자의 대화를 왜곡 없이 정확하게 전달합니다. 의사의 말을 임의로 바꾸거나 환자의 말을 대신 판단하지 않습니다."],
+["C","Coordinator · 조정자","접수, 진료, 검사, 수납, 약국, 입·퇴원 등 전체 프로세스가 원활히 진행되도록 조정합니다."],
+["G","Guide · 안내자","환자가 다음 동선과 절차를 정확히 이해하도록 안내합니다."],
+["S","Supporter · 지원자","낯선 이국 의료환경에서 느끼는 환자의 불안감을 완화합니다. 다만 지원하는 것과 대신 결정하는 것은 다릅니다."]
+];
+
+const PRINCIPLES = [
+["정확성 Accuracy","발화자의 의도와 정보를 왜곡 없이 전달","숫자, 약 이름, 복약 횟수, 날짜는 반드시 재확인하여 통역"],
+["중립성 Impartiality","어느 한쪽의 입장에 편향되지 않음","환자나 의료진을 대변하여 개인적 의견을 덧붙이지 않음"],
+["비밀유지 Confidentiality","환자의 개인정보 및 의료정보 보호","진료 중 알게 된 모든 정보를 외부나 SNS에 절대 유출하지 않음"]
+];
+
+const COMMANDMENTS = ["정확하게 듣는다.","정확하게 전달한다.","추측하지 않는다.","임의로 판단하지 않는다.","내용을 과장하거나 축소하지 않는다.","숫자와 약속을 반드시 확인한다.","환자의 개인정보를 보호한다.","환자의 불안을 낮추되 거짓된 안심을 주지 않는다.","의료진의 전문성과 권한을 존중한다.","모든 상황에서 환자의 안전을 최우선으로 한다."];
+
+const FORBIDDEN = ["환자에게 특정 진단명을 스스로 알려주는 행위","의료진의 지시 없이 처치나 투약 방법을 임의로 설명하는 행위","동의서·의무기록 등 법적 효력이 있는 문서의 내용을 임의로 작성·수정하는 행위","환자를 대신해 치료 방법을 선택하거나 서명을 대행하는 행위"];
+
+const COMPETENCIES = [
+["언어 역량","의학 용어·경어 표현·환자 설명용 쉬운 일본어를 모두 구사"],
+["의학 기초 지식","주요 질환·검사·처치의 기본 흐름을 이해(진단은 하지 않되, 맥락은 이해)"],
+["기록·정리 능력","짧은 시간에 핵심을 메모하고 누락 없이 전달"],
+["위기 대응 능력","응급상황에서 침착하게 우선순위를 판단해 행동"],
+["대인관계·조정 능력","환자, 보호자, 의료진, 행정직원, 보험사 사이를 조율"],
+["윤리 의식","정확성·중립성·비밀유지 원칙을 상황과 무관하게 일관되게 지킴"]
+];
+
+const SCHEDULE = [
+["09:00","당일 환자 명단·예약 정보 확인, 병원별 동선 재점검"],
+["09:30","환자 픽업 또는 병원 로비에서 첫 만남, 접수 지원"],
+["10:00–12:00","진료실 통역, 검사 안내·동행"],
+["12:00–13:00","점심시간 — 환자 상태에 따라 휴식 안내 또는 식사 동행"],
+["13:00–15:00","추가 검사·수납·약국 안내, 보험회사 통화 지원"],
+["15:00–16:00","당일 진료 마무리, 서류 수령 확인"],
+["16:00–17:00","업무 기록 정리, 다음 날 일정 준비, 인수인계"]
+];
+
+const MEMO_STRUCT = [["P","Patient / 환자","증상·시작·부위·정도·빈도·변화"],["Hx","과거력","기존 질환·수술·알레르기·복용약"],["T","검사","혈액검사·소변검사·X-ray·CT·MRI"],["Dx","진단","의사 설명"],["Tx","치료","치료 내용"],["Rx","처방","약·횟수·기간"],["F/U","추후 진료","재진·검사·주의사항"]];
+
+/* ============ UTIL ============ */
+const $=(s,el=document)=>el.querySelector(s);
+const $$=(s,el=document)=>Array.from(el.querySelectorAll(s));
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function lsGet(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+/* speech: bundled pre-recorded audio (works on every device, no OS voice needed) */
+let AUDIO_MAP=null;
+let audioLoadFailed=false;
+fetch('audio.json').then(r=>{ if(!r.ok) throw new Error('http '+r.status); return r.json(); })
+  .then(m=>{ AUDIO_MAP=m; })
+  .catch(()=>{ audioLoadFailed=true; });
+const audioCache={};
+function showToast(msg){
+  let t=$('#mbToast');
+  if(!t){
+    t=document.createElement('div'); t.id='mbToast';
+    t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:13px;z-index:99;max-width:88vw;text-align:center;box-shadow:var(--shadow);opacity:0;transition:opacity .2s;pointer-events:none';
+    document.body.appendChild(t);
+  }
+  t.textContent=msg;
+  t.style.opacity='1';
+  clearTimeout(t._hideTimer);
+  t._hideTimer=setTimeout(()=>{ t.style.opacity='0'; },2600);
+}
+function playAudio(id){
+  if(!id) return;
+  if(audioLoadFailed){ showToast('음성 데이터를 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.'); return; }
+  if(!AUDIO_MAP){ showToast('음성 데이터를 불러오는 중입니다. 잠시 후 다시 눌러 주세요.'); return; }
+  const b64=AUDIO_MAP[id];
+  if(!b64){ showToast('이 항목의 음성이 없습니다.'); return; }
+  try{
+    let a=audioCache[id];
+    if(!a){ a=new Audio('data:audio/mpeg;base64,'+b64); audioCache[id]=a; }
+    a.pause(); a.currentTime=0;
+    const p=a.play();
+    if(p && p.catch) p.catch(()=>showToast('음성 재생에 실패했습니다. 다시 눌러 주세요.'));
+  }catch(e){ showToast('음성 재생 중 오류가 발생했습니다.'); }
+}
+const speakerSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+const copySvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+
+function copyText(str,btn){
+  const done=()=>{ btn.classList.add('copied'); btn.querySelector('.lbl').textContent='복사됨'; setTimeout(()=>{btn.classList.remove('copied'); btn.querySelector('.lbl').textContent='복사';},1400); };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(str).then(done).catch(()=>fallbackCopy(str,done));
+  } else fallbackCopy(str,done);
+}
+function fallbackCopy(str,done){
+  try{
+    const ta=document.createElement('textarea'); ta.value=str; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done();
+  }catch(e){}
+}
+
+/* ============ TABS ============ */
+const TABS=[
+  {id:'home',label:'자세와 원칙'},
+  {id:'flow',label:'업무 흐름'},
+  {id:'terms',label:'용어사전'},
+  {id:'sent',label:'실전 문장'},
+  {id:'dept',label:'진료과 표현'},
+  {id:'confuse',label:'헷갈리는 표현'},
+  {id:'check',label:'체크리스트·서식'},
+  {id:'quiz',label:'연습 퀴즈'}
+];
+
+function initTabs(){
+  const nav=$('#tabs');
+  nav.innerHTML=TABS.map(t=>`<button class="tab" role="tab" id="tabbtn-${t.id}" data-tab="${t.id}" aria-selected="false">${t.label}</button>`).join('');
+  $$('.tab',nav).forEach(b=>b.addEventListener('click',()=>selectTab(b.dataset.tab,true)));
+  const initial=(location.hash||'').replace('#','');
+  selectTab(TABS.some(t=>t.id===initial)?initial:'home',false);
+}
+function selectTab(id,setHash){
+  TABS.forEach(t=>{
+    $('#tabbtn-'+t.id).setAttribute('aria-selected', t.id===id?'true':'false');
+    const p=$('#panel-'+t.id);
+    if(p) p.classList.toggle('active', t.id===id);
+  });
+  const hero=$('.hero'); if(hero) hero.hidden = id!=='home';
+  const btn=$('#tabbtn-'+id);
+  if(btn) btn.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});
+  if(setHash) history.replaceState(null,'','#'+id);
+}
+
+/* ============ RENDER: HOME ============ */
+function renderHome(){
+  return `
+  <div class="lead">의료통역 코디네이션 = 정확한 통역(Interpreter) + 병원 동선 안내(Guide) + 진료 과정 조정(Coordinator) + 환자 심리 지원(Supporter)</div>
+
+  <h2 class="section-title">4가지 핵심 역할</h2>
+  <div class="role-grid">
+    ${ROLES.map(([k,t,d])=>`<div class="role-card"><span class="k">${k}</span><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join('')}
+  </div>
+
+  <h2 class="section-title">3대 윤리 원칙</h2>
+  <div class="tblwrap"><table><thead><tr><th>원칙</th><th>의미</th><th>실전 적용</th></tr></thead><tbody>
+  ${PRINCIPLES.map(([a,b,c])=>`<tr><td><b>${esc(a)}</b></td><td>${esc(b)}</td><td>${esc(c)}</td></tr>`).join('')}
+  </tbody></table></div>
+
+  <h2 class="section-title">의료통역 코디네이터의 10계명</h2>
+  <ol class="numlist">${COMMANDMENTS.map(c=>`<li>${esc(c)}</li>`).join('')}</ol>
+
+  <h2 class="section-title">해서는 안 되는 일 — 업무 범위의 한계</h2>
+  <div class="lead">의료통역 코디네이터는 의료법상 의료행위를 할 수 없는 직군입니다. 다음은 업무 범위를 벗어난 행위입니다.</div>
+  <ul class="plainlist">${FORBIDDEN.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
+
+  <div class="callout"><b>현장의 5초 원칙 ·</b> 통역 직전 3~5초 동안 "누가 말했는가?", "무엇을 말했는가?", "내가 임의로 추가·삭제하고 있지 않은가?"를 점검합니다. 위기 상황에서는 아름다운 일본어보다 신속하고 정확한 전달이 우선입니다.</div>
+
+  <h2 class="section-title">필요한 역량</h2>
+  <div class="tblwrap"><table><thead><tr><th>역량</th><th>구체적 내용</th></tr></thead><tbody>
+  ${COMPETENCIES.map(([a,b])=>`<tr><td><b>${esc(a)}</b></td><td>${esc(b)}</td></tr>`).join('')}
+  </tbody></table></div>
+
+  <h2 class="section-title">모르는 것이 나왔을 때</h2>
+  <div class="dialog"><div class="row"><div class="who">코디네이터</div><div class="txt"><div class="jp">申し訳ありません。正確に通訳するため、もう一度ご説明いただけますでしょうか。</div><div class="kr">죄송합니다. 정확하게 통역하기 위해 한 번 더 설명해 주실 수 있을까요?</div></div></div></div>
+  <div class="lead" style="margin-top:-4px">추측해서 얼버무리는 것이 아니라, 되묻는 것이 전문적인 통역자의 태도입니다.</div>
+  `;
+}
+
+/* ============ RENDER: FLOW ============ */
+function renderFlow(){
+  return `
+  <div class="lead">준비(확인) → 통역(전달) → 기록(정리) → 연결(다음 단계) — 이 네 단계가 끊김 없이 이어질 때, 환자는 낯선 의료 환경에서도 자신이 어디에 있고 무엇을 해야 하는지 알 수 있습니다.</div>
+
+  <div class="formula">준비<span class="arrow">→</span>통역<span class="arrow">→</span>기록<span class="arrow">→</span>연결</div>
+
+  <h2 class="section-title">하루 일과 예시</h2>
+  <div class="tblwrap"><table><thead><tr><th style="width:110px">시간</th><th>업무 내용</th></tr></thead><tbody>
+  ${SCHEDULE.map(([t,d])=>`<tr><td style="font-variant-numeric:tabular-nums"><b>${esc(t)}</b></td><td>${esc(d)}</td></tr>`).join('')}
+  </tbody></table></div>
+  <div class="lead">실제 하루 일과는 진료과·환자 상태·병원 규모에 따라 크게 달라질 수 있습니다. 중요한 것은 매 단계마다 확인하고 기록하는 습관입니다.</div>
+
+  <h2 class="section-title">진료실 통역 메모 구조 (SOAP 변형)</h2>
+  <div class="tblwrap"><table><thead><tr><th style="width:70px">약어</th><th>의미</th><th>기록 항목</th></tr></thead><tbody>
+  ${MEMO_STRUCT.map(([a,b,c])=>`<tr><td><b>${esc(a)}</b></td><td>${esc(b)}</td><td>${esc(c)}</td></tr>`).join('')}
+  </tbody></table></div>
+  <div class="callout"><b>3초 메모법 ·</b> 말을 들은 직후 머릿속에서 세 가지를 확인합니다: ① 누가 말했는가? ② 무엇을 말했는가? ③ 누구에게 전달하는가? 숫자는 기억에 의존하지 않습니다. 예: Fever → 39℃, Medication → 3×/day, Fasting → 6h, F/U → 2 weeks.</div>
+
+  <h2 class="section-title">첫 만남 예문</h2>
+  <div class="dialog">
+    <div class="row"><div class="who">코디네이터</div><div class="txt"><div class="jp">はじめまして。〇〇と申します。</div><div class="kr">처음 뵙겠습니다. ○○이라고 합니다.</div></div></div>
+    <div class="row"><div class="who">코디네이터</div><div class="txt"><div class="jp">本日、医療通訳とご受診のサポートを担当させていただきます。</div><div class="kr">오늘 의료통역과 진료 지원을 담당하겠습니다.</div></div></div>
+    <div class="row"><div class="who">코디네이터</div><div class="txt"><div class="jp">ご不安なことや分からないことがございましたら、どうぞ遠慮なくおっしゃってください。</div><div class="kr">걱정되거나 이해되지 않는 부분이 있으시면 부담 없이 말씀해 주세요.</div></div></div>
+  </div>
+
+  <h2 class="section-title">병원·의료진과의 협업</h2>
+  <ul class="plainlist">
+    <li>진료 시작 전, 담당 의료진에게 환자의 상황을 간단히 미리 공유한다(언어 수준, 특이사항).</li>
+    <li>의료진의 설명 속도가 빠르면 자연스럽게 "잠시만요" 신호를 보내 통역 시간을 확보한다.</li>
+    <li>의료진의 전문적 판단에 대해 사적인 의견을 덧붙이지 않는다.</li>
+    <li>통역 중 발생한 의문점은 진료가 끝난 후 별도로 확인한다.</li>
+  </ul>
+
+  <h2 class="section-title">업무흐름 공식</h2>
+  <div class="callout">첫째, 기억보다 기록이다. 둘째, 설명보다 확인이다. 셋째, 통역보다 연결이다.</div>
+  `;
+}
+
+/* ============ RENDER: TERMS ============ */
+let termCatFilter='전체', termQuery='';
+function ttsBtnHtml(id){
+  return `<button class="iconbtn" type="button" data-audio-id="${esc(id)}" aria-label="일본어 발음 듣기">${speakerSvg}</button>`;
+}
+function renderTerms(){
+  return `
+  <div class="searchbar"><input type="search" id="termSearch" placeholder="일본어·요미가나·한국어 뜻으로 검색" autocomplete="off" value="${esc(termQuery)}"></div>
+  <div class="chiprow" id="termChips">${CATS.map(c=>`<button class="chip" data-cat="${esc(c)}" aria-pressed="${c===termCatFilter}">${esc(c)}</button>`).join('')}</div>
+  <div class="term-list" id="termList"></div>
+  `;
+}
+function paintTerms(){
+  const q=termQuery.trim().toLowerCase();
+  const list=TERMS.filter(t=>{
+    if(termCatFilter!=='전체' && t.cat!==termCatFilter) return false;
+    if(!q) return true;
+    return t.jp.toLowerCase().includes(q)||t.yomi.toLowerCase().includes(q)||t.kr.toLowerCase().includes(q);
+  });
+  const el=$('#termList');
+  if(!el) return;
+  if(list.length===0){ el.innerHTML='<div class="empty">일치하는 용어가 없습니다.</div>'; return; }
+  el.innerHTML=list.map(t=>`
+    <div class="term ${t.star?'starred':''}">
+      <div class="term-jp">
+        <span class="word"><ruby>${esc(t.jp)}<rt>${esc(t.yomi)}</rt></ruby></span>${t.star?'<span class="star-badge">혼동주의</span>':''}
+        <div class="term-cat">${esc(t.cat)}</div>
+      </div>
+      <div class="term-kr">${esc(t.kr)}</div>
+      ${ttsBtnHtml(t.id)}
+    </div>`).join('');
+}
+
+/* ============ RENDER: SENTENCES ============ */
+let sentQuery='';
+function renderSent(){
+  return `
+  <div class="searchbar"><input type="search" id="sentSearch" placeholder="일본어 또는 한국어로 검색" autocomplete="off" value="${esc(sentQuery)}"></div>
+  <div id="sentList"></div>
+  `;
+}
+function paintSent(){
+  const q=sentQuery.trim().toLowerCase();
+  const el=$('#sentList');
+  if(!el) return;
+  let html='';
+  let total=0;
+  SENT_CATS.forEach(cat=>{
+    const items=SENTENCES.filter(s=>s.cat===cat && (!q || s.jp.toLowerCase().includes(q) || s.kr.toLowerCase().includes(q)));
+    if(items.length===0) return;
+    total+=items.length;
+    html+=`<div class="sent-group"><h3>${esc(cat)} <span class="cnt">${items.length}문장</span></h3>`;
+    items.forEach(s=>{
+      html+=`<div class="sent-card">
+        <div class="sent-jp">${esc(s.jp)}</div>
+        <div class="sent-kr">${esc(s.kr)}</div>
+        <div class="sent-actions">
+          <button class="pillbtn" type="button" data-audio-id="${esc(s.id)}">${speakerSvg}<span class="lbl">듣기</span></button>
+          <button class="pillbtn" type="button" data-copy="${esc(s.jp)}">${copySvg}<span class="lbl">복사</span></button>
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  el.innerHTML = total? html : '<div class="empty">일치하는 문장이 없습니다.</div>';
+}
+
+/* ============ RENDER: DEPT ============ */
+function renderDept(){
+  return DEPTS.map(([name,items],di)=>`
+    <h2 class="section-title">${esc(name)}</h2>
+    <div class="dialog">
+      ${items.map(([jp,kr],ii)=>`<div class="row"><div class="who">의료진</div><div class="txt"><div class="jp">${esc(jp)}</div><div class="kr">${esc(kr)}</div></div>${ttsBtnHtml('d_'+di+'_'+ii)}</div>`).join('')}
+    </div>
+  `).join('');
+}
+
+/* ============ RENDER: CONFUSIONS ============ */
+function renderConfuse(){
+  return `
+  <div class="lead">발음이나 표기가 비슷해 혼동하기 쉬운 의료 일본어입니다. 실제 임상 현장에서 오역이 생기기 쉬운 지점이므로 반드시 구분해서 익혀 두세요.</div>
+  ${CONFUSIONS.map(([a,ad,b,bd,note],ci)=>`
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+        <div style="flex:1;min-width:140px;background:var(--star-soft);border-radius:10px;padding:10px 12px;display:flex;align-items:flex-start;gap:8px;justify-content:space-between">
+          <div><div style="font-weight:700;color:var(--star);font-size:16px">${esc(a)}</div>
+          <div style="font-size:13px;color:var(--ink-soft);margin-top:3px">${esc(ad)}</div></div>
+          ${ttsBtnHtml('c_'+ci+'_a')}
+        </div>
+        <div style="flex:1;min-width:140px;background:var(--primary-soft);border-radius:10px;padding:10px 12px;display:flex;align-items:flex-start;gap:8px;justify-content:space-between">
+          <div><div style="font-weight:700;color:var(--primary);font-size:16px">${esc(b)}</div>
+          <div style="font-size:13px;color:var(--ink-soft);margin-top:3px">${esc(bd)}</div></div>
+          ${ttsBtnHtml('c_'+ci+'_b')}
+        </div>
+      </div>
+      <div style="font-size:13.5px">${esc(note)}</div>
+    </div>
+  `).join('')}
+  `;
+}
+
+/* ============ RENDER: CHECKLISTS ============ */
+const clState = lsGet('mb_checklists_v1', {});
+function clKey(title,i){ return title+'::'+i; }
+function renderCheck(){
+  return `
+  <h2 class="section-title">현장 체크리스트</h2>
+  <div class="lead">체크 상태는 이 기기의 브라우저에만 저장됩니다.</div>
+  ${CHECKLISTS.map(([title,items])=>renderChecklistCard(title,items)).join('')}
+  <h2 class="section-title">현장 실무 서식</h2>
+  <div class="lead">그대로 인쇄하거나 병원·기관 양식에 맞춰 수정해 사용하는 기본형 서식입니다. 공통 원칙은 '사실과 평가의 구분', '숫자의 재확인'입니다.</div>
+  ${FORMS.map(([title,fields])=>renderFormCard(title,fields)).join('')}
+  `;
+}
+function renderChecklistCard(title,items){
+  const done=items.filter((_,i)=>clState[clKey(title,i)]).length;
+  const pct=Math.round(done/items.length*100);
+  return `<div class="cl-card" data-cl="${esc(title)}">
+    <h3>${esc(title)}</h3>
+    <div class="cl-desc">${done}/${items.length} 완료</div>
+    <div class="cl-progress"><i style="width:${pct}%"></i></div>
+    ${items.map((it,i)=>{
+      const k=clKey(title,i); const on=!!clState[k];
+      return `<label class="cl-item ${on?'done':''}"><input type="checkbox" data-key="${esc(k)}" ${on?'checked':''}><span>${esc(it)}</span></label>`;
+    }).join('')}
+    <button class="cl-reset" data-reset="${esc(title)}" type="button">체크 초기화</button>
+  </div>`;
+}
+function slug(s){ return String(s).replace(/[^\w가-힣]+/g,'_'); }
+function renderFormCard(title,fields){
+  const saved = lsGet('mb_form_'+title, {});
+  return `<div class="cl-card">
+    <h3>${esc(title)}</h3>
+    ${fields.map((f,i)=>`<div class="form-field"><label for="f_${slug(title)}_${i}">${esc(f)}</label><input type="text" id="f_${slug(title)}_${i}" data-form="${esc(title)}" data-idx="${i}" value="${esc(saved[i]||'')}"></div>`).join('')}
+  </div>`;
+}
+function bindCheck(root){
+  $$('.cl-item input',root).forEach(cb=>{
+    cb.addEventListener('change',()=>{
+      clState[cb.dataset.key]=cb.checked;
+      lsSet('mb_checklists_v1',clState);
+      const card=cb.closest('.cl-card'); const title=card.dataset.cl;
+      const items=CHECKLISTS.find(c=>c[0]===title)[1];
+      const done=items.filter((_,i)=>clState[clKey(title,i)]).length;
+      card.querySelector('.cl-desc').textContent=`${done}/${items.length} 완료`;
+      card.querySelector('.cl-progress i').style.width=Math.round(done/items.length*100)+'%';
+      cb.closest('.cl-item').classList.toggle('done',cb.checked);
+    });
+  });
+  $$('[data-reset]',root).forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const title=btn.dataset.reset;
+      const items=CHECKLISTS.find(c=>c[0]===title)[1];
+      items.forEach((_,i)=>{ delete clState[clKey(title,i)]; });
+      lsSet('mb_checklists_v1',clState);
+      refreshCheckPanel();
+    });
+  });
+  $$('input[data-form]',root).forEach(inp=>{
+    inp.addEventListener('input',()=>{
+      const title=inp.dataset.form, idx=inp.dataset.idx;
+      const key='mb_form_'+title;
+      const saved=lsGet(key,{});
+      saved[idx]=inp.value;
+      lsSet(key,saved);
+    });
+  });
+}
+
+/* ============ QUIZ ============ */
+let quizMode='terms';
+let quizPool=[]; let quizIdx=0; let quizRevealed=false;
+let quizStat={know:0,unsure:0};
+function shuffle(a){ const arr=a.slice(); for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+function newQuizPool(){ quizPool = shuffle(quizMode==='terms'?TERMS:SENTENCES); quizIdx=0; quizRevealed=false; quizStat={know:0,unsure:0}; }
+function renderQuiz(){
+  if(quizPool.length===0) newQuizPool();
+  return `
+  <div class="quiz-wrap">
+    <div class="quiz-modebar">
+      <button class="chip" data-qmode="terms" aria-pressed="${quizMode==='terms'}">용어 퀴즈</button>
+      <button class="chip" data-qmode="sent" aria-pressed="${quizMode==='sent'}">문장 퀴즈</button>
+    </div>
+    <div class="quiz-stats">
+      <div><b id="qKnow">0</b>아는 문제</div>
+      <div><b id="qUnsure">0</b>헷갈린 문제</div>
+      <div><b id="qLeft">0</b>남은 문제</div>
+    </div>
+    <div class="flip-card" id="flipCard"></div>
+    <div class="quiz-actions" id="quizActions"></div>
+  </div>`;
+}
+function paintQuiz(){
+  const wrap=$('#panel-quiz'); if(!wrap) return;
+  const card=$('#flipCard'); const stat=$('#quizActions');
+  if(!card) return;
+  if(quizIdx>=quizPool.length){
+    card.innerHTML=`<div class="flip-cat">퀴즈 완료</div><div class="flip-kr">전체 ${quizPool.length}문제를 모두 풀었습니다.</div>`;
+    stat.innerHTML=`<button class="btn primary" id="qRestart" type="button">다시 섞어서 풀기</button>`;
+    $('#qRestart').onclick=()=>{ newQuizPool(); paintQuiz(); };
+  } else {
+    const item=quizPool[quizIdx];
+    if(quizMode==='terms'){
+      card.innerHTML=`<div class="flip-cat">${esc(item.cat)}</div><div class="flip-jp">${esc(item.jp)}</div>${quizRevealed?`<div class="flip-yomi">${esc(item.yomi)}</div><div class="flip-kr">${esc(item.kr)}</div>`:''}`;
+    } else {
+      card.innerHTML=`<div class="flip-cat">${esc(item.cat)}</div><div class="flip-jp" style="font-size:18px">${esc(item.jp)}</div>${quizRevealed?`<div class="flip-kr">${esc(item.kr)}</div>`:''}`;
+    }
+    if(!quizRevealed){
+      stat.innerHTML=`<button class="btn primary" id="qReveal" type="button">정답 보기</button>`;
+      $('#qReveal').onclick=()=>{ quizRevealed=true; paintQuiz(); };
+    } else {
+      stat.innerHTML=`<button class="btn good" id="qKnowBtn" type="button">알고 있었어요</button><button class="btn bad" id="qUnsureBtn" type="button">헷갈렸어요</button>`;
+      $('#qKnowBtn').onclick=()=>{ quizStat.know++; quizIdx++; quizRevealed=false; paintQuiz(); };
+      $('#qUnsureBtn').onclick=()=>{ quizStat.unsure++; quizIdx++; quizRevealed=false; paintQuiz(); };
+    }
+  }
+  $('#qKnow').textContent=quizStat.know;
+  $('#qUnsure').textContent=quizStat.unsure;
+  $('#qLeft').textContent=Math.max(quizPool.length-quizIdx,0);
+  $$('[data-qmode]',wrap).forEach(b=>b.setAttribute('aria-pressed', b.dataset.qmode===quizMode?'true':'false'));
+}
+
+/* ============ MOUNT ============ */
+function paintPanel(id){
+  if(id==='terms') paintTerms();
+  else if(id==='sent') paintSent();
+  else if(id==='check') refreshCheckPanel();
+  else if(id==='quiz') paintQuiz();
+}
+function refreshCheckPanel(){
+  const root=$('#panel-check');
+  if(!root) return;
+  const bn=root.querySelector('.banner'); root.innerHTML = renderCheck(); if(bn) root.prepend(bn);
+  bindCheck(root);
+}
+
+function mount(){
+  const panels=$('#panels');
+  panels.innerHTML = TABS.map(t=>`<section class="panel" id="panel-${t.id}" role="tabpanel"></section>`).join('');
+  $('#panel-home').innerHTML = renderHome();
+  $('#panel-flow').innerHTML = renderFlow();
+  $('#panel-terms').innerHTML = renderTerms();
+  $('#panel-sent').innerHTML = renderSent();
+  $('#panel-dept').innerHTML = renderDept();
+  $('#panel-confuse').innerHTML = renderConfuse();
+  $('#panel-check').innerHTML = renderCheck();
+  $('#panel-quiz').innerHTML = renderQuiz();
+
+  paintTerms(); paintSent(); bindCheck($('#panel-check')); paintQuiz();
+
+  document.body.addEventListener('click',(e)=>{
+    const sb=e.target.closest('[data-audio-id]');
+    if(sb){ playAudio(sb.dataset.audioId); return; }
+    const cb=e.target.closest('[data-copy]');
+    if(cb){ copyText(cb.dataset.copy, cb); return; }
+    const catChip=e.target.closest('#termChips .chip');
+    if(catChip){ termCatFilter=catChip.dataset.cat; $$('#termChips .chip').forEach(c=>c.setAttribute('aria-pressed', c===catChip?'true':'false')); paintTerms(); return; }
+    const qmode=e.target.closest('[data-qmode]');
+    if(qmode){ quizMode=qmode.dataset.qmode; newQuizPool(); paintQuiz(); return; }
+  });
+  document.body.addEventListener('input',(e)=>{
+    if(e.target.id==='termSearch'){ termQuery=e.target.value; paintTerms(); }
+    if(e.target.id==='sentSearch'){ sentQuery=e.target.value; paintSent(); }
+  });
+}
+
+/* theme toggle (manual override, remembered per-viewer only) */
+function initTheme(){
+  const saved=lsGet('mb_theme',null);
+  if(saved==='dark'||saved==='light') document.documentElement.setAttribute('data-theme',saved);
+  updateThemeLabel();
+  $('#themeToggle').addEventListener('click',()=>{
+    const cur=document.documentElement.getAttribute('data-theme');
+    const next = cur==='dark' ? 'light' : (cur==='light' ? null : (matchMedia('(prefers-color-scheme: dark)').matches?'light':'dark'));
+    if(next) document.documentElement.setAttribute('data-theme',next); else document.documentElement.removeAttribute('data-theme');
+    lsSet('mb_theme', next);
+    updateThemeLabel();
+  });
+}
+function updateThemeLabel(){
+  const cur=document.documentElement.getAttribute('data-theme');
+  const isDark = cur ? cur==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  $('#themeToggle').textContent = isDark ? '라이트모드' : '다크모드';
+}
+
+
+const BANNERS={
+ flow:['업무 흐름','준비 → 통역 → 기록 → 연결','b2','<svg viewBox="0 0 200 120"><g fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><circle cx="30" cy="60" r="16"/><circle cx="100" cy="60" r="16"/><circle cx="170" cy="60" r="16"/><path d="M50 60h34M120 60h34"/></g></svg>'],
+ terms:['용어사전','병원·신체·증상 필수 어휘를 한눈에','b3','<svg viewBox="0 0 200 120"><g fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M100 30c-20-14-50-12-70-4v72c20-8 50-10 70 4 20-14 50-12 70-4V26c-20-8-50-10-70 4zM100 30v72"/></g></svg>'],
+ sent:['실전 문장','진료 현장에서 바로 쓰는 일본어 문장','',' <svg viewBox="0 0 200 120"><g fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20h100a10 10 0 0 1 10 10v40a10 10 0 0 1-10 10H60l-24 20V80H20a10 10 0 0 1-10-10V30a10 10 0 0 1 10-10z"/><path d="M110 60h70a10 10 0 0 1 10 10v30a10 10 0 0 1-10 10h-8v14l-18-14h-44"/></g></svg>'],
+ dept:['진료과 표현','과별 증상·검사·처치 표현','b3','<svg viewBox="0 0 200 120"><g fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="6" stroke-linecap="round"><path d="M100 110C40 70 30 44 30 32a22 22 0 0 1 44-4 22 22 0 0 1 44 4"/><path d="M30 64h30l12-22 18 40 12-22h30"/></g></svg>'],
+ confuse:['헷갈리는 표현','통역 오류를 막는 비교 정리','b2','<svg viewBox="0 0 200 120"><g fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M30 40h120l-24-24M170 80H50l24 24"/></g></svg>'],
+ check:['체크리스트·서식','현장 점검과 기록을 한 곳에서','b4','<svg viewBox="0 0 200 120"><g fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><rect x="50" y="14" width="100" height="100" rx="10"/><path d="M72 46l10 10 20-22M72 84h56"/></g></svg>'],
+ quiz:['연습 퀴즈','플래시카드로 용어·문장 복습','b4','<svg viewBox="0 0 200 120"><g fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><rect x="30" y="24" width="90" height="70" rx="10" transform="rotate(-8 75 60)"/><rect x="80" y="26" width="90" height="70" rx="10" transform="rotate(6 125 60)"/></g></svg>']
+};
+function addBanners(){
+  Object.entries(BANNERS).forEach(([id,[t,d,c,svg]])=>{
+    const p=$('#panel-'+id); if(!p) return;
+    p.insertAdjacentHTML('afterbegin',`<div class="banner ${c}"><h2 class="disp">${t}</h2><p>${d}</p>${svg}</div>`);
+  });
+  const hp=$('.hero-photo'); if(hp){ const t=new Image(); t.onload=()=>{hp.hidden=false;$('#hero').classList.add('has-photo');}; t.src=hp.getAttribute('src'); }
+  $$('.banner').forEach(b=>{ const id=b.closest('.panel').id.replace('panel-',''); const t=new Image(); t.onload=()=>{ const im=document.createElement('img'); im.className='banner-photo'; im.alt=''; im.src=t.src; b.prepend(im); b.classList.add('has-photo'); }; t.src='images/'+id+'.jpg'; });
+  $('#statTerms').textContent=TERMS.length; $('#statSent').textContent=SENTENCES.length;
+  $$('[data-go]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();selectTab(a.dataset.go,true);window.scrollTo({top:document.querySelector('#panels').offsetTop-70,behavior:'smooth'});}));
+}
+initTabs();
+mount();
+addBanners();
+selectTab((location.hash||'').replace('#','')||'home',false);
+initTheme();
+</script>
+
+</body></html>
