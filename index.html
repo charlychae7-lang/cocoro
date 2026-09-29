@@ -171,6 +171,13 @@ footer{color:var(--ink-soft);font-size:12px;text-align:center;padding:26px 0 40p
 .banner.b2{background:linear-gradient(120deg,#8A5524,#C07A38)}
 .banner.b3{background:linear-gradient(120deg,#123F5C,#2F7CA8)}
 .banner.b4{background:linear-gradient(120deg,#3B3F73,#6B6FBF)}
+/* photo slots (images/*.jpg; falls back to illustration if missing) */
+.hero-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.hero.has-photo::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(8,44,40,.92) 0%,rgba(8,44,40,.72) 45%,rgba(8,44,40,.25) 100%)}
+.hero.has-photo .hero-art{display:none}
+.banner-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.banner.has-photo::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(8,44,40,.85),rgba(8,44,40,.35))}
+.banner.has-photo svg{display:none}
 /* cards with picture backdrops */
 .card,.role-card,.cl-card,.sent-card,.term,.numlist li{position:relative;overflow:hidden}
 .role-card{padding:18px;background-repeat:no-repeat;background-position:right -14px bottom -14px;background-size:110px}
@@ -209,7 +216,7 @@ footer{background:var(--surface-2);margin:20px -20px 0;padding:30px 20px 44px;bo
     <nav class="tabs" id="tabs" role="tablist" aria-label="섹션"></nav>
   </header>
 
-  <section class="hero">
+  <section class="hero" id="hero"><img class="hero-photo" src="images/hero.jpg" alt="" hidden>
     <div class="hero-inner">
       <span class="eyebrow">MEDICAL INTERPRETER COORDINATOR</span>
       <h1 class="disp">말과 마음을 잇는<br>의료통역 코디네이터</h1>
@@ -1132,6 +1139,8 @@ function addBanners(){
     const p=$('#panel-'+id); if(!p) return;
     p.insertAdjacentHTML('afterbegin',`<div class="banner ${c}"><h2 class="disp">${t}</h2><p>${d}</p>${svg}</div>`);
   });
+  const hp=$('.hero-photo'); if(hp){ const t=new Image(); t.onload=()=>{hp.hidden=false;$('#hero').classList.add('has-photo');}; t.src=hp.getAttribute('src'); }
+  $$('.banner').forEach(b=>{ const id=b.closest('.panel').id.replace('panel-',''); const t=new Image(); t.onload=()=>{ const im=document.createElement('img'); im.className='banner-photo'; im.alt=''; im.src=t.src; b.prepend(im); b.classList.add('has-photo'); }; t.src='images/'+id+'.jpg'; });
   $('#statTerms').textContent=TERMS.length; $('#statSent').textContent=SENTENCES.length;
   $$('[data-go]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();selectTab(a.dataset.go,true);window.scrollTo({top:document.querySelector('#panels').offsetTop-70,behavior:'smooth'});}));
 }
