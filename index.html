@@ -704,19 +704,37 @@ function showToast(msg){
   clearTimeout(t._hideTimer);
   t._hideTimer=setTimeout(()=>{ t.style.opacity='0'; },2600);
 }
+function textForId(id){
+  const [k,i,j]=String(id).split('_');
+  if(k==='t'){ const t=TERMS[+i]; return t&&(t.yomi||t.jp); }
+  if(k==='s'){ const t=SENTENCES[+i]; return t&&t.jp; }
+  if(k==='d'){ const d=DEPTS[+i]; return d&&d[1][+j]&&d[1][+j][0]; }
+  return '';
+}
+function speakJa(text){
+  if(!('speechSynthesis' in window)||!text) return false;
+  try{
+    const synth=window.speechSynthesis; synth.cancel();
+    const u=new SpeechSynthesisUtterance(text.replace(/[〇○]{1,2}/g,'')); u.lang='ja-JP'; u.rate=0.9;
+    const v=synth.getVoices().find(v=>/^ja/i.test(v.lang)); if(v) u.voice=v;
+    synth.speak(u); return true;
+  }catch(e){ return false; }
+}
 function playAudio(id){
   if(!id) return;
-  if(audioLoadFailed){ showToast('음성 데이터를 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.'); return; }
-  if(!AUDIO_MAP){ showToast('음성 데이터를 불러오는 중입니다. 잠시 후 다시 눌러 주세요.'); return; }
-  const b64=AUDIO_MAP[id];
-  if(!b64){ showToast('이 항목의 음성이 없습니다.'); return; }
-  try{
-    let a=audioCache[id];
-    if(!a){ a=new Audio('data:audio/mpeg;base64,'+b64); audioCache[id]=a; }
-    a.pause(); a.currentTime=0;
-    const p=a.play();
-    if(p && p.catch) p.catch(()=>showToast('음성 재생에 실패했습니다. 다시 눌러 주세요.'));
-  }catch(e){ showToast('음성 재생 중 오류가 발생했습니다.'); }
+  const b64=AUDIO_MAP&&AUDIO_MAP[id];
+  if(b64){
+    try{
+      let a=audioCache[id];
+      if(!a){ a=new Audio('data:audio/mpeg;base64,'+b64); audioCache[id]=a; }
+      a.pause(); a.currentTime=0;
+      const p=a.play();
+      if(p && p.catch) p.catch(()=>{ if(!speakJa(textForId(id))) showToast('음성 재생에 실패했습니다. 다시 눌러 주세요.'); });
+      return;
+    }catch(e){}
+  }
+  /* no bundled audio: fall back to the browser's built-in Japanese voice */
+  if(!speakJa(textForId(id))) showToast('이 기기·브라우저는 음성 읽기를 지원하지 않습니다.');
 }
 const speakerSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
 const copySvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
