@@ -2,26 +2,33 @@
 <title>의료통역 브릿지</title>
 <style>
 :root{
-  --bg:#F4F6F5; --surface:#FFFFFF; --surface-2:#EAEFEE; --ink:#16302E; --ink-soft:#51655F;
-  --border:#DCE4E1; --primary:#0F4C46; --primary-soft:#E3EEEC; --accent:#C07A38; --accent-soft:#F5E8D6;
-  --star:#B5442E; --star-soft:#F7E4DE; --good:#2E7D5B; --good-soft:#E1F0E7; --radius:14px;
-  --shadow:0 1px 2px rgba(15,76,70,.07),0 6px 20px rgba(15,76,70,.06);
+  --bg:#F6F5F0; --surface:#FFFFFF; --surface-2:#EFEDE3; --ink:#1B1F1A; --ink-soft:#5B6058;
+  --border:#E1DDCF; --primary:#10140F; --primary-soft:#F3E7D1; --accent:#B9893C; --accent-soft:#F3E7D1;
+  --star:#B23B2E; --star-soft:#F7E4DE; --good:#3F8F68; --good-soft:#E1F0E7; --radius:4px;
+  --shadow:0 1px 2px rgba(16,20,15,.06),0 8px 22px rgba(16,20,15,.06);
+  --panel:#10140F; --panel-2:#1A2017; --paper:#E7E4D8; --paper-soft:#C9D1C3; --line-dark:#2A3027;
+  --gold:#B9893C; --gold-strong:#D1A458; --gold-text:#7A5A24; --green:#3F8F68;
+  --sel-bg:#10140F; --sel-fg:#D1A458;
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#0D1917; --surface:#13221F; --surface-2:#1A2C29; --ink:#E8F2EF; --ink-soft:#9AB2AC;
-    --border:#25413C; --primary:#7BD9C4; --primary-soft:#1B3430; --accent:#E3A467; --accent-soft:#2E2313;
-    --star:#E68B73; --star-soft:#33201B; --good:#7FD8AE; --good-soft:#153327;
-    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+    --bg:#0D100C; --surface:#161B14; --surface-2:#1C2218; --ink:#E7E4D8; --ink-soft:#9BA095;
+    --border:#2A3027; --primary:#D1A458; --primary-soft:#2A2316; --accent:#D1A458; --accent-soft:#2A2316;
+    --star:#E07A6A; --star-soft:#33201B; --good:#5FB389; --good-soft:#16281E;
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 22px rgba(0,0,0,.3);
+    --panel:#070906; --panel-2:#121710; --gold-text:#E2BD7B;
+    --sel-bg:#D1A458; --sel-fg:#10140F;
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0D1917; --surface:#13221F; --surface-2:#1A2C29; --ink:#E8F2EF; --ink-soft:#9AB2AC;
-  --border:#25413C; --primary:#7BD9C4; --primary-soft:#1B3430; --accent:#E3A467; --accent-soft:#2E2313;
-  --star:#E68B73; --star-soft:#33201B; --good:#7FD8AE; --good-soft:#153327;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+  --bg:#0D100C; --surface:#161B14; --surface-2:#1C2218; --ink:#E7E4D8; --ink-soft:#9BA095;
+  --border:#2A3027; --primary:#D1A458; --primary-soft:#2A2316; --accent:#D1A458; --accent-soft:#2A2316;
+  --star:#E07A6A; --star-soft:#33201B; --good:#5FB389; --good-soft:#16281E;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 22px rgba(0,0,0,.3);
+  --panel:#070906; --panel-2:#121710; --gold-text:#E2BD7B;
+  --sel-bg:#D1A458; --sel-fg:#10140F;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -196,78 +203,196 @@ footer{color:var(--ink-soft);font-size:12px;text-align:center;padding:26px 0 40p
 .flip-card{background-image:var(--art-cross);background-repeat:no-repeat;background-position:right -20px bottom -20px;background-size:130px}
 footer{background:var(--surface-2);margin:20px -20px 0;padding:30px 20px 44px;border-top:none}
 :root{
- --art-cross:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M38 8h24v30h30v24H62v30H38V62H8V38h30z' fill='%230F4C46' fill-opacity='.06'/%3E%3C/svg%3E");
- --art-pulse:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 60'%3E%3Cpath d='M0 32h40l10-24 16 46 14-34 10 12h70' fill='none' stroke='%230F4C46' stroke-opacity='.18' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
- --art-mic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%230F4C46' stroke-opacity='.13' stroke-width='6' stroke-linecap='round'%3E%3Crect x='36' y='8' width='28' height='50' rx='14'/%3E%3Cpath d='M22 46c0 20 12 30 28 30s28-10 28-30M50 76v18M34 94h32'/%3E%3C/svg%3E");
- --art-map:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%230F4C46' stroke-opacity='.13' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M50 92S20 60 20 38a30 30 0 0 1 60 0c0 22-30 54-30 54z'/%3E%3Ccircle cx='50' cy='38' r='11'/%3E%3C/svg%3E");
- --art-clip:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%230F4C46' stroke-opacity='.13' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='20' y='14' width='60' height='78' rx='8'/%3E%3Crect x='36' y='6' width='28' height='16' rx='5'/%3E%3Cpath d='M34 44h32M34 60h32M34 76h20'/%3E%3C/svg%3E");
- --art-heart:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%230F4C46' stroke-opacity='.13' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M50 88C18 64 10 44 10 32a20 20 0 0 1 40-4 20 20 0 0 1 40 4c0 12-8 32-40 56z'/%3E%3C/svg%3E");
+ --art-cross:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M38 8h24v30h30v24H62v30H38V62H8V38h30z' fill='%23B9893C' fill-opacity='.06'/%3E%3C/svg%3E");
+ --art-pulse:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 60'%3E%3Cpath d='M0 32h40l10-24 16 46 14-34 10 12h70' fill='none' stroke='%23B9893C' stroke-opacity='.18' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+ --art-mic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23B9893C' stroke-opacity='.13' stroke-width='6' stroke-linecap='round'%3E%3Crect x='36' y='8' width='28' height='50' rx='14'/%3E%3Cpath d='M22 46c0 20 12 30 28 30s28-10 28-30M50 76v18M34 94h32'/%3E%3C/svg%3E");
+ --art-map:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23B9893C' stroke-opacity='.13' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M50 92S20 60 20 38a30 30 0 0 1 60 0c0 22-30 54-30 54z'/%3E%3Ccircle cx='50' cy='38' r='11'/%3E%3C/svg%3E");
+ --art-clip:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23B9893C' stroke-opacity='.13' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='20' y='14' width='60' height='78' rx='8'/%3E%3Crect x='36' y='6' width='28' height='16' rx='5'/%3E%3Cpath d='M34 44h32M34 60h32M34 76h20'/%3E%3C/svg%3E");
+ --art-heart:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23B9893C' stroke-opacity='.13' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M50 88C18 64 10 44 10 32a20 20 0 0 1 40-4 20 20 0 0 1 40 4c0 12-8 32-40 56z'/%3E%3C/svg%3E");
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .role-card,:root:not([data-theme="light"]) .cl-card{filter:none}}
+
+/* =====================================================================
+   EDGE THEME v3 — ink / gold / green, cut corners, full-bleed sections
+   ===================================================================== */
+body{font-family:'Noto Sans KR','Noto Sans JP',system-ui,sans-serif;line-height:1.65;word-break:keep-all;padding-inline:0;margin:0}
+:root[lang="ja"] body{font-family:'Noto Sans JP','Noto Sans KR',system-ui,sans-serif;word-break:normal;line-break:strict}
+h1,h2,h3,.disp{font-family:inherit;font-weight:800;letter-spacing:-.02em}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding:40px 20px 0}
+.hdr{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;margin:0;padding:0 max(20px,calc((100% - 1040px)/2));background:var(--surface);backdrop-filter:none;border-bottom:1px solid var(--border)}
+.hdr-top{padding:12px 0 2px}
+.brand{gap:12px}
+.mark{width:14px;height:14px;background:var(--gold);transform:rotate(45deg);position:relative;flex:0 0 auto;margin-left:3px}
+.mark::after{content:"";position:absolute;inset:4px;background:var(--panel)}
+.brand .name{font-family:inherit;font-weight:800;font-size:19px;color:var(--ink);letter-spacing:-.02em}
+.themebtn{border-radius:3px;font-weight:700;padding:6px 12px;color:var(--ink)}
+.themebtn:hover{border-color:var(--gold)}
+.tabs{gap:4px;padding:6px 0 8px}
+.tab{border:none;border-radius:3px;padding:8px 13px;margin:0;font-size:14px;font-weight:700;color:var(--ink-soft);box-shadow:inset 0 -2px 0 transparent}
+.tab:hover{background:var(--surface-2);color:var(--ink)}
+.tab[aria-selected="true"]{background:var(--sel-bg);color:var(--sel-fg);box-shadow:inset 0 -2px 0 var(--gold)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+/* hero */
+.hero[hidden],.stat-strip[hidden]{display:none!important}
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);margin:0;padding:0;border-radius:0;color:var(--paper);background:var(--panel);min-height:500px;overflow:hidden;position:relative}
+.hero::before,.hero::after{display:none}
+.hero.has-photo::before{display:none}
+.hero-copy{position:relative;z-index:2;padding:76px 36px 76px max(20px,calc((100vw - 1040px)/2));align-self:center}
+.hero .eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--gold-strong);border:0;border-bottom:2px solid var(--gold);border-radius:0;padding:0 0 5px;margin-bottom:22px;background:none}
+.hero h1{font-size:clamp(2rem,4.6vw,3.3rem);line-height:1.2;margin:0;color:var(--paper);max-width:none}
+.hero h1 .hl{display:block;color:var(--gold-strong);margin-top:.15em}
+.hero p{font-size:1.02rem;color:var(--paper-soft);max-width:31em;margin:22px 0 0}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+.hero-cta a{border-radius:3px;font-size:14.5px;font-weight:800;padding:13px 24px;text-decoration:none;transition:transform .15s,background .15s}
+.hero-cta a:hover{transform:translateY(-2px)}
+.hero-cta .p{background:var(--gold);color:#10140F;border:1.5px solid var(--gold)}
+.hero-cta .p:hover{background:var(--gold-strong)}
+.hero-cta .s{background:transparent;color:var(--paper);border:1.5px solid rgba(231,228,216,.55)}
+.hero-cta .s:hover{background:rgba(231,228,216,.08)}
+.hero-media{position:relative;background:var(--gold);clip-path:polygon(15% 0,100% 0,100% 100%,0 100%)}
+.hero-media-in{position:absolute;inset:0 0 0 7px;clip-path:polygon(15% 0,100% 0,100% 100%,0 100%);overflow:hidden;background:var(--panel-2)}
+.hero-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 40%}
+.hero-media-in::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(16,20,15,.55) 0%,rgba(16,20,15,0) 45%);pointer-events:none}
+.hero-art{position:absolute;inset:0;width:100%;height:100%;opacity:1}
+.hero.has-photo .hero-art{display:none}
+.hero-copy>*{animation:rise .7s both}
+.hero-copy>*:nth-child(2){animation-delay:.08s}.hero-copy>*:nth-child(3){animation-delay:.16s}.hero-copy>*:nth-child(4){animation-delay:.24s}
+@media(min-width:861px){.hero h1 .hl{white-space:nowrap}}
+:root[lang="ja"] .hero h1{font-size:clamp(1.75rem,3.5vw,2.6rem)}
+@media(max-width:860px){
+  .hero{grid-template-columns:1fr;min-height:0}
+  .hero-copy{padding:48px 20px 40px}
+  .hero-media{height:250px;clip-path:polygon(0 14%,100% 0,100% 100%,0 100%)}
+  .hero-media-in{inset:7px 0 0 0;clip-path:polygon(0 14%,100% 0,100% 100%,0 100%)}
+}
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:0;padding:26px max(20px,calc((100vw - 1040px)/2));background:var(--panel-2);border-top:1px solid var(--line-dark);text-align:left}
+.stat-item{padding:2px 20px}
+.stat-item:first-child{padding-left:0}
+.stat-item+.stat-item{border-left:1px solid var(--line-dark)}
+.stat-item h3{font-size:2.1rem;line-height:1.1;color:var(--gold-strong);font-variant-numeric:tabular-nums;margin:0}
+.stat-item p{font-size:.82rem;color:var(--paper-soft);margin:4px 0 0}
+@media(max-width:640px){.stat-strip{grid-template-columns:repeat(2,1fr);gap:18px 0}.stat-item:nth-child(3){border-left:0;padding-left:0}}
+/* quick cards */
+.qcards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:0 0 34px}
+.qcard{position:relative;display:block;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--border);padding:26px 24px 22px 28px;clip-path:polygon(0 0,calc(100% - 26px) 0,100% 26px,100% 100%,0 100%);transition:transform .18s,border-color .18s,background .18s}
+.qcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--qa,var(--gold))}
+.qcard.green{--qa:var(--green)}.qcard.ink{--qa:var(--ink)}
+.qcard:hover{transform:translateY(-4px);border-color:var(--qa,var(--gold))}
+.qcard .qi{display:block;width:34px;height:34px;color:var(--qa,var(--gold));margin-bottom:14px}
+.qcard .qi svg{width:100%;height:100%;display:block}
+.qcard h3{font-size:1.1rem;margin:0 0 6px}
+.qcard p{font-size:.9rem;color:var(--ink-soft);margin:0;line-height:1.6}
+@media(max-width:760px){.qcards{grid-template-columns:1fr}}
+/* sections */
+.panel{padding-bottom:40px}
+.panel.active>*{animation:rise .5s both}
+.panel.active>*:nth-child(2){animation-delay:.04s}.panel.active>*:nth-child(3){animation-delay:.08s}.panel.active>*:nth-child(4){animation-delay:.12s}.panel.active>*:nth-child(n+5){animation-delay:.16s}
+@media(prefers-reduced-motion:reduce){.panel.active>*,.hero-copy>*{animation:none}*{transition:none!important}}
+.section-title{font-size:clamp(1.3rem,3.2vw,1.65rem);margin:34px 0 12px;padding-left:16px}
+.section-title::before{width:4px;border-radius:0;background:var(--gold);top:.1em;bottom:.1em}
+.lead{font-size:14.5px;line-height:1.75}
+.banner{border-radius:0;margin:0 0 26px;padding:34px 30px;background:linear-gradient(110deg,var(--panel) 0%,var(--panel-2) 100%);color:var(--paper);border-left:5px solid var(--gold);clip-path:polygon(0 0,100% 0,100% calc(100% - 26px),calc(100% - 26px) 100%,0 100%)}
+.banner.b2{background:linear-gradient(110deg,var(--panel) 0%,var(--panel-2) 100%);border-left-color:var(--green)}
+.banner.b3{background:linear-gradient(110deg,var(--panel) 0%,var(--panel-2) 100%);border-left-color:var(--gold-strong)}
+.banner.b4{background:linear-gradient(110deg,var(--panel) 0%,var(--panel-2) 100%);border-left-color:var(--paper)}
+.banner h2{font-size:clamp(1.5rem,3.6vw,2rem);margin:0 0 6px;color:var(--paper)}
+.banner p{font-size:14px;color:var(--paper-soft);max-width:34em}
+.banner svg{opacity:.5}
+.banner.has-photo::before{background:linear-gradient(90deg,rgba(16,20,15,.92) 0%,rgba(16,20,15,.6) 50%,rgba(16,20,15,.25) 100%)}
+.banner-photo{filter:saturate(.85)}
+/* cards */
+.card,.sent-card,.term,.cl-card,.numlist li,.dialog,.tblwrap,.searchbar input,.flip-card{border-radius:4px}
+.role-grid{gap:16px}
+.role-card{border-radius:0;border:1px solid var(--border);box-shadow:none;padding:26px 24px 22px 28px;clip-path:polygon(0 0,calc(100% - 26px) 0,100% 26px,100% 100%,0 100%);transition:transform .18s,border-color .18s;background-color:var(--surface)}
+.role-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--ra,var(--gold))}
+.role-card:nth-child(2){--ra:var(--green)}.role-card:nth-child(3){--ra:var(--ink)}
+.role-card:hover{transform:translateY(-3px);border-color:var(--ra,var(--gold))}
+.role-card .k{background:var(--panel);color:var(--gold-strong);border-radius:2px;letter-spacing:.1em}
+.role-card h3{font-size:1.02rem}
+.term{border-left:3px solid var(--border);box-shadow:none;transition:border-color .15s,transform .15s}
+.term:hover{border-left-color:var(--gold);transform:translateX(2px)}
+.term.starred{border-left-color:var(--star)}
+.sent-card{border-left:3px solid var(--border);box-shadow:none;transition:border-color .15s}
+.sent-card:hover{border-left-color:var(--gold);transform:none}
+.sent-group h3{color:var(--ink);font-size:1.02rem;padding-bottom:8px;border-bottom:2px solid var(--gold);display:inline-flex}
+.cl-card{box-shadow:none;border-left:3px solid var(--gold)}
+.cl-progress i{background:var(--gold)}
+.cl-item input{accent-color:var(--gold)}
+.numlist li{box-shadow:none}
+.numlist li::before{background:var(--panel);color:var(--gold-strong);border-radius:2px;width:24px;height:24px;font-weight:800}
+.plainlist li::before{border-radius:0;width:6px;height:6px;transform:rotate(45deg);background:var(--gold)}
+.tblwrap{box-shadow:none}
+th{background:var(--panel);color:var(--gold-strong);letter-spacing:.04em}
+.callout{border:0;border-left:4px solid var(--gold);border-radius:0 4px 4px 0;background-color:var(--accent-soft)}
+.callout b{color:var(--gold-text)}
+.formula{background-color:var(--panel);color:var(--gold-strong);border-radius:0;clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,0 100%);padding:20px 22px}
+.formula .arrow{color:var(--paper-soft)}
+.dialog .who{color:var(--gold-text)}
+.chip,.pillbtn,.iconbtn{border-radius:3px}
+.chip[aria-pressed="true"]{background:var(--sel-bg);color:var(--sel-fg);border-color:var(--sel-bg)}
+.iconbtn{color:var(--gold-text)}
+.iconbtn:hover,.pillbtn:hover{border-color:var(--gold)}
+.btn{border-radius:3px;font-weight:800}
+.btn.primary{background:var(--sel-bg);color:var(--sel-fg);border-color:var(--sel-bg)}
+.flip-card{border-radius:4px;border-top:4px solid var(--gold)}
+.flip-yomi{color:var(--gold-text)}
+.quiz-stats b{color:var(--ink)}
+.star-badge{border-radius:2px}
+ruby rt{letter-spacing:.02em}
+/* footer */
+footer{margin:56px 0 0;padding:38px max(20px,calc((100% - 1040px)/2)) 52px;background:var(--panel);color:var(--paper-soft);border-top:3px solid var(--gold);text-align:left;font-size:12.5px;line-height:1.9}
+@media(max-width:480px){.brand .name{font-size:16px;white-space:nowrap}.themebtn{padding:5px 9px;font-size:11.5px;white-space:nowrap}.hdr-btns{gap:4px}}
+footer::before{content:"MEDICAL BRIDGE";display:block;font-weight:800;letter-spacing:.2em;color:var(--gold-strong);font-size:11px;margin-bottom:12px}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;800&family=Noto+Serif+KR:wght@500;700&display=swap" rel="stylesheet">
+
+<header class="hdr">
+  <div class="hdr-top">
+    <div class="brand"><span class="mark" aria-hidden="true"></span><span class="name" data-t="의료통역 브릿지">의료통역 브릿지</span></div>
+    <div class="hdr-btns"><button class="themebtn" id="langToggle" type="button" aria-label="Language">한국어</button><button class="themebtn" id="themeToggle" type="button">다크모드</button></div>
+  </div>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="섹션"></nav>
+</header>
+
+<section class="hero" id="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">MEDICAL INTERPRETER COORDINATOR</span>
+    <h1 class="disp" data-t="hero_h1">말과 마음을 잇는<br><span class="hl">의료통역 코디네이터</span></h1>
+    <p data-t="hero_p">일본인 환자가 낯선 병원에서도 안심하고 진료받을 수 있도록. 정확한 통역, 병원 동선 안내, 진료 조정, 심리 지원까지 현장에서 바로 쓰는 실전 가이드입니다.</p>
+    <div class="hero-cta"><a class="p" href="#terms" data-go="terms" data-t="용어사전 보기">용어사전 보기</a><a class="s" href="#sent" data-go="sent" data-t="실전 문장 보기">실전 문장 보기</a></div>
+  </div>
+  <div class="hero-media"><div class="hero-media-in"><img class="hero-photo" src="images/hero.jpg" alt="" hidden>
+      <svg class="hero-art" viewBox="0 0 400 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs><linearGradient id="gl" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#B9893C"/><stop offset="1" stop-color="#D1A458"/></linearGradient></defs>
+        <rect width="400" height="420" fill="#1A2017"/>
+        <g stroke="url(#gl)" stroke-width="1.8" fill="none" stroke-linecap="round">
+          <path d="M20 330h360"/><path d="M60 330C110 200 290 200 340 330"/>
+          <path d="M100 262v68M150 232v98M200 224v106M250 232v98M300 262v68" stroke-opacity=".7"/>
+          <path d="M60 330C80 360 120 372 150 390M340 330C320 360 280 372 250 390" stroke-opacity=".55"/>
+        </g>
+        <g fill="#D1A458"><circle cx="60" cy="330" r="5"/><circle cx="340" cy="330" r="5"/><circle cx="200" cy="224" r="5"/><circle cx="150" cy="232" r="3"/><circle cx="250" cy="232" r="3"/></g>
+        <g stroke="#3F8F68" stroke-width="2.2" fill="none" stroke-linecap="round"><path d="M200 224C198 190 202 160 200 120"/><path d="M200 168C182 158 172 140 174 120"/><path d="M200 174C220 162 230 144 226 124"/></g>
+        <g fill="#3F8F68"><ellipse cx="174" cy="114" rx="13" ry="7" transform="rotate(-35 174 114)"/><ellipse cx="226" cy="118" rx="13" ry="7" transform="rotate(35 226 118)"/><ellipse cx="200" cy="96" rx="10" ry="16"/></g>
+      </svg></div></div>
+</section>
+<div class="stat-strip" id="statStrip">
+  <div class="stat-item"><h3>4</h3><p data-t="핵심 역할">핵심 역할</p></div>
+  <div class="stat-item"><h3>10</h3><p data-t="계명">계명</p></div>
+  <div class="stat-item"><h3 id="statTerms">-</h3><p data-t="의료 용어">의료 용어</p></div>
+  <div class="stat-item"><h3 id="statSent">-</h3><p data-t="실전 문장">실전 문장</p></div>
+</div>
 
 <div class="wrap">
-  <header class="hdr">
-    <div class="hdr-top">
-      <div class="brand"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#0F4C46"/><path d="M8 27c4-9 20-9 24 0" fill="none" stroke="#F5E8D6" stroke-width="2.6" stroke-linecap="round"/><path d="M12 27v-6M20 27v-9M28 27v-6" stroke="#F5E8D6" stroke-width="2.2" stroke-linecap="round"/><path d="M18 9h4v5h5v4h-5v0h-4v0h-5v-4h5z" fill="#C07A38"/></svg><span class="name" data-t="의료통역 브릿지">의료통역 브릿지</span></div>
-      <div class="hdr-btns"><button class="themebtn" id="langToggle" type="button" aria-label="Language">한국어</button><button class="themebtn" id="themeToggle" type="button">다크모드</button></div>
-    </div>
-    <nav class="tabs" id="tabs" role="tablist" aria-label="섹션"></nav>
-  </header>
-
-  <section class="hero" id="hero"><img class="hero-photo" src="images/hero.jpg" alt="" hidden>
-    <div class="hero-inner">
-      <span class="eyebrow">MEDICAL INTERPRETER COORDINATOR</span>
-      <h1 class="disp" data-t="hero_h1">말과 마음을 잇는<br>의료통역 코디네이터</h1>
-      <p data-t="hero_p">일본인 환자가 낯선 병원에서도 안심하고 진료받을 수 있도록. 정확한 통역, 병원 동선 안내, 진료 조정, 심리 지원까지 현장에서 바로 쓰는 실전 가이드입니다.</p>
-      <div class="hero-cta"><a class="p" href="#terms" data-go="terms" data-t="용어사전 보기">용어사전 보기</a><a class="s" href="#sent" data-go="sent" data-t="실전 문장 보기">실전 문장 보기</a></div>
-      <div class="hero-stats"><div><b>4</b><span data-t="핵심 역할">핵심 역할</span></div><div><b>10</b><span data-t="계명">계명</span></div><div><b id="statTerms">-</b><span data-t="의료 용어">의료 용어</span></div><div><b id="statSent">-</b><span data-t="실전 문장">실전 문장</span></div></div>
-    </div>
-    <svg class="hero-art" viewBox="0 0 780 420" preserveAspectRatio="xMaxYMax slice" aria-hidden="true">
-  <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity=".02"/></linearGradient></defs>
-  <circle cx="600" cy="120" r="150" fill="url(#sky)"/><circle cx="600" cy="120" r="100" fill="#fff" fill-opacity=".06"/>
-  <!-- hospital -->
-  <g transform="translate(470 120)">
-    <rect x="0" y="60" width="230" height="240" rx="6" fill="#F4F6F5" fill-opacity=".95"/>
-    <rect x="70" y="0" width="90" height="90" rx="6" fill="#fff"/>
-    <path d="M105 14h20v22h22v20h-22v22h-20V56H83V36h22z" fill="#B5442E"/>
-    <g fill="#9CC9C1">
-      <rect x="18" y="90" width="34" height="34" rx="4"/><rect x="66" y="110" width="34" height="34" rx="4"/><rect x="130" y="110" width="34" height="34" rx="4"/><rect x="178" y="90" width="34" height="34" rx="4"/>
-      <rect x="18" y="146" width="34" height="34" rx="4"/><rect x="66" y="166" width="34" height="34" rx="4"/><rect x="130" y="166" width="34" height="34" rx="4"/><rect x="178" y="146" width="34" height="34" rx="4"/>
-    </g>
-    <rect x="92" y="230" width="46" height="70" rx="4" fill="#0F4C46"/>
-  </g>
-  <g transform="translate(150 0)">
-  <!-- bridge -->
-  <g fill="none" stroke="#F5E8D6" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M0 360h630" stroke-width="6" stroke-opacity=".9"/>
-    <path d="M60 360C140 250 300 250 380 360" stroke-width="5"/>
-    <path d="M120 320v40M180 296v64M240 296v64M300 320v40" stroke-width="3" stroke-opacity=".7"/>
-  </g>
-  <!-- two people -->
-  <g transform="translate(250 240)">
-    <circle cx="0" cy="0" r="20" fill="#F5E8D6"/><path d="M-28 100c0-40 12-66 28-66s28 26 28 66z" fill="#C07A38"/>
-  </g>
-  <g transform="translate(330 250)">
-    <circle cx="0" cy="0" r="18" fill="#fff"/><path d="M-26 92c0-36 11-60 26-60s26 24 26 60z" fill="#7BD9C4"/>
-    <path d="M-8 34l8 26 8-26" fill="#fff"/>
-  </g>
-  <path d="M275 214c12-22 34-22 46 0" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round"/>
-  <g fill="#fff" fill-opacity=".9"><rect x="262" y="176" width="70" height="30" rx="14"/><path d="M290 205l-4 12 14-12z"/></g>
-  <text x="297" y="196" font-size="15" font-weight="700" text-anchor="middle" fill="#0F4C46" font-family="sans-serif">通訳</text>
-  </g>
-</svg>
-  </section>
-
   <main id="panels"></main>
+</div>
 
-  <footer data-t="footer">
+<footer data-t="footer">
     《일본인 환자를 위한 의료통역 코디네이터 실전 매뉴얼》(채기석 저)의 내용을 재구성한 학습·현장 참고용 앱입니다.<br>
     약 이름·검사 절차·수가는 병원마다 다를 수 있으니 반드시 소속 기관의 최신 안내를 우선 확인하세요. 법률·의료 자문을 대체하지 않습니다.
   </footer>
-</div>
 
 <script>
 /* ============ DATA ============ */
@@ -699,10 +824,10 @@ const JA={
 "아는 문제":"わかった","헷갈린 문제":"迷った","남은 문제":"残り","퀴즈 완료":"クイズ完了","다시 섞어서 풀기":"シャッフルしてもう一度","정답 보기":"答えを見る","알고 있었어요":"わかっていた","헷갈렸어요":"迷った",
 "문제를 모두 풀었습니다.":"問をすべて解きました。","전체":"すべて",
 /* hero */
-"hero_h1":"言葉と心をつなぐ<br>医療通訳コーディネーター",
+"hero_h1":"言葉と心をつなぐ<br><span class=\"hl\">医療通訳コーディネーター</span>",
 "hero_p":"日本人の患者さまが、慣れない韓国の病院でも安心して受診できるように。正確な通訳、院内のご案内、診療の調整、心のサポートまで、現場ですぐ使える実践ガイドです。",
 "용어사전 보기":"用語辞典を見る","실전 문장 보기":"実践フレーズを見る","핵심 역할":"主な役割","계명":"心得","의료 용어":"医療用語","실전 문장 수":"実践フレーズ","의료통역 브릿지":"医療通訳ブリッジ",
-"footer":"『日本人患者のための医療通訳コーディネーター実践マニュアル』(채기석 著)の内容を再構成した、学習・現場参考用アプリです。<br>薬の名前・検査の手順・料金は病院によって異なる場合がありますので、必ず所属機関の最新の案内をご確認ください。法律・医療の助言に代わるものではありません。",
+"qc_terms":"病院・身体・症状の必須語彙を検索して確認","qc_sent":"診察の場面別フレーズ。タップで発音・コピー","qc_check":"受診前から退院まで、現場の確認と記録","footer":"『日本人患者のための医療通訳コーディネーター実践マニュアル』(채기석 著)の内容を再構成した、学習・現場参考用アプリです。<br>薬の名前・検査の手順・料金は病院によって異なる場合がありますので、必ず所属機関の最新の案内をご確認ください。法律・医療の助言に代わるものではありません。",
 /* banners */
 "banner_flow":"準備 → 通訳 → 記録 → つなぐ","banner_terms":"病院・身体・症状の必須語彙をひと目で","banner_sent":"診療の現場ですぐ使える日本語フレーズ","banner_dept":"診療科ごとの症状・検査・処置の表現","banner_confuse":"通訳ミスを防ぐ比較まとめ","banner_check":"現場の確認と記録を一か所で","banner_quiz":"フラッシュカードで用語・フレーズを復習",
 /* home */
@@ -794,8 +919,11 @@ const JA={
 "환자명(이니셜) / 진료과":"患者さま名(イニシャル) / 診療科","주요 내용 요약":"主な内容の要約","다음 조치 필요 여부":"次の対応の要否"
 };
 const KO_X={
-hero_h1:`말과 마음을 잇는<br>의료통역 코디네이터`,
+hero_h1:`말과 마음을 잇는<br><span class="hl">의료통역 코디네이터</span>`,
 hero_p:`일본인 환자가 낯선 병원에서도 안심하고 진료받을 수 있도록. 정확한 통역, 병원 동선 안내, 진료 조정, 심리 지원까지 현장에서 바로 쓰는 실전 가이드입니다.`,
+qc_terms:`병원·신체·증상 필수 어휘를 검색해 확인`,
+qc_sent:`진료 장면별 문장. 탭하여 발음·복사`,
+qc_check:`진료 전부터 퇴원까지 현장 점검과 기록`,
 footer:`《일본인 환자를 위한 의료통역 코디네이터 실전 매뉴얼》(채기석 저)의 내용을 재구성한 학습·현장 참고용 앱입니다.<br>
     약 이름·검사 절차·수가는 병원마다 다를 수 있으니 반드시 소속 기관의 최신 안내를 우선 확인하세요. 법률·의료 자문을 대체하지 않습니다.`,
 lead_home:`의료통역 코디네이션 = 정확한 통역(Interpreter) + 병원 동선 안내(Guide) + 진료 과정 조정(Coordinator) + 환자 심리 지원(Supporter)`,
@@ -914,7 +1042,7 @@ function selectTab(id,setHash){
     const p=$('#panel-'+t.id);
     if(p) p.classList.toggle('active', t.id===id);
   });
-  const hero=$('.hero'); if(hero) hero.hidden = id!=='home';
+  $$('.hero,.stat-strip').forEach(e=>{ e.hidden = id!=='home'; });
   const btn=$('#tabbtn-'+id);
   if(btn) btn.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});
   if(setHash) history.replaceState(null,'','#'+id);
@@ -923,6 +1051,7 @@ function selectTab(id,setHash){
 /* ============ RENDER: HOME ============ */
 function renderHome(){
   return `
+  <div class="qcards"><a class="qcard gold" href="#terms" data-go="terms"><span class="qi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/></svg></span><h3>${T('용어사전')}</h3><p>${T('qc_terms')}</p></a><a class="qcard green" href="#sent" data-go="sent"><span class="qi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v10H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg></span><h3>${T('실전 문장')}</h3><p>${T('qc_sent')}</p></a><a class="qcard ink" href="#check" data-go="check"><span class="qi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="1.5"/><path d="M9 4V3h6v1M9 12l2 2 4-4M9 17h6"/></svg></span><h3>${T('체크리스트·서식')}</h3><p>${T('qc_check')}</p></a></div>
   <div class="lead">${T('lead_home')}</div>
 
   <h2 class="section-title">${T('4가지 핵심 역할')}</h2>
