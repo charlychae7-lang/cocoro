@@ -1,6 +1,6 @@
 ---
 version: alpha
-name: GTC Keynote — Frame (NVIDIA-inspired, video layer)
+name: GTC Keynote — Design System (NVIDIA-inspired, video layer)
 description: >
   ChatGPT의 등장과 NVIDIA 주가 폭발을 다루는 모션 그래픽용 프레임 디자인 시스템.
   NVIDIA 브랜드 아이덴티티(NVIDIA Green #76B900 + 순수 블랙 + 화이트)와 GTC 키노트 영상의
