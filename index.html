@@ -818,7 +818,7 @@ const JA={
 "다크모드":"ダークモード","라이트모드":"ライトモード","섹션":"セクション","전체":"すべて",
 "일본어·요미가나·한국어 뜻으로 검색":"日本語・よみがな・韓国語の意味で検索","일본어 또는 한국어로 검색":"日本語または韓国語で検索",
 "혼동주의":"要注意","일치하는 용어가 없습니다.":"該当する用語がありません。","일치하는 문장이 없습니다.":"該当するフレーズがありません。",
-"문장":"フレーズ","듣기":"聞く","복사":"コピー","일본어 발음 듣기":"日本語の発音を聞く",
+"문장":"フレーズ","듣기":"聞く","복사됨":"コピーしました","음성 재생에 실패했습니다. 다시 눌러 주세요.":"音声の再生に失敗しました。もう一度押してください。","이 기기·브라우저는 음성 읽기를 지원하지 않습니다.":"この端末・ブラウザは音声の読み上げに対応していません。","복사":"コピー","일본어 발음 듣기":"日本語の発音を聞く",
 "의료진":"医療スタッフ","코디네이터":"コーディネーター",
 "체크 초기화":"チェックをリセット","완료":"完了","용어 퀴즈":"用語クイズ","문장 퀴즈":"フレーズクイズ",
 "아는 문제":"わかった","헷갈린 문제":"迷った","남은 문제":"残り","퀴즈 완료":"クイズ完了","다시 섞어서 풀기":"シャッフルしてもう一度","정답 보기":"答えを見る","알고 있었어요":"わかっていた","헷갈렸어요":"迷った",
@@ -994,18 +994,18 @@ function playAudio(id){
       if(!a){ a=new Audio('data:audio/mpeg;base64,'+b64); audioCache[id]=a; }
       a.pause(); a.currentTime=0;
       const p=a.play();
-      if(p && p.catch) p.catch(()=>{ if(!speakJa(textForId(id))) showToast('음성 재생에 실패했습니다. 다시 눌러 주세요.'); });
+      if(p && p.catch) p.catch(()=>{ if(!speakJa(textForId(id))) showToast(T('음성 재생에 실패했습니다. 다시 눌러 주세요.')); });
       return;
     }catch(e){}
   }
   /* no bundled audio: fall back to the browser's built-in Japanese voice */
-  if(!speakJa(textForId(id))) showToast('이 기기·브라우저는 음성 읽기를 지원하지 않습니다.');
+  if(!speakJa(textForId(id))) showToast(T('이 기기·브라우저는 음성 읽기를 지원하지 않습니다.'));
 }
 const speakerSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
 const copySvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
 
 function copyText(str,btn){
-  const done=()=>{ btn.classList.add('copied'); btn.querySelector('.lbl').textContent='복사됨'; setTimeout(()=>{btn.classList.remove('copied'); btn.querySelector('.lbl').textContent='복사';},1400); };
+  const done=()=>{ btn.classList.add('copied'); btn.querySelector('.lbl').textContent=T('복사됨'); setTimeout(()=>{btn.classList.remove('copied'); btn.querySelector('.lbl').textContent=T('복사');},1400); };
   if(navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(str).then(done).catch(()=>fallbackCopy(str,done));
   } else fallbackCopy(str,done);
