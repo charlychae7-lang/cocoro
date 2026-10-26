@@ -345,6 +345,34 @@ ruby rt{letter-spacing:.02em}
 footer{margin:56px 0 0;padding:38px max(20px,calc((100% - 1040px)/2)) 52px;background:var(--panel);color:var(--paper-soft);border-top:3px solid var(--gold);text-align:left;font-size:12.5px;line-height:1.9}
 @media(max-width:480px){.brand .name{font-size:16px;white-space:nowrap}.themebtn{padding:5px 9px;font-size:11.5px;white-space:nowrap}.hdr-btns{gap:4px}}
 footer::before{content:"MEDICAL BRIDGE";display:block;font-weight:800;letter-spacing:.2em;color:var(--gold-strong);font-size:11px;margin-bottom:12px}
+
+/* ===== 실전 상황 (cases) ===== */
+.case-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:6px}
+.case-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:10px;text-align:left;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--border);padding:24px 22px 20px 26px;clip-path:polygon(0 0,calc(100% - 26px) 0,100% 26px,100% 100%,0 100%);transition:transform .18s,border-color .18s}
+.case-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold)}
+.case-card:hover{transform:translateY(-3px);border-color:var(--gold)}
+.case-card h3{font-size:1.08rem;margin:0;line-height:1.45}
+.case-dept{display:inline-block;background:var(--panel);color:var(--gold-strong);font-size:11px;font-weight:800;letter-spacing:.1em;padding:3px 8px;border-radius:2px}
+.case-meta{font-size:12.5px;color:var(--ink-soft)}
+.case-tags{display:flex;gap:6px;flex-wrap:wrap}
+.case-tag{font-size:11.5px;border:1px solid var(--border);border-radius:3px;padding:2px 8px;color:var(--ink-soft)}
+.case-open{margin-top:6px;font-weight:800;font-size:13px;color:var(--gold-text)}
+.case-back{border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:3px;padding:7px 13px;font-weight:700;font-size:13px;margin-bottom:18px}
+.case-back:hover{border-color:var(--gold)}
+.case-head h2{font-size:clamp(1.35rem,3.4vw,1.85rem);margin:10px 0 6px;line-height:1.35}
+.case-toc{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0}
+.case-toc .chip{text-decoration:none;color:var(--ink-soft)}
+.case-toc .chip:hover{border-color:var(--gold);color:var(--ink)}
+.case-sec{scroll-margin-top:120px}
+.case-intro{font-size:13.5px;color:var(--ink-soft);margin:0 0 12px;max-width:62ch}
+.case-row .sent-jp{font-size:16.5px;line-height:2.15}
+.case-row rt{font-size:9.5px}
+.case-terms{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px}
+.case-term{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--border);border-radius:4px;padding:10px 12px}
+.case-term:hover{border-left-color:var(--gold)}
+.case-term-ja{font-size:17px;font-weight:600;line-height:2}
+.case-term-ko{font-size:12.5px;color:var(--ink-soft)}
+.case-final{font-size:12.5px;color:var(--ink-soft);margin:14px 0 0}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;800&family=Noto+Serif+KR:wght@500;700&display=swap" rel="stylesheet">
@@ -394,6 +422,7 @@ footer::before{content:"MEDICAL BRIDGE";display:block;font-weight:800;letter-spa
     약 이름·검사 절차·수가는 병원마다 다를 수 있으니 반드시 소속 기관의 최신 안내를 우선 확인하세요. 법률·의료 자문을 대체하지 않습니다.
   </footer>
 
+<script src="cases.js"></script>
 <script>
 /* ============ DATA ============ */
 const TERMS = [
@@ -813,12 +842,13 @@ function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 /* ============ i18n (JA base / KO sub) ============ */
 let LANG=lsGet('mb_lang','ja')==='ko'?'ko':'ja';
 const JA={
+"실전 상황":"実践ケース","banner_cases":"実際に経験した通訳の現場を、事例ごとに整理","case_lead":"実際に経験した通訳の場面を、事例ごとにまとめる場所です。事例を開くと、場面ごとの想定会話（韓国語–日本語）、重要用語、注意事項を見られます。","case_empty":"まだ登録された事例はありません。","case_open":"事例を開く","case_back":"事例一覧","case_search":"この事例内を韓国語・日本語で検索","case_toc":"目次","case_terms_title":"医療通訳の重要用語","case_cautions_title":"医療通訳時の注意事項","case_note_title":"ご利用にあたって","case_count":"フレーズ",
 /* tabs / ui */
 "자세와 원칙":"心構えと原則","업무 흐름":"業務の流れ","용어사전":"用語辞典","실전 문장":"実践フレーズ","진료과 표현":"診療科別表現","헷갈리는 표현":"紛らわしい表現","체크리스트·서식":"チェックリスト・書式","연습 퀴즈":"練習クイズ",
 "다크모드":"ダークモード","라이트모드":"ライトモード","섹션":"セクション","전체":"すべて",
 "일본어·요미가나·한국어 뜻으로 검색":"日本語・よみがな・韓国語の意味で検索","일본어 또는 한국어로 검색":"日本語または韓国語で検索",
 "혼동주의":"要注意","일치하는 용어가 없습니다.":"該当する用語がありません。","일치하는 문장이 없습니다.":"該当するフレーズがありません。",
-"문장":"フレーズ","듣기":"聞く","복사":"コピー","일본어 발음 듣기":"日本語の発音を聞く",
+"문장":"フレーズ","듣기":"聞く","복사됨":"コピーしました","음성 재생에 실패했습니다. 다시 눌러 주세요.":"音声の再生に失敗しました。もう一度押してください。","이 기기·브라우저는 음성 읽기를 지원하지 않습니다.":"この端末・ブラウザは音声の読み上げに対応していません。","복사":"コピー","일본어 발음 듣기":"日本語の発音を聞く",
 "의료진":"医療スタッフ","코디네이터":"コーディネーター",
 "체크 초기화":"チェックをリセット","완료":"完了","용어 퀴즈":"用語クイズ","문장 퀴즈":"フレーズクイズ",
 "아는 문제":"わかった","헷갈린 문제":"迷った","남은 문제":"残り","퀴즈 완료":"クイズ完了","다시 섞어서 풀기":"シャッフルしてもう一度","정답 보기":"答えを見る","알고 있었어요":"わかっていた","헷갈렸어요":"迷った",
@@ -919,6 +949,17 @@ const JA={
 "환자명(이니셜) / 진료과":"患者さま名(イニシャル) / 診療科","주요 내용 요약":"主な内容の要約","다음 조치 필요 여부":"次の対応の要否"
 };
 const KO_X={
+banner_cases:`직접 경험한 통역 현장을 사례별로 정리`,
+case_lead:`직접 경험한 통역 상황을 사례별로 정리하는 공간입니다. 사례를 열면 장면별 예상 대화(한국어–일본어), 핵심 용어, 유의사항을 볼 수 있습니다.`,
+case_empty:`아직 등록된 사례가 없습니다.`,
+case_open:`사례 열기`,
+case_back:`사례 목록`,
+case_search:`이 사례에서 한국어·일본어로 검색`,
+case_toc:`목차`,
+case_terms_title:`의료 통역 핵심 용어`,
+case_cautions_title:`의료 통역 시 유의사항`,
+case_note_title:`활용 안내`,
+case_count:`문장`,
 hero_h1:`말과 마음을 잇는<br><span class="hl">의료통역 코디네이터</span>`,
 hero_p:`일본인 환자가 낯선 병원에서도 안심하고 진료받을 수 있도록. 정확한 통역, 병원 동선 안내, 진료 조정, 심리 지원까지 현장에서 바로 쓰는 실전 가이드입니다.`,
 qc_terms:`병원·신체·증상 필수 어휘를 검색해 확인`,
@@ -969,6 +1010,8 @@ function showToast(msg){
   t._hideTimer=setTimeout(()=>{ t.style.opacity='0'; },2600);
 }
 function textForId(id){
+  if(String(id).startsWith('ck:')){ const [,ci,si,ri]=id.split(':'); const c=(window.CASES||[])[+ci]; const r=c&&c.sections[+si]&&c.sections[+si].rows[+ri]; return r?plainJa(r[1]):''; }
+  if(String(id).startsWith('ckt:')){ const [,ci,ti]=id.split(':'); const c=(window.CASES||[])[+ci]; const r=c&&c.terms[+ti]; return r?plainJa(r[1]):''; }
   const [k,i,j]=String(id).split('_');
   if(k==='t'){ const t=TERMS[+i]; return t&&(t.yomi||t.jp); }
   if(k==='s'){ const t=SENTENCES[+i]; return t&&t.jp; }
@@ -994,18 +1037,18 @@ function playAudio(id){
       if(!a){ a=new Audio('data:audio/mpeg;base64,'+b64); audioCache[id]=a; }
       a.pause(); a.currentTime=0;
       const p=a.play();
-      if(p && p.catch) p.catch(()=>{ if(!speakJa(textForId(id))) showToast('음성 재생에 실패했습니다. 다시 눌러 주세요.'); });
+      if(p && p.catch) p.catch(()=>{ if(!speakJa(textForId(id))) showToast(T('음성 재생에 실패했습니다. 다시 눌러 주세요.')); });
       return;
     }catch(e){}
   }
   /* no bundled audio: fall back to the browser's built-in Japanese voice */
-  if(!speakJa(textForId(id))) showToast('이 기기·브라우저는 음성 읽기를 지원하지 않습니다.');
+  if(!speakJa(textForId(id))) showToast(T('이 기기·브라우저는 음성 읽기를 지원하지 않습니다.'));
 }
 const speakerSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
 const copySvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
 
 function copyText(str,btn){
-  const done=()=>{ btn.classList.add('copied'); btn.querySelector('.lbl').textContent='복사됨'; setTimeout(()=>{btn.classList.remove('copied'); btn.querySelector('.lbl').textContent='복사';},1400); };
+  const done=()=>{ btn.classList.add('copied'); btn.querySelector('.lbl').textContent=T('복사됨'); setTimeout(()=>{btn.classList.remove('copied'); btn.querySelector('.lbl').textContent=T('복사');},1400); };
   if(navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(str).then(done).catch(()=>fallbackCopy(str,done));
   } else fallbackCopy(str,done);
@@ -1023,6 +1066,7 @@ const TABS=[
   {id:'flow',label:'업무 흐름'},
   {id:'terms',label:'용어사전'},
   {id:'sent',label:'실전 문장'},
+  {id:'cases',label:'실전 상황'},
   {id:'dept',label:'진료과 표현'},
   {id:'confuse',label:'헷갈리는 표현'},
   {id:'check',label:'체크리스트·서식'},
@@ -1367,18 +1411,24 @@ function renderAll(){
   $('#panel-flow').innerHTML = renderFlow();
   $('#panel-terms').innerHTML = renderTerms();
   $('#panel-sent').innerHTML = renderSent();
+  $('#panel-cases').innerHTML = renderCases();
   $('#panel-dept').innerHTML = renderDept();
   $('#panel-confuse').innerHTML = renderConfuse();
   $('#panel-check').innerHTML = renderCheck();
   $('#panel-quiz').innerHTML = renderQuiz();
 
-  paintTerms(); paintSent(); bindCheck($('#panel-check')); paintQuiz();
+  paintTerms(); paintSent(); paintCases(); bindCheck($('#panel-check')); paintQuiz();
   addBanners();
   selectTab(cur?cur.id:'home',false);
 }
 function mount(){
   renderAll();
   document.body.addEventListener('click',(e)=>{
+    const oc=e.target.closest('[data-case]');
+    if(oc){ caseOpen=oc.dataset.case; caseQuery=''; paintCases(); window.scrollTo({top:Math.max(($('#panels')||document.body).offsetTop-70,0),behavior:'smooth'}); return; }
+    if(e.target.closest('[data-case-back]')){ caseOpen=null; caseQuery=''; paintCases(); window.scrollTo({top:Math.max(($('#panels')||document.body).offsetTop-70,0),behavior:'smooth'}); return; }
+    const cj=e.target.closest('[data-case-jump]');
+    if(cj){ e.preventDefault(); const t=document.getElementById(cj.dataset.caseJump); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); return; }
     const sb=e.target.closest('[data-audio-id]');
     if(sb){ playAudio(sb.dataset.audioId); return; }
     const cb=e.target.closest('[data-copy]');
@@ -1391,6 +1441,7 @@ function mount(){
   document.body.addEventListener('input',(e)=>{
     if(e.target.id==='termSearch'){ termQuery=e.target.value; paintTerms(); }
     if(e.target.id==='sentSearch'){ sentQuery=e.target.value; paintSent(); }
+    if(e.target.id==='caseSearch'){ caseQuery=e.target.value; paintCaseSections(); }
   });
 }
 
@@ -1426,10 +1477,72 @@ function updateThemeLabel(){
 }
 
 
+/* ============ CASES (실전 상황) ============ */
+let caseOpen=null, caseQuery='';
+const RUBY_RE=/([0-9０-９]*[\u4E00-\u9FFF\u3005\u3006\u30F6]+)（([\u3041-\u309F\u30A0-\u30FF\u30FB\u30FC]+)）/g;
+function rubyize(str){ return esc(str).replace(RUBY_RE,'<ruby>$1<rt>$2</rt></ruby>'); }
+function plainJa(str){ return String(str).replace(/（[^）]*）/g,''); }
+function pickL(o){ return o? (LANG==='ja'? (o.ja||o.ko) : (o.ko||o.ja)) : ''; }
+function caseRowCount(c){ return c.sections.reduce((n,s)=>n+s.rows.length,0); }
+function renderCases(){ return '<div id="casesBody"></div>'; }
+function paintCases(){
+  const el=$('#casesBody'); if(!el) return;
+  const list=window.CASES||[];
+  if(!list.length){ el.innerHTML=`<div class="empty">${T('case_empty')}</div>`; return; }
+  const idx=list.findIndex(x=>x.id===caseOpen);
+  if(idx<0){ caseOpen=null; el.innerHTML=caseListHtml(list); return; }
+  el.innerHTML=caseDetailHtml(list[idx],idx);
+  paintCaseSections();
+}
+function caseListHtml(list){
+  return `<div class="lead">${T('case_lead')}</div>
+  <div class="case-grid">${list.map(c=>`
+    <button class="case-card" type="button" data-case="${esc(c.id)}">
+      <span class="case-dept">${esc(pickL(c.dept))}</span>
+      <h3>${esc(pickL(c.title))}</h3>
+      <span class="case-meta">${esc(pickL(c.meta))}</span>
+      <span class="case-tags">${(c.tags||[]).map(t=>`<span class="case-tag">${esc(pickL(t))}</span>`).join('')}<span class="case-tag">${caseRowCount(c)}${T('case_count')}</span></span>
+      <span class="case-open">${T('case_open')} \u2192</span>
+    </button>`).join('')}</div>`;
+}
+function caseDetailHtml(c,ci){
+  return `<button class="case-back" type="button" data-case-back>\u2190 ${T('case_back')}</button>
+  <div class="case-head">
+    <span class="case-dept">${esc(pickL(c.dept))}</span>
+    <h2 class="disp">${esc(pickL(c.title))}</h2>
+    <div class="case-meta">${esc(pickL(c.meta))}</div>
+  </div>
+  <div class="callout"><b>${T('case_note_title')} \u00b7</b> ${esc(pickL(c.note))}</div>
+  <nav class="case-toc" aria-label="${T('case_toc')}">${c.sections.map((s,si)=>`<a href="#cs-${ci}-${si}" data-case-jump="cs-${ci}-${si}" class="chip">${si+1}. ${esc(pickL({ko:s.ko,ja:s.ja}))}</a>`).join('')}${c.terms&&c.terms.length?`<a href="#cs-${ci}-terms" data-case-jump="cs-${ci}-terms" class="chip">${T('case_terms_title')}</a>`:''}${c.cautions&&c.cautions.length?`<a href="#cs-${ci}-caut" data-case-jump="cs-${ci}-caut" class="chip">${T('case_cautions_title')}</a>`:''}</nav>
+  <div class="searchbar"><input type="search" id="caseSearch" placeholder="${T('case_search')}" autocomplete="off" value="${esc(caseQuery)}"></div>
+  <div id="caseSections"></div>`;
+}
+function paintCaseSections(){
+  const el=$('#caseSections'); if(!el) return;
+  const ci=(window.CASES||[]).findIndex(x=>x.id===caseOpen); if(ci<0) return;
+  const c=window.CASES[ci];
+  const q=caseQuery.trim().toLowerCase();
+  let html='', total=0;
+  c.sections.forEach((s,si)=>{
+    const rows=s.rows.map((r,ri)=>[r,ri]).filter(([r])=>!q||r[0].toLowerCase().includes(q)||plainJa(r[1]).toLowerCase().includes(q));
+    if(!rows.length) return;
+    total+=rows.length;
+    html+=`<section class="sent-group case-sec" id="cs-${ci}-${si}"><h3>${si+1}. ${esc(pickL({ko:s.ko,ja:s.ja}))} <span class="cnt">${rows.length}${T('문장')}</span></h3>${s.intro&&!q?`<p class="case-intro">${esc(pickL(s.intro))}</p>`:''}`+
+      rows.map(([r,ri])=>`<div class="sent-card case-row"><div class="sent-jp">${rubyize(r[1])}</div><div class="sent-kr">${esc(r[0])}</div><div class="sent-actions"><button class="pillbtn" type="button" data-audio-id="ck:${ci}:${si}:${ri}">${speakerSvg}<span class="lbl">${T('듣기')}</span></button><button class="pillbtn" type="button" data-copy="${esc(plainJa(r[1]))}">${copySvg}<span class="lbl">${T('복사')}</span></button></div></div>`).join('')+`</section>`;
+  });
+  if(!q){
+    if(c.terms&&c.terms.length) html+=`<section class="sent-group case-sec" id="cs-${ci}-terms"><h3>${T('case_terms_title')} <span class="cnt">${c.terms.length}</span></h3><div class="case-terms">${c.terms.map((t,ti)=>`<div class="case-term"><div><div class="case-term-ja"><span class="word">${rubyize(t[1])}</span></div><div class="case-term-ko">${esc(t[0])}</div></div><button class="iconbtn" type="button" data-audio-id="ckt:${ci}:${ti}" aria-label="${T('일본어 발음 듣기')}">${speakerSvg}</button></div>`).join('')}</div></section>`;
+    if(c.cautions&&c.cautions.length) html+=`<section class="sent-group case-sec" id="cs-${ci}-caut"><h3>${T('case_cautions_title')}</h3><ul class="plainlist">${c.cautions.map(t=>`<li>${rubyize(LANG==='ja'?t[1]:t[0])}</li>`).join('')}</ul>${c.final?`<p class="case-final">\u203b ${esc(pickL(c.final))}</p>`:''}</section>`;
+    total+=1;
+  }
+  el.innerHTML = total? html : `<div class="empty">${T('일치하는 문장이 없습니다.')}</div>`;
+}
+
 const BANNERS={
  flow:['업무 흐름','준비 → 통역 → 기록 → 연결','b2','<svg viewBox="0 0 200 120"><g fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><circle cx="30" cy="60" r="16"/><circle cx="100" cy="60" r="16"/><circle cx="170" cy="60" r="16"/><path d="M50 60h34M120 60h34"/></g></svg>'],
  terms:['용어사전','병원·신체·증상 필수 어휘를 한눈에','b3','<svg viewBox="0 0 200 120"><g fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M100 30c-20-14-50-12-70-4v72c20-8 50-10 70 4 20-14 50-12 70-4V26c-20-8-50-10-70 4zM100 30v72"/></g></svg>'],
  sent:['실전 문장','진료 현장에서 바로 쓰는 일본어 문장','',' <svg viewBox="0 0 200 120"><g fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20h100a10 10 0 0 1 10 10v40a10 10 0 0 1-10 10H60l-24 20V80H20a10 10 0 0 1-10-10V30a10 10 0 0 1 10-10z"/><path d="M110 60h70a10 10 0 0 1 10 10v30a10 10 0 0 1-10 10h-8v14l-18-14h-44"/></g></svg>'],
+ cases:['실전 상황','','b2','<svg viewBox="0 0 200 120"><g fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 30h52l10 12h90v66H24z"/><path d="M24 54h152"/><path d="M60 80h60M60 96h40"/></g></svg>'],
  dept:['진료과 표현','과별 증상·검사·처치 표현','b3','<svg viewBox="0 0 200 120"><g fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="6" stroke-linecap="round"><path d="M100 110C40 70 30 44 30 32a22 22 0 0 1 44-4 22 22 0 0 1 44 4"/><path d="M30 64h30l12-22 18 40 12-22h30"/></g></svg>'],
  confuse:['헷갈리는 표현','통역 오류를 막는 비교 정리','b2','<svg viewBox="0 0 200 120"><g fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M30 40h120l-24-24M170 80H50l24 24"/></g></svg>'],
  check:['체크리스트·서식','현장 점검과 기록을 한 곳에서','b4','<svg viewBox="0 0 200 120"><g fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><rect x="50" y="14" width="100" height="100" rx="10"/><path d="M72 46l10 10 20-22M72 84h56"/></g></svg>'],
