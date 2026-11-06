@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>NVIDIA x ChatGPT — Sample Teaser</title>
+    <script src="gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Barlow"; font-weight: 800; src: url("fonts/barlow-latin-800-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Barlow"; font-weight: 500; src: url("fonts/barlow-latin-500-normal.woff2") format("woff2"); }
+      @font-face { font-family: "JetBrains Mono"; font-weight: 500; src: url("fonts/jetbrains-mono-latin-500-normal.woff2") format("woff2"); }
+
+      :root {
+        --green: #76b900; --green-bright: #9ae000; --green-deep: #3f6b00;
+        --glow: rgba(118,185,0,0.35); --black: #000; --carbon: #0b0d0a;
+        --line: #2a2d26; --white: #fff; --g400: #9a9e94; --g600: #5b5f55;
+      }
+      body { margin: 0; background: var(--black); color: var(--white); font-family: "Barlow", sans-serif; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--black); }
+      .abs { position: absolute; }
+      .scene { position: absolute; inset: 0; }
+      .mono { font-family: "JetBrains Mono", monospace; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; }
+
+      /* stage light + perspective wireframe floor */
+      #light { position: absolute; left: 50%; bottom: -520px; width: 2200px; height: 1100px; margin-left: -1100px;
+        background: radial-gradient(ellipse at center, rgba(118,185,0,0.42) 0%, rgba(118,185,0,0.12) 40%, rgba(0,0,0,0) 70%); }
+      #floorwrap { position: absolute; left: 0; right: 0; bottom: 0; height: 520px; perspective: 700px; overflow: hidden; }
+      #floor { position: absolute; left: -50%; width: 200%; bottom: -120px; height: 900px; transform-origin: 50% 100%;
+        transform: rotateX(68deg);
+        background-image:
+          linear-gradient(to right, rgba(118,185,0,0.35) 2px, transparent 2px),
+          linear-gradient(to bottom, rgba(118,185,0,0.35) 2px, transparent 2px);
+        background-size: 110px 110px;
+        -webkit-mask-image: linear-gradient(to top, #000 10%, transparent 90%); mask-image: linear-gradient(to top, #000 10%, transparent 90%); }
+
+      /* corner brackets */
+      .br { position: absolute; width: 36px; height: 36px; border: 0 solid var(--green); }
+      .br.tl { left: 0; top: 0; border-left-width: 3px; border-top-width: 3px; }
+      .br.tr { right: 0; top: 0; border-right-width: 3px; border-top-width: 3px; }
+      .br.bl { left: 0; bottom: 0; border-left-width: 3px; border-bottom-width: 3px; }
+      .br.br2 { right: 0; bottom: 0; border-right-width: 3px; border-bottom-width: 3px; }
+
+      /* shared chrome */
+      .kicker { position: absolute; left: 115px; top: 96px; font-size: 22px; color: var(--green); }
+      .foot { position: absolute; left: 115px; bottom: 76px; font-size: 16px; color: var(--g600); letter-spacing: 0.16em; }
+      .hair { position: absolute; left: 115px; right: 115px; height: 1px; background: var(--line); }
+
+      /* scene 1 */
+      #s1-title { position: absolute; left: 115px; top: 330px; font-size: 300px; font-weight: 800; line-height: 0.9; letter-spacing: -0.02em; }
+      #s1-mask { position: absolute; left: 115px; top: 330px; width: 1700px; height: 290px; overflow: hidden; }
+      #s1-title { top: 0; left: 0; }
+      #scan { position: absolute; top: 330px; left: 100px; width: 6px; height: 290px; background: var(--green-bright); box-shadow: 0 0 40px 10px var(--glow); }
+      #s1-sub { position: absolute; left: 119px; top: 665px; font-size: 40px; font-weight: 500; color: var(--g400); }
+
+      /* scene 2 */
+      #s2-num { position: absolute; left: 115px; top: 250px; font-size: 520px; font-weight: 800; line-height: 0.9; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+      #s2-unit { position: absolute; left: 1020px; top: 330px; font-size: 220px; font-weight: 800; color: var(--green); line-height: 0.9; }
+      #s2-label { position: absolute; left: 119px; top: 800px; font-size: 30px; color: var(--g400); }
+      #s2-card { position: absolute; left: 1330px; top: 660px; width: 480px; height: 190px; background: var(--carbon); border: 1px solid var(--line); }
+      #s2-card .t { position: absolute; left: 28px; top: 26px; font-size: 18px; color: var(--green); }
+      #s2-card .v { position: absolute; left: 28px; top: 62px; font-size: 54px; font-weight: 800; }
+      #s2-card .s { position: absolute; left: 28px; top: 128px; font-size: 14px; color: var(--g600); letter-spacing: 0.16em; }
+
+      /* scene 3 chart */
+      #chart-svg { position: absolute; left: 115px; top: 260px; width: 1690px; height: 620px; overflow: visible; }
+      #s3-h { position: absolute; left: 115px; top: 150px; font-size: 76px; font-weight: 800; letter-spacing: -0.01em; }
+      .mk { position: absolute; width: 360px; height: 96px; background: var(--carbon); border: 1px solid var(--line); }
+      .mk .t { position: absolute; left: 20px; top: 16px; font-size: 14px; color: var(--green); }
+      .mk .d { position: absolute; left: 20px; top: 44px; font-size: 30px; font-weight: 500; }
+      .mk .br { width: 14px; height: 14px; }
+      .mk .br.tl, .mk .br.tr { border-top-width: 2px; } .mk .br.tl, .mk .br.bl { border-left-width: 2px; }
+      .mk .br.tr, .mk .br.br2 { border-right-width: 2px; } .mk .br.bl, .mk .br.br2 { border-bottom-width: 2px; }
+
+      /* scene 4 */
+      #chip { position: absolute; left: 50%; top: 50%; width: 220px; height: 220px; margin: -110px 0 0 -110px; border: 2px solid var(--green); background: var(--carbon); box-shadow: 0 0 80px 10px var(--glow), inset 0 0 40px rgba(118,185,0,0.25); }
+      #chip .core { position: absolute; inset: 56px; border: 2px solid var(--green-bright); }
+      #chip .pin { position: absolute; background: var(--green); }
+      .p { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--green-bright); box-shadow: 0 0 14px 3px var(--glow); }
+      #s4-line { position: absolute; left: 0; right: 0; top: 760px; text-align: center; font-size: 96px; font-weight: 800; letter-spacing: -0.01em; }
+      #s4-line span { color: var(--green); }
+      #s4-sm { position: absolute; left: 0; right: 0; top: 900px; text-align: center; font-size: 20px; color: var(--g400); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="16">
+
+      <!-- persistent stage -->
+      <div id="light"></div>
+      <div id="floorwrap"><div id="floor"></div></div>
+      <div class="abs" style="left:60px;top:60px;right:60px;bottom:60px;">
+        <div class="br tl"></div><div class="br tr"></div><div class="br bl"></div><div class="br br2"></div>
+      </div>
+      <div class="kicker mono" id="kicker">01 / NOV 30, 2022</div>
+      <div class="foot mono" id="foot">SAMPLE TEASER · ILLUSTRATIVE DATA · NOT INVESTMENT ADVICE</div>
+
+      <!-- scene 1 -->
+      <section class="scene clip" id="s1" data-start="0" data-duration="4">
+        <div id="s1-mask"><div id="s1-title">ChatGPT</div></div>
+        <div id="scan"></div>
+        <div id="s1-sub">One chat window. A new demand for compute.</div>
+      </section>
+
+      <!-- scene 2 -->
+      <section class="scene clip" id="s2" data-start="4" data-duration="4">
+        <div id="s2-num">0</div>
+        <div id="s2-unit">M</div>
+        <div id="s2-label" class="mono">USERS · FASTEST-GROWING APP (SAMPLE FIGURE)</div>
+        <div id="s2-card">
+          <div class="br tl"></div><div class="br tr"></div><div class="br bl"></div><div class="br br2"></div>
+          <div class="t mono">GPU DEMAND</div>
+          <div class="v">↑ Surging</div>
+          <div class="s mono">TRAINING + INFERENCE</div>
+        </div>
+      </section>
+
+      <!-- scene 3 -->
+      <section class="scene clip" id="s3" data-start="8" data-duration="4.5">
+        <div id="s3-h">The market noticed.</div>
+        <svg id="chart-svg" viewBox="0 0 1690 620" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="ag" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#76b900" stop-opacity="0.45" />
+              <stop offset="1" stop-color="#76b900" stop-opacity="0" />
+            </linearGradient>
+          </defs>
+          <g id="grid" stroke="#2a2d26" stroke-width="1">
+            <line x1="0" y1="620" x2="1690" y2="620" /><line x1="0" y1="465" x2="1690" y2="465" />
+            <line x1="0" y1="310" x2="1690" y2="310" /><line x1="0" y1="155" x2="1690" y2="155" />
+          </g>
+          <path id="area" d="M0,560 L170,545 L340,552 L520,520 L700,500 L880,470 L1060,380 L1240,300 L1420,150 L1560,70 L1690,20 L1690,620 L0,620 Z" fill="url(#ag)" />
+          <path id="line" pathLength="1" d="M0,560 L170,545 L340,552 L520,520 L700,500 L880,470 L1060,380 L1240,300 L1420,150 L1560,70 L1690,20" fill="none" stroke="#76b900" stroke-width="5" stroke-linejoin="round" stroke-dasharray="1" stroke-dashoffset="1" style="filter: drop-shadow(0 0 14px rgba(118,185,0,0.7));" />
+          <circle id="head" cx="0" cy="560" r="11" fill="#9ae000" style="filter: drop-shadow(0 0 16px rgba(154,224,0,0.9));" />
+        </svg>
+        <div class="mk" id="m1" style="left:300px; top:360px;"><div class="br tl"></div><div class="br tr"></div><div class="br bl"></div><div class="br br2"></div><div class="t mono">EVENT 01</div><div class="d">ChatGPT launches</div></div>
+        <div class="mk" id="m2" style="left:840px; top:300px;"><div class="br tl"></div><div class="br tr"></div><div class="br bl"></div><div class="br br2"></div><div class="t mono">EVENT 02</div><div class="d">AI demand explodes</div></div>
+        <div class="mk" id="m3" style="left:1330px; top:150px;"><div class="br tl"></div><div class="br tr"></div><div class="br bl"></div><div class="br br2"></div><div class="t mono">EVENT 03</div><div class="d">Record data-center sales</div></div>
+      </section>
+
+      <!-- scene 4 -->
+      <section class="scene clip" id="s4" data-start="12.5" data-duration="3.5">
+        <div id="chip">
+          <div class="core"></div>
+        </div>
+        <div id="s4-line">A new era of <span>compute.</span></div>
+        <div id="s4-sm" class="mono">SAMPLE · BUILT WITH HYPERFRAMES</div>
+      </section>
+    </div>
+
+    <script>
+      // deterministic pseudo-random for particle placement
+      let seed = 7;
+      const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+
+      // chip pins + particles (built before timeline registration)
+      const chip = document.getElementById("chip");
+      for (let i = 0; i < 6; i++) {
+        const o = 22 + i * 32;
+        [["top:-16px;left:" + o + "px;width:3px;height:16px"], ["bottom:-16px;left:" + o + "px;width:3px;height:16px"],
+         ["left:-16px;top:" + o + "px;height:3px;width:16px"], ["right:-16px;top:" + o + "px;height:3px;width:16px"]]
+          .forEach(([s]) => { const d = document.createElement("div"); d.className = "pin"; d.style.cssText = s; chip.appendChild(d); });
+      }
+      const s4 = document.getElementById("s4");
+      const parts = [];
+      for (let i = 0; i < 46; i++) {
+        const p = document.createElement("div"); p.className = "p";
+        const ang = rnd() * Math.PI * 2, r = 700 + rnd() * 500;
+        const x = 960 + Math.cos(ang) * r, y = 480 + Math.sin(ang) * r * 0.6;
+        p.style.left = x + "px"; p.style.top = y + "px";
+        s4.appendChild(p); parts.push({ el: p, x, y, d: rnd() * 1.4 });
+      }
+
+      const tl = gsap.timeline({ paused: true });
+
+      // ---- stage ----
+      tl.fromTo("#light", { opacity: 0, y: 200 }, { opacity: 1, y: 0, duration: 1.4, ease: "power3.out" }, 0);
+      tl.fromTo("#floorwrap", { opacity: 0 }, { opacity: 1, duration: 1.2, ease: "power2.out" }, 0.1);
+      tl.fromTo("#floor", { backgroundPositionY: 0 }, { backgroundPositionY: 880, duration: 16, ease: "none" }, 0);
+      tl.fromTo(".br.tl,.br.tr,.br.bl,.br.br2", { opacity: 0 }, { opacity: 1, duration: 0.5, stagger: 0.08 }, 0.3);
+      tl.fromTo("#kicker", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.6, ease: "expo.out" }, 0.5);
+      tl.fromTo("#foot", { opacity: 0 }, { opacity: 1, duration: 0.8 }, 1.0);
+      // kicker changes per scene
+      tl.set("#kicker", { textContent: "02 / MOMENTUM" }, 4);
+      tl.set("#kicker", { textContent: "03 / THE CHART" }, 8);
+      tl.set("#kicker", { textContent: "04 / WHAT'S NEXT" }, 12.5);
+
+      // ---- scene 1 ----
+      tl.fromTo("#s1-title", { yPercent: 105 }, { yPercent: 0, duration: 0.9, ease: "expo.out" }, 0.7);
+      tl.fromTo("#scan", { x: 0, opacity: 0 }, { x: 1560, opacity: 1, duration: 1.1, ease: "power2.inOut" }, 1.2);
+      tl.to("#scan", { opacity: 0, duration: 0.2 }, 2.3);
+      tl.fromTo("#s1-sub", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 1.8);
+      tl.to("#s1 > *", { opacity: 0, duration: 0.35, ease: "power2.in" }, 3.6);
+
+      // ---- scene 2 ----
+      const cnt = { v: 0 };
+      tl.fromTo("#s2-num", { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out", transformOrigin: "0 50%" }, 4.1);
+      tl.to(cnt, { v: 100, duration: 2.0, ease: "power4.out", onUpdate: () => { document.getElementById("s2-num").textContent = Math.round(cnt.v); } }, 4.2);
+      tl.fromTo("#s2-unit", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 4.5);
+      tl.fromTo("#s2-num", { textShadow: "0 0 0px rgba(118,185,0,0)" }, { textShadow: "0 0 70px rgba(118,185,0,0.75)", duration: 0.5, yoyo: true, repeat: 1, ease: "power2.out" }, 6.2);
+      tl.fromTo("#s2-label", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 5.0);
+      tl.fromTo("#s2-card", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 5.4);
+      tl.to("#s2 > *", { opacity: 0, duration: 0.35, ease: "power2.in" }, 7.6);
+
+      // ---- scene 3 ----
+      tl.fromTo("#s3-h", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 8.1);
+      tl.fromTo("#line", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 3.0, ease: "power2.in" }, 8.4);
+      tl.fromTo("#area", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 3.0, ease: "power2.in" }, 8.4);
+      tl.fromTo("#head", { attr: { cx: 0, cy: 560 } }, { attr: { cx: 1690, cy: 20 }, duration: 3.0, ease: "power2.in" }, 8.4);
+      tl.fromTo("#m1", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 8.9);
+      tl.fromTo("#m2", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 10.0);
+      tl.fromTo("#m3", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 11.2);
+      tl.to("#s3 > *", { opacity: 0, duration: 0.35, ease: "power2.in" }, 12.1);
+
+      // ---- scene 4 ----
+      tl.fromTo("#chip", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.8, ease: "expo.out" }, 12.6);
+      parts.forEach((p) => {
+        tl.fromTo(p.el, { opacity: 0, x: 0, y: 0 },
+          { opacity: 1, x: 960 - p.x, y: 480 - p.y, duration: 1.2, ease: "power2.in" }, 12.7 + p.d);
+        tl.to(p.el, { opacity: 0, duration: 0.15 }, 12.7 + p.d + 1.1);
+      });
+      tl.fromTo("#chip", { boxShadow: "0 0 40px 4px rgba(118,185,0,0.25), inset 0 0 20px rgba(118,185,0,0.15)" },
+        { boxShadow: "0 0 160px 40px rgba(118,185,0,0.55), inset 0 0 60px rgba(118,185,0,0.45)", duration: 1.6, ease: "power2.in" }, 12.9);
+      tl.fromTo("#s4-line", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out" }, 14.2);
+      tl.fromTo("#s4-sm", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 14.7);
+      tl.to("#root", { opacity: 0, duration: 0.5, ease: "power3.inOut" }, 15.5);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
