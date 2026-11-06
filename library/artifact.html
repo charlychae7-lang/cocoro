@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>나의 서재</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F5F0; --surface:#FFFFFF; --surface-2:#EFEDE3; --ink:#1B1F1A; --ink-soft:#5B6058;
+  --border:#E1DDCF; --primary:#10140F; --accent:#B9893C; --accent-soft:#F3E7D1;
+  --good:#3F8F68; --good-soft:#E1F0E7; --bad:#B23B2E; --bad-soft:#F7E4DE;
+  --shadow:0 1px 2px rgba(16,20,15,.06),0 8px 22px rgba(16,20,15,.06); --radius:6px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0D100C; --surface:#161B14; --surface-2:#1C2218; --ink:#E7E4D8; --ink-soft:#9BA095;
+  --border:#2A3027; --primary:#D1A458; --accent:#D1A458; --accent-soft:#2A2316;
+  --good:#5FB389; --good-soft:#16281E; --bad:#E07A6A; --bad-soft:#33201B;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 22px rgba(0,0,0,.3); color-scheme:dark;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 'Noto Sans KR',system-ui,sans-serif}
+h1,h2,h3,.serif{font-family:'Noto Serif KR',serif}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:10px;padding:14px 0 4px}
+.brand h1{font-size:21px;margin:0;color:var(--primary)}
+.brand small{color:var(--ink-soft)}
+nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+nav button{flex:0 0 auto;border:0;border-bottom:3px solid transparent;background:none;color:var(--ink-soft);padding:10px 13px 9px;font:600 14px inherit;font-family:inherit;cursor:pointer}
+nav button[aria-selected=true]{color:var(--primary);border-bottom-color:var(--accent)}
+main{padding:24px 0 80px}
+section.panel{display:none}section.panel.active{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:16px}
+.card h2{font-size:18px;margin:0 0 6px}
+.hint{color:var(--ink-soft);font-size:13.5px;margin:0 0 12px}
+label{display:block;font-weight:600;font-size:13.5px;margin:12px 0 6px}
+input[type=text],input[type=password],input[type=url],select,textarea{width:100%;border:1px solid var(--border);background:var(--bg);color:var(--ink);border-radius:var(--radius);padding:10px 12px;font:inherit}
+textarea{min-height:140px;resize:vertical}
+textarea.tall{min-height:340px;font-family:'Noto Serif KR',serif;line-height:1.9}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1 1 180px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.btn{border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:999px;padding:9px 16px;font:600 14px inherit;font-family:inherit;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--primary);color:var(--bg);border-color:var(--primary)}
+.btn.accent{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn.sm{padding:6px 11px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:wait}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 14px}
+.chip{border:1px solid var(--border);background:var(--surface);color:var(--ink-soft);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--accent-soft);color:var(--ink);border-color:var(--accent)}
+.tag{display:inline-block;background:var(--surface-2);color:var(--ink-soft);border-radius:4px;padding:1px 7px;font-size:12px;margin:0 4px 4px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:.15s}
+.item:hover{border-color:var(--accent);transform:translateY(-1px)}
+.item img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--surface-2)}
+.item .in{padding:14px}
+.item h3{font-size:16px;margin:0 0 4px}
+.item p{margin:0;color:var(--ink-soft);font-size:13.5px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.meta{font-size:12px;color:var(--ink-soft);margin-top:8px}
+.empty{text-align:center;color:var(--ink-soft);padding:40px 10px}
+.status{font-size:13.5px;margin-top:10px;min-height:1.4em}
+.status.ok{color:var(--good)}.status.err{color:var(--bad)}
+.article{font-family:'Noto Serif KR',serif;font-size:16.5px;line-height:2;white-space:pre-wrap}
+.article-title{font-size:24px;margin:4px 0 10px}
+.preview-img{max-width:100%;max-height:520px;display:block;margin:10px auto;border-radius:var(--radius)}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.thumbs img{width:90px;height:90px;object-fit:cover;border-radius:4px;border:1px solid var(--border)}
+dialog{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--ink);width:min(820px,94vw);max-height:90vh;padding:0;box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface)}
+.dlg-body{padding:20px}
+.platforms{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.pf{border:1px solid var(--border);border-radius:var(--radius);padding:14px;background:var(--surface)}
+.pf h3{margin:0 0 4px;font-size:15.5px;font-family:'Noto Sans KR',sans-serif;display:flex;justify-content:space-between;align-items:center}
+.pf textarea{min-height:150px;font-size:13.5px}
+.badge{font-size:11.5px;font-weight:600;border-radius:999px;padding:2px 8px}
+.badge.auto{background:var(--good-soft);color:var(--good)}
+.badge.semi{background:var(--accent-soft);color:var(--accent)}
+.badge.done{background:var(--surface-2);color:var(--ink-soft)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--primary);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:99}
+.toast.show{opacity:1}
+.layout{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:900px){.layout.two{grid-template-columns:1fr 1fr}}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand"><h1>나의 서재</h1><small>메모가 글이 되고, 글이 세상과 만나는 곳</small></div>
+    <nav role="tablist">
+      <button role="tab" data-tab="write" aria-selected="true">✍️ 메모하기</button>
+      <button role="tab" data-tab="library">📚 서재</button>
+      <button role="tab" data-tab="calli">🖌 캘리그라피</button>
+      <button role="tab" data-tab="publish">📤 발행하기</button>
+      <button role="tab" data-tab="settings">⚙️ 설정</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="card" id="storeNote" hidden style="border-color:var(--accent)"></div>
+
+<!-- 메모하기 -->
+<section class="panel active" id="tab-write">
+  <div class="layout two">
+    <div class="card">
+      <h2>메모 남기기</h2>
+      <p class="hint">떠오른 생각, 단어, 문장 조각을 편하게 적어 주세요. Claude가 한 편의 글로 다듬고 알맞은 칸에 꽂아 드립니다.</p>
+      <textarea id="memo" placeholder="예) 공동체 화폐 — 동네 빵집, 품앗이, 시간은행. AI 시대엔 '일'의 정의가 바뀐다. 기여를 어떻게 측정할까? 돌봄도 기여다."></textarea>
+      <div class="row">
+        <div><label for="tone">글의 결</label>
+          <select id="tone">
+            <option value="칼럼">칼럼 · 논설</option>
+            <option value="에세이">에세이 · 성찰</option>
+            <option value="정책 제안서">정책 제안서</option>
+            <option value="강연 원고">강연 · 발표 원고</option>
+            <option value="짧은 단상">짧은 글 · 단상</option>
+          </select></div>
+        <div><label for="length">분량</label>
+          <select id="length">
+            <option value="600자 내외">짧게 (600자)</option>
+            <option value="1500자 내외" selected>보통 (1,500자)</option>
+            <option value="3000자 내외">길게 (3,000자)</option>
+          </select></div>
+      </div>
+      <div class="btns">
+        <button class="btn primary" id="btnCompose">✨ 글로 완성하기</button>
+        <button class="btn" id="btnStop" hidden>멈추기</button>
+        <button class="btn" id="btnSaveRaw">메모 그대로 저장</button>
+      </div>
+      <div class="status" id="composeStatus"></div>
+    </div>
+
+    <div class="card" id="draftCard" hidden>
+      <h2>완성된 글 (수정 가능)</h2>
+      <label for="dTitle">제목</label><input type="text" id="dTitle">
+      <div class="row">
+        <div><label for="dCat">분류</label><select id="dCat"></select></div>
+        <div><label for="dTags">태그 (쉼표로 구분)</label><input type="text" id="dTags"></div>
+      </div>
+      <label for="dBody">본문</label><textarea id="dBody" class="tall"></textarea>
+      <div class="btns">
+        <button class="btn primary" id="btnSaveDraft">📚 서재에 저장</button>
+        <button class="btn" id="btnDiscard">버리기</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 서재 -->
+<section class="panel" id="tab-library">
+  <div class="card">
+    <div class="row">
+      <input type="text" id="search" placeholder="제목, 본문, 태그로 찾기">
+      <select id="typeFilter" style="flex:0 0 160px">
+        <option value="">전체</option><option value="writing">글</option><option value="calligraphy">캘리그라피</option>
+      </select>
+    </div>
+    <div class="chips" id="catChips"></div>
+    <div class="meta" id="libCount"></div>
+  </div>
+  <div class="grid" id="libGrid"></div>
+</section>
+
+<!-- 캘리그라피 -->
+<section class="panel" id="tab-calli">
+  <div class="layout two">
+    <div class="card">
+      <h2>캘리그라피 올리기</h2>
+      <p class="hint">작품 사진을 올리고 글귀를 적어 주세요. 글귀를 비워 두면 Claude가 이미지에서 읽어 드립니다.</p>
+      <label for="cFiles">작품 이미지 (여러 장 가능)</label>
+      <input type="file" id="cFiles" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
+      <div class="thumbs" id="cThumbs"></div>
+      <label for="cText">글귀</label><textarea id="cText" style="min-height:90px" placeholder="작품에 쓴 글귀"></textarea>
+      <label for="cTitle">작품 제목</label><input type="text" id="cTitle">
+      <label for="cNote">작품 이야기 · 해설</label><textarea id="cNote" placeholder="이 글귀를 쓴 마음, 배경 등"></textarea>
+      <div class="row">
+        <div><label for="cCat">분류</label><select id="cCat"></select></div>
+        <div><label for="cTags">태그</label><input type="text" id="cTags"></div>
+      </div>
+      <div class="btns">
+        <button class="btn accent" id="btnCalliAI">✨ 글귀 읽고 해설 쓰기</button>
+        <button class="btn primary" id="btnCalliSave">📚 서재에 저장</button>
+      </div>
+      <div class="status" id="calliStatus"></div>
+    </div>
+    <div class="card">
+      <h2>캘리그라피 갤러리</h2>
+      <div class="grid" id="calliGrid" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 발행하기 -->
+<section class="panel" id="tab-publish">
+  <div class="card">
+    <h2>발행하기</h2>
+    <p class="hint">서재의 글이나 작품을 고르면 플랫폼마다 어울리는 게시 문구를 만들어 드립니다. 복사해서 각 플랫폼에 붙여넣고, ‘발행 완료’를 눌러 기록해 두세요.
+    페이스북 페이지·인스타그램 <b>완전 자동 발행</b>(Make.com 웹훅)은 GitHub에 올린 서재(<code>library/index.html</code>)에서 쓸 수 있어요.</p>
+    <div class="row">
+      <select id="pubSelect"></select>
+      <button class="btn accent" id="btnSnsAI" style="flex:0 0 auto">✨ 플랫폼별 문구 만들기</button>
+    </div>
+    <div class="status" id="pubStatus"></div>
+  </div>
+  <div id="pubPreview"></div>
+  <div class="platforms" id="platforms"></div>
+</section>
+
+<!-- 설정 -->
+<section class="panel" id="tab-settings">
+  <div class="card">
+    <h2>나의 목소리</h2>
+    <p class="hint">Claude가 글을 다듬을 때 참고합니다. AI는 이 페이지를 연 사람의 Claude 계정으로 동작하므로 API 키가 필요 없어요.</p>
+    <label for="sAuthor">글쓴이 이름 · 서명</label><input type="text" id="sAuthor" placeholder="예) 차○○ 씀">
+    <label for="sVoice">나의 문체 · 관점</label>
+    <textarea id="sVoice" style="min-height:90px" placeholder="예) AI 대전환 시대의 새로운 사회계약을 연구하고 정책으로 제안하는 사람. 따뜻하지만 단단한 문체, 공동체와 관계성을 중시."></textarea>
+    <label for="sTags">항상 붙일 해시태그</label><input type="text" id="sTags" placeholder="#나의서재 #캘리그라피">
+  </div>
+  <div class="card">
+    <h2>분류 (서재의 칸)</h2>
+    <p class="hint">한 줄에 하나씩. 언제든 늘리거나 고칠 수 있어요.</p>
+    <textarea id="sCats" style="min-height:160px"></textarea>
+  </div>
+  <div class="card">
+    <h2>저장 · 백업</h2>
+    <p class="hint" id="storeInfo"></p>
+    <div class="btns">
+      <button class="btn primary" id="btnSaveSettings">설정 저장</button>
+      <button class="btn" id="btnExport">⬇️ 전체 백업 내려받기</button>
+      <label class="btn" style="margin:0">⬆️ 백업 불러오기<input type="file" id="importFile" accept="application/json" hidden></label>
+    </div>
+    <div class="status" id="settingsStatus"></div>
+  </div>
+</section>
+</main>
+
+<dialog id="detail">
+  <div class="dlg-head"><b id="dlgType"></b><button class="btn sm" id="dlgClose">닫기</button></div>
+  <div class="dlg-body" id="dlgBody"></div>
+</dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+/* ================= 공통 ================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const fmtDate = ts => new Date(ts).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+const splitTags = s => (s || '').split(/[,#\s]+/).map(t => t.trim()).filter(Boolean);
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2200); }
+function status(el, msg, kind = '') { el.className = 'status ' + kind; el.innerHTML = msg; }
+async function copy(text) {
+  try { await navigator.clipboard.writeText(text); toast('복사했어요'); }
+  catch { toast('복사가 막혀 있어요. 칸을 길게 눌러 직접 복사해 주세요.'); }
+}
+// confirm() 대신 두 번 누르기
+function twoStep(btn, label, fn) {
+  if (btn.dataset.armed) { fn(); return; }
+  const orig = btn.textContent; btn.dataset.armed = '1'; btn.textContent = label;
+  setTimeout(() => { delete btn.dataset.armed; btn.textContent = orig; }, 3000);
+}
+
+/* ================= 저장소: Claude 저장소(db) → 없으면 이 브라우저 ================= */
+const DEFAULT_CATS = ['사회계약 · 정책', '경제 생태계', '공동체 · 관계', 'AI 대전환', '삶 · 성찰', '캘리그라피 글귀', '기타'];
+let settings = { author: '', voice: '', tags: '', cats: DEFAULT_CATS };
+let posts = [];          // 화면의 원본
+let store = 'memory';    // 'db' | 'local' | 'memory'
+let col = null, setRef = null, assets = null, downloads = null, sample = null, canImages = false;
+
+function localGet(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } }
+function localSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } }
+
+const Store = {
+  async putPost(p) {
+    p.updatedAt = Date.now();
+    const i = posts.findIndex(x => x.id === p.id); if (i >= 0) posts[i] = p; else posts.push(p);
+    if (store === 'db') await col.doc(p.id).set({ kind: 'post', ...p });
+    else if (store === 'local') { if (!localSet('lib.posts', posts)) toast('이 브라우저 저장 공간이 가득 찼어요. 백업 후 정리해 주세요.'); }
+    refreshAll();
+  },
+  async delPost(p) {
+    posts = posts.filter(x => x.id !== p.id);
+    if (store === 'db') { await col.doc(p.id).delete(); for (const a of p.assetIds || []) try { await assets?.delete(a); } catch {} }
+    else if (store === 'local') localSet('lib.posts', posts);
+    refreshAll();
+  },
+  async saveSettings() {
+    if (store === 'db') await setRef.set({ kind: 'settings', ...settings });
+    else localSet('lib.settings', settings);
+  },
+  // 이미지 저장 → 화면에서 쓸 주소 반환
+  async putImage(file) {
+    if (store === 'db' && assets) { const r = await assets.upload(file); return { assetId: r.id, src: '/_blob/' + r.id }; }
+    return { src: await shrinkDataURL(file, 1200) };
+  },
+};
+function shrinkDataURL(blob, max) {
+  return new Promise((res, rej) => {
+    const img = new Image(); img.onload = () => {
+      const k = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas');
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); res(c.toDataURL('image/jpeg', .85)); URL.revokeObjectURL(img.src);
+    }; img.onerror = rej; img.src = URL.createObjectURL(blob);
+  });
+}
+
+async function connect() {
+  // 우선 이 브라우저 데이터로 화면을 그린 뒤, Claude 저장소가 열리면 갈아탑니다.
+  const lp = localGet('lib.posts', null);
+  if (lp) { posts = lp; settings = { ...settings, ...localGet('lib.settings', {}) }; store = 'local'; }
+  else if (localSet('lib.probe', 1)) store = 'local';
+  loadSettingsForm(); refreshAll(); showStoreInfo();
+
+  if (!window.claude?.use) { showStoreInfo(); return; }
+  const [db, user, smp, ast, dl] = await Promise.all(['db', 'user', 'sample', 'assets', 'downloads'].map(n => claude.use(n).catch(() => null)));
+  sample = smp; assets = ast; downloads = dl;
+  if (sample) { try { canImages = !!(await sample.limits()).images; } catch {} }
+  $('#btnCalliAI').hidden = !sample;
+  const id = user ? await user.id() : null;
+  if (db && id) {
+    col = db.collection('data/users/' + id); setRef = col.doc('settings');
+    const timer = setTimeout(() => status($('#settingsStatus'), 'Claude 저장소에 아직 닿지 않았어요. 잠시 후 다시 열어 보세요.', 'err'), 10000);
+    col.onSnapshot(snap => {
+      clearTimeout(timer);
+      const ps = [];
+      snap.docs.forEach(d => { const v = d.data(); if (v.kind === 'settings') settings = { ...settings, ...v }; else if (v.kind === 'post') ps.push(v); });
+      const migrate = store !== 'db' && posts.length && !ps.length; // 처음 연결: 브라우저에 있던 글 옮기기
+      const local = posts;
+      store = 'db'; posts = ps;
+      if (migrate) { local.forEach(p => col.doc(p.id).set({ kind: 'post', ...p })); posts = local; toast('이 브라우저의 글을 Claude 저장소로 옮겼어요'); }
+      loadSettingsForm(); refreshAll(); showStoreInfo();
+    }, e => { clearTimeout(timer); status($('#settingsStatus'), 'Claude 저장소 오류: ' + esc(e.message), 'err'); });
+  }
+  showStoreInfo();
+}
+function showStoreInfo() {
+  const msg = {
+    db: '서재는 <b>Claude 계정의 비공개 저장소</b>에 저장됩니다. 나만 볼 수 있고, 휴대폰·PC 어디서 이 페이지를 열어도 같은 서재가 보여요.',
+    local: '지금은 <b>이 브라우저에만</b> 저장되고 있어요. Claude에 로그인한 상태로 열면 계정 저장소로 자동으로 옮겨집니다. 백업을 자주 해 주세요.',
+    memory: '저장소에 연결되지 않아 <b>창을 닫으면 사라지는</b> 임시 모드예요. 꼭 백업을 내려받아 주세요.',
+  }[store];
+  $('#storeInfo').innerHTML = msg;
+  const n = $('#storeNote'); n.hidden = store === 'db'; n.innerHTML = '<p class="hint" style="margin:0">💾 ' + msg + '</p>';
+}
+
+/* ================= 탭 ================= */
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => showTab(b.dataset.tab));
+function showTab(name, arg) {
+  document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === name));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+  if (name === 'publish') renderPublishSelect(arg);
+  scrollTo({ top: 0 });
+}
+function refreshAll() { renderLibrary(); renderCalliGrid(); renderPublishSelect(); fillCats($('#cCat'), $('#cCat').value || '캘리그라피 글귀'); }
+function fillCats(sel, value) {
+  sel.innerHTML = settings.cats.map(c => `<option ${c === value ? 'selected' : ''}>${esc(c)}</option>`).join('');
+  if (value && !settings.cats.includes(value)) sel.insertAdjacentHTML('beforeend', `<option selected>${esc(value)}</option>`);
+}
+
+/* ================= Claude 호출 ================= */
+function aiError(el, e) {
+  const m = {
+    not_granted: 'Claude 사용이 허용되지 않았어요. 페이지를 새로 열고 허용을 눌러 주세요.',
+    sampling_disabled: '이 계정에서는 Claude를 쓸 수 없어요.',
+    rate_limited: '요청이 많아요. 잠시 후 다시 눌러 주세요.',
+    refused: 'Claude가 이 내용은 처리하지 않았어요. 표현을 조금 바꿔 보세요.',
+    invalid_json: '답을 정리하지 못했어요. 한 번 더 눌러 주세요.',
+    cancelled: '멈췄어요.',
+    image_rejected: '이미지를 읽지 못했어요. JPG·PNG 파일로 다시 올려 주세요.',
+    session_expired: '다시 로그인해 주세요.',
+  }[e?.code] || '잠시 문제가 생겼어요. 다시 시도해 주세요.';
+  status(el, m, e?.code === 'cancelled' ? '' : 'err');
+}
+function persona() {
+  return `너는 이 서재 주인의 글쓰기 동반자다. 주인의 메모를 존중하며 그 생각을 주인의 목소리로 완성된 한국어 글로 다듬는다.
+메모에 없는 사실·통계·인용·인명은 지어내지 않는다. 근거가 필요한 자리는 질문으로 열어 둔다.
+${settings.voice ? '주인의 관점과 문체: ' + settings.voice : ''}`;
+}
+let ctl = null;
+$('#btnStop').onclick = () => ctl?.abort();
+
+/* ================= 메모 → 글 ================= */
+let draftSource = null;
+$('#btnCompose').onclick = async () => {
+  const memo = $('#memo').value.trim(), st = $('#composeStatus');
+  if (!memo) return status(st, '메모를 먼저 적어 주세요.', 'err');
+  if (!sample) return status(st, '이 화면에서는 Claude를 부를 수 없어요. ‘메모 그대로 저장’ 후 직접 다듬어 주세요.', 'err');
+  const btn = $('#btnCompose'); btn.disabled = true; $('#btnStop').hidden = false;
+  ctl = new AbortController();
+  status(st, '<span class="spinner"></span> 생각을 정리하는 중… (30초~1분 걸려요)');
+  try {
+    const r = await sample.json(`${persona()}
+
+아래 메모를 '${$('#tone').value}' 형식의 글로 완성하라. 분량: ${$('#length').value}.
+분류 목록 중 가장 알맞은 하나를 고른다: ${settings.cats.join(' / ')}
+
+메모:
+"""
+${memo}
+"""
+
+다음 JSON 객체 하나로만 답하라:
+{"title": "제목", "body": "본문(문단 사이 빈 줄)", "category": "분류 목록 중 하나", "tags": ["핵심어 3~6개, # 없이"], "summary": "두 문장 요약"}`,
+      { signal: ctl.signal, cache: false, onText: ({ text }) => status(st, `<span class="spinner"></span> 글을 쓰는 중… (${text.length.toLocaleString()}자)`) });
+    if (!r || typeof r.body !== 'string') throw { code: 'invalid_json' };
+    showDraft({ title: String(r.title || ''), body: r.body, category: String(r.category || '기타'), tags: Array.isArray(r.tags) ? r.tags.map(String) : [], summary: String(r.summary || ''), memo });
+    status(st, '완성했어요. 다듬은 뒤 저장해 주세요.', 'ok');
+  } catch (e) { aiError(st, e); }
+  finally { btn.disabled = false; $('#btnStop').hidden = true; }
+};
+$('#btnSaveRaw').onclick = () => {
+  const memo = $('#memo').value.trim();
+  if (!memo) return status($('#composeStatus'), '메모를 먼저 적어 주세요.', 'err');
+  showDraft({ title: memo.split('\n')[0].slice(0, 40), body: memo, category: '기타', tags: [], memo });
+};
+function showDraft(d) {
+  draftSource = d; $('#draftCard').hidden = false;
+  $('#dTitle').value = d.title; $('#dBody').value = d.body; $('#dTags').value = (d.tags || []).join(', ');
+  fillCats($('#dCat'), d.category);
+  $('#draftCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+$('#btnDiscard').onclick = () => { $('#draftCard').hidden = true; draftSource = null; };
+$('#btnSaveDraft').onclick = async () => {
+  try {
+    await Store.putPost({ id: uid(), type: 'writing', title: $('#dTitle').value.trim() || '제목 없음', body: $('#dBody').value,
+      memo: draftSource?.memo || '', summary: draftSource?.summary || '', category: $('#dCat').value, tags: splitTags($('#dTags').value),
+      images: [], assetIds: [], sns: null, published: {}, createdAt: Date.now() });
+    $('#draftCard').hidden = true; $('#memo').value = ''; status($('#composeStatus'), '');
+    toast('서재에 꽂았어요 📚'); showTab('library');
+  } catch (e) { status($('#composeStatus'), '저장하지 못했어요: ' + esc(e.message || e.code), 'err'); }
+};
+
+/* ================= 캘리그라피 ================= */
+let calliFiles = [];
+$('#cFiles').onchange = e => {
+  calliFiles = [...e.target.files];
+  $('#cThumbs').innerHTML = calliFiles.map(f => `<img src="${URL.createObjectURL(f)}" alt="">`).join('');
+};
+$('#btnCalliAI').onclick = async () => {
+  const st = $('#calliStatus');
+  if (!calliFiles.length && !$('#cText').value.trim()) return status(st, '이미지나 글귀 중 하나는 있어야 해요.', 'err');
+  const btn = $('#btnCalliAI'); btn.disabled = true; status(st, '<span class="spinner"></span> 작품을 감상하는 중…');
+  try {
+    const useImg = canImages && calliFiles[0];
+    const r = await sample.json(`${persona()}
+
+${useImg ? '첨부한 이미지는 서재 주인이 직접 쓴 캘리그라피 작품이다.' : ''} 작품의 글귀를 바탕으로 제목과 작품 해설(3~6문장)을 써라.
+${$('#cText').value.trim() ? '작가가 알려준 글귀: ' + $('#cText').value.trim() : (useImg ? '글귀는 이미지에서 읽어라. 확실하지 않은 글자는 [?]로 표시.' : '')}
+${$('#cNote').value.trim() ? '작가 메모: ' + $('#cNote').value.trim() : ''}
+
+다음 JSON 객체 하나로만 답하라:
+{"text": "작품의 글귀", "title": "작품 제목", "note": "작품 해설", "tags": ["태그 3~5개"]}`,
+      useImg ? { images: [calliFiles[0]], cache: false } : { cache: false });
+    if (!$('#cText').value.trim()) $('#cText').value = String(r.text || '');
+    $('#cTitle').value ||= String(r.title || ''); $('#cNote').value = String(r.note || '');
+    $('#cTags').value ||= (Array.isArray(r.tags) ? r.tags : []).join(', ');
+    status(st, useImg || $('#cText').value ? '채워 넣었어요. 확인 후 저장해 주세요.' : '해설을 썼어요.', 'ok');
+  } catch (e) { aiError(st, e); }
+  finally { btn.disabled = false; }
+};
+$('#btnCalliSave').onclick = async () => {
+  const st = $('#calliStatus');
+  if (!calliFiles.length) return status(st, '작품 이미지를 올려 주세요.', 'err');
+  const btn = $('#btnCalliSave'); btn.disabled = true; status(st, '<span class="spinner"></span> 갤러리에 거는 중…');
+  try {
+    const images = [], assetIds = [];
+    for (const f of calliFiles) { const r = await Store.putImage(f); images.push(r.src); if (r.assetId) assetIds.push(r.assetId); }
+    await Store.putPost({ id: uid(), type: 'calligraphy', title: $('#cTitle').value.trim() || $('#cText').value.trim().slice(0, 30) || '무제',
+      body: $('#cText').value.trim(), note: $('#cNote').value.trim(), category: $('#cCat').value, tags: splitTags($('#cTags').value),
+      images, assetIds, sns: null, published: {}, createdAt: Date.now() });
+    ['#cText', '#cTitle', '#cNote', '#cTags'].forEach(s => $(s).value = ''); $('#cFiles').value = ''; $('#cThumbs').innerHTML = ''; calliFiles = [];
+    status(st, '갤러리에 걸었어요 🖌', 'ok');
+  } catch (e) { status(st, '저장하지 못했어요: ' + esc(e.message || e.code), 'err'); }
+  finally { btn.disabled = false; }
+};
+function renderCalliGrid() {
+  const list = posts.filter(p => p.type === 'calligraphy').sort((a, b) => b.createdAt - a.createdAt), g = $('#calliGrid');
+  g.innerHTML = list.length ? list.map(p => `<div class="item" data-id="${p.id}"><img src="${esc(p.images?.[0] || '')}" alt=""><div class="in"><h3 style="font-size:14px">${esc(p.title)}</h3></div></div>`).join('')
+    : '<div class="empty">아직 걸린 작품이 없어요.</div>';
+  g.querySelectorAll('.item').forEach(el => el.onclick = () => openDetail(el.dataset.id));
+}
+
+/* ================= 서재 ================= */
+let curCat = '';
+$('#search').oninput = renderLibrary; $('#typeFilter').onchange = renderLibrary;
+function renderLibrary() {
+  const all = [...posts].sort((a, b) => b.createdAt - a.createdAt);
+  const counts = {}; all.forEach(p => counts[p.category] = (counts[p.category] || 0) + 1);
+  const cats = [...new Set([...settings.cats, ...Object.keys(counts)])];
+  $('#catChips').innerHTML = `<button class="chip" data-c="" aria-pressed="${!curCat}">전체 ${all.length}</button>` +
+    cats.map(c => `<button class="chip" data-c="${esc(c)}" aria-pressed="${curCat === c}">${esc(c)} ${counts[c] || 0}</button>`).join('');
+  $('#catChips').querySelectorAll('.chip').forEach(b => b.onclick = () => { curCat = b.dataset.c; renderLibrary(); });
+  const q = $('#search').value.trim().toLowerCase(), t = $('#typeFilter').value;
+  const list = all.filter(p => (!curCat || p.category === curCat) && (!t || p.type === t) &&
+    (!q || [p.title, p.body, p.note, ...(p.tags || [])].join(' ').toLowerCase().includes(q)));
+  $('#libCount').textContent = `${list.length}편`;
+  const g = $('#libGrid');
+  g.innerHTML = list.length ? list.map(p => `
+    <div class="item" data-id="${p.id}">
+      ${p.images?.[0] ? `<img src="${esc(p.images[0])}" alt="">` : ''}
+      <div class="in">
+        <div class="meta" style="margin:0 0 4px">${p.type === 'calligraphy' ? '🖌' : '✍️'} ${esc(p.category)}</div>
+        <h3>${esc(p.title)}</h3><p>${esc(p.summary || p.note || p.body)}</p>
+        <div class="meta">${fmtDate(p.createdAt)} ${Object.keys(p.published || {}).length ? '· 발행 ' + Object.keys(p.published).length + '곳' : ''}</div>
+      </div>
+    </div>`).join('') : '<div class="empty card">이 칸은 아직 비어 있어요. ✍️ 메모하기에서 첫 글을 써 보세요.</div>';
+  g.querySelectorAll('.item').forEach(el => el.onclick = () => openDetail(el.dataset.id));
+}
+function openDetail(id) {
+  const p = posts.find(x => x.id === id); if (!p) return;
+  $('#dlgType').textContent = p.type === 'calligraphy' ? '🖌 캘리그라피' : '✍️ 글';
+  $('#dlgBody').innerHTML = `
+    <div class="meta" style="margin:0">${esc(p.category)} · ${fmtDate(p.createdAt)}</div>
+    <h2 class="article-title serif">${esc(p.title)}</h2>
+    <div>${(p.tags || []).map(t => `<span class="tag">#${esc(t)}</span>`).join('')}</div>
+    ${(p.images || []).map(u => `<img class="preview-img" src="${esc(u)}" alt="">`).join('')}
+    <div class="article">${esc(p.body)}</div>
+    ${p.note ? `<p class="hint" style="margin-top:16px;white-space:pre-wrap">${esc(p.note)}</p>` : ''}
+    ${p.memo && p.memo !== p.body ? `<details style="margin-top:16px"><summary class="hint">처음 남긴 메모 보기</summary><p style="white-space:pre-wrap">${esc(p.memo)}</p></details>` : ''}
+    ${Object.keys(p.published || {}).length ? `<p class="meta">발행: ${Object.entries(p.published).map(([k, v]) => `${PF[k]?.name || k} (${fmtDate(v)})`).join(', ')}</p>` : ''}
+    <div class="btns">
+      <button class="btn primary" data-act="publish">📤 발행하기</button>
+      <button class="btn" data-act="edit">수정</button>
+      <button class="btn" data-act="copy">전체 복사</button>
+      ${downloads ? '<button class="btn" data-act="md">마크다운 내려받기</button>' : ''}
+      <button class="btn danger" data-act="del">삭제</button>
+    </div>`;
+  const q = a => $('#dlgBody').querySelector(`[data-act=${a}]`);
+  q('publish').onclick = () => { $('#detail').close(); showTab('publish', id); };
+  q('edit').onclick = () => editDetail(p);
+  q('copy').onclick = () => copy(`${p.title}\n\n${p.body}${p.note ? '\n\n' + p.note : ''}`);
+  if (q('md')) q('md').onclick = () => save(`${p.title}.md`, toMarkdown(p));
+  q('del').onclick = e => twoStep(e.target, '한 번 더 누르면 삭제', async () => { await Store.delPost(p); $('#detail').close(); toast('지웠어요'); });
+  if (!$('#detail').open) $('#detail').showModal();
+}
+function editDetail(p) {
+  $('#dlgBody').innerHTML = `
+    <label>제목</label><input type="text" id="eTitle" value="${esc(p.title)}">
+    <div class="row"><div><label>분류</label><select id="eCat"></select></div>
+    <div><label>태그</label><input type="text" id="eTags" value="${esc((p.tags || []).join(', '))}"></div></div>
+    <label>${p.type === 'calligraphy' ? '글귀' : '본문'}</label><textarea id="eBody" class="tall">${esc(p.body)}</textarea>
+    ${p.type === 'calligraphy' ? `<label>작품 이야기</label><textarea id="eNote">${esc(p.note || '')}</textarea>` : ''}
+    <div class="btns"><button class="btn primary" id="eSave">저장</button><button class="btn" id="eCancel">취소</button></div>`;
+  fillCats($('#eCat'), p.category);
+  $('#eCancel').onclick = () => openDetail(p.id);
+  $('#eSave').onclick = async () => {
+    const n = { ...p, title: $('#eTitle').value.trim(), category: $('#eCat').value, tags: splitTags($('#eTags').value), body: $('#eBody').value, sns: null };
+    if ($('#eNote')) n.note = $('#eNote').value;
+    await Store.putPost(n); toast('고쳤어요'); openDetail(p.id);
+  };
+}
+$('#dlgClose').onclick = () => $('#detail').close();
+function toMarkdown(p) {
+  return `---\ntitle: "${p.title.replace(/"/g, '\\"')}"\ncategory: "${p.category}"\ntags: [${(p.tags || []).map(t => `"${t}"`).join(', ')}]\ndate: ${new Date(p.createdAt).toISOString().slice(0, 10)}\ntype: ${p.type}\n---\n\n# ${p.title}\n\n${p.body}\n${p.note ? '\n' + p.note + '\n' : ''}`;
+}
+async function save(filename, data) {
+  if (!downloads) return toast('이 화면에서는 내려받기를 할 수 없어요');
+  try { await downloads.save({ filename: filename.replace(/[\\/:*?"<>|]/g, '_'), data }); } catch (e) { if (e?.code !== 'cancelled') toast('내려받지 못했어요'); }
+}
+
+/* ================= 발행하기 ================= */
+const PF = {
+  facebook:  { name: '페이스북', open: 'https://www.facebook.com/', tip: '페이지는 GitHub 서재에서 웹훅으로 자동 게시 가능. 여기서는 복사 후 붙여넣기.' },
+  instagram: { name: '인스타그램', open: 'https://www.instagram.com/', tip: '이미지가 꼭 필요해요. 작품 이미지를 길게 눌러 저장한 뒤 앱에서 올리세요.' },
+  blog:      { name: '블로그', open: 'https://blog.naver.com/', tip: '네이버 블로그·티스토리는 글쓰기 API가 종료되어 복사 후 붙여넣기.' },
+  kakaotalk: { name: '카카오톡', open: '', tip: '복사해서 대화방이나 나와의 채팅에 붙여넣기. 채널 소식은 채널 관리자센터에서.' },
+  kakaostory:{ name: '카카오스토리', open: 'https://story.kakao.com/', tip: '카카오스토리 API는 2023년 11월 종료. 복사 후 앱에서 게시.' },
+  daumcafe:  { name: '다음 카페', open: 'https://cafe.daum.net/', tip: '공개 글쓰기 API 없음. 복사 후 카페 글쓰기에 붙여넣기.' },
+};
+function renderPublishSelect(want) {
+  const sel = $('#pubSelect'), cur = want || sel.value;
+  const list = [...posts].sort((a, b) => b.createdAt - a.createdAt);
+  sel.innerHTML = '<option value="">— 발행할 글/작품을 고르세요 —</option>' +
+    list.map(p => `<option value="${p.id}">${p.type === 'calligraphy' ? '🖌' : '✍️'} ${esc(p.title)} · ${esc(p.category)}</option>`).join('');
+  sel.value = list.some(p => p.id === cur) ? cur : ''; renderPublish();
+}
+$('#pubSelect').onchange = () => renderPublish();
+function defaultSns(p) {
+  const tags = [...(p.tags || []).map(t => '#' + t.replace(/\s/g, '')), ...splitTags(settings.tags).map(t => '#' + t)].join(' ');
+  const sign = settings.author ? `\n\n— ${settings.author}` : '';
+  const text = p.type === 'calligraphy' ? `${p.body}\n\n${p.note || ''}`.trim() : p.body;
+  const short = text.length > 400 ? text.slice(0, 400) + '…' : text;
+  const head = p.title && p.title !== p.body ? p.title + '\n\n' : '';
+  return {
+    facebook: `${head}${text}${sign}\n\n${tags}`, instagram: `${head}${short}${sign}\n.\n.\n${tags}`,
+    blog: `${head}${text}${sign}`, kakaotalk: `[${p.title}]\n${short}${sign}`,
+    kakaostory: `${head}${short}${sign}\n${tags}`, daumcafe: `${head}${text}${sign}`,
+  };
+}
+let pubShown = null;
+function renderPublish() {
+  const id = $('#pubSelect').value, box = $('#platforms'), pv = $('#pubPreview');
+  if (!id) { box.innerHTML = ''; pv.innerHTML = ''; pubShown = null; return; }
+  const p = posts.find(x => x.id === id);
+  // 같은 글을 보는 중 저장소가 갱신되면 편집 중인 칸을 지우지 않도록 다시 그리지 않음
+  if (pubShown === id + ':' + (p.sns ? JSON.stringify(p.sns) : '') + JSON.stringify(p.published)) return;
+  pubShown = id + ':' + (p.sns ? JSON.stringify(p.sns) : '') + JSON.stringify(p.published);
+  const sns = p.sns || defaultSns(p);
+  pv.innerHTML = p.images?.length ? `<div class="card" style="text-align:center">${p.images.map(u => `<img src="${esc(u)}" style="max-height:220px;border-radius:6px;margin:4px" alt="">`).join('')}<div class="meta">함께 올릴 이미지 ${p.images.length}장 · 길게 누르거나 오른쪽 클릭으로 저장</div></div>` : '';
+  box.innerHTML = Object.entries(PF).map(([k, f]) => `
+    <div class="pf" data-k="${k}">
+      <h3>${f.name} ${p.published?.[k] ? `<span class="badge done">발행함 ${fmtDate(p.published[k])}</span>` : '<span class="badge semi">복사해서 올리기</span>'}</h3>
+      <p class="hint" style="font-size:12.5px">${f.tip}</p>
+      <textarea>${esc(sns[k] || '')}</textarea>
+      <div class="btns">
+        <button class="btn sm primary" data-a="copy">복사</button>
+        ${f.open ? `<a class="btn sm" href="${f.open}" target="_blank" rel="noopener">열기</a>` : ''}
+        <button class="btn sm" data-a="done">${p.published?.[k] ? '발행 기록 지우기' : '발행 완료 표시'}</button>
+      </div>
+    </div>`).join('');
+  box.querySelectorAll('.pf').forEach(el => {
+    const k = el.dataset.k, ta = el.querySelector('textarea');
+    ta.onchange = async () => { const n = { ...p, sns: { ...(p.sns || defaultSns(p)), [k]: ta.value } }; pubShown = id + ':' + JSON.stringify(n.sns) + JSON.stringify(n.published); await Store.putPost(n); };
+    el.querySelector('[data-a=copy]').onclick = () => copy(ta.value);
+    el.querySelector('[data-a=done]').onclick = async () => {
+      const pub = { ...(p.published || {}) }; if (pub[k]) delete pub[k]; else pub[k] = Date.now();
+      await Store.putPost({ ...p, published: pub }); toast(pub[k] ? `${f(k)}에 발행 완료로 기록했어요` : '기록을 지웠어요');
+    };
+  });
+  function f(k) { return PF[k].name; }
+}
+$('#btnSnsAI').onclick = async () => {
+  const id = $('#pubSelect').value, st = $('#pubStatus');
+  if (!id) return status(st, '먼저 글이나 작품을 골라 주세요.', 'err');
+  if (!sample) return status(st, '이 화면에서는 Claude를 부를 수 없어요. 기본 문구를 다듬어 쓰세요.', 'err');
+  const p = posts.find(x => x.id === id), btn = $('#btnSnsAI'); btn.disabled = true;
+  status(st, '<span class="spinner"></span> 플랫폼마다 어울리게 다듬는 중… (30초~1분)');
+  try {
+    const r = await sample.json(`${persona()}
+
+다음 ${p.type === 'calligraphy' ? '캘리그라피 작품' : '글'}을 각 플랫폼 게시물로 다듬어라. 원문의 생각은 바꾸지 말고 형식만 맞춘다.
+- facebook: 원문 중심, 첫 줄로 관심을 끌고 끝에 질문 하나, 해시태그 3~5개
+- instagram: 첫 줄 강렬하게, 짧은 문단과 줄바꿈, 이모지 절제, 마지막에 해시태그 10개 내외
+- blog: 소제목을 넣은 블로그 본문(원문 거의 전체), 검색에 잡힐 핵심어 자연스럽게
+- kakaotalk: 지인에게 보내는 3~5줄 짧은 소개
+- kakaostory: 따뜻한 일상 톤의 중간 길이, 해시태그 3개
+- daumcafe: 카페 회원에게 나누는 글, 인사말로 시작, 원문 전체
+${settings.author ? '서명: ' + settings.author : ''}
+${settings.tags ? '항상 넣을 해시태그: ' + settings.tags : ''}
+
+제목: ${p.title}
+분류: ${p.category}
+본문:
+${p.body}
+${p.note ? '\n작품 이야기:\n' + p.note : ''}
+
+다음 JSON 객체 하나로만 답하라 (값은 모두 게시 문구 문자열):
+{"facebook": "", "instagram": "", "blog": "", "kakaotalk": "", "kakaostory": "", "daumcafe": ""}`,
+      { cache: false, onText: ({ text }) => status(st, `<span class="spinner"></span> 다듬는 중… (${text.length.toLocaleString()}자)`) });
+    const sns = {}; for (const k of Object.keys(PF)) sns[k] = String(r?.[k] ?? '');
+    await Store.putPost({ ...p, sns }); pubShown = null; renderPublish();
+    status(st, '다듬었어요. 칸에서 고친 내용은 자동 저장됩니다.', 'ok');
+  } catch (e) { aiError(st, e); }
+  finally { btn.disabled = false; }
+};
+
+/* ================= 설정 · 백업 ================= */
+function loadSettingsForm() {
+  if (document.activeElement?.closest?.('#tab-settings')) return; // 입력 중엔 덮어쓰지 않기
+  $('#sAuthor').value = settings.author || ''; $('#sVoice').value = settings.voice || '';
+  $('#sTags').value = settings.tags || ''; $('#sCats').value = (settings.cats || DEFAULT_CATS).join('\n');
+}
+$('#btnSaveSettings').onclick = async () => {
+  const cats = $('#sCats').value.split('\n').map(s => s.trim()).filter(Boolean);
+  settings = { author: $('#sAuthor').value.trim(), voice: $('#sVoice').value.trim(), tags: $('#sTags').value.trim(), cats: cats.length ? cats : DEFAULT_CATS };
+  try { await Store.saveSettings(); status($('#settingsStatus'), '저장했어요.', 'ok'); refreshAll(); }
+  catch (e) { status($('#settingsStatus'), '저장하지 못했어요: ' + esc(e.message || e.code), 'err'); }
+};
+$('#btnExport').onclick = async () => {
+  if (!downloads) return status($('#settingsStatus'), '이 화면에서는 내려받기를 할 수 없어요.', 'err');
+  // 저장소 이미지(/_blob/)는 백업 파일에 담기 위해 데이터로 바꿉니다
+  const out = [];
+  for (const p of posts) {
+    const imgs = [];
+    for (const u of p.images || []) {
+      if (u.startsWith('data:')) { imgs.push(u); continue; }
+      try { const b = await (await fetch(u)).blob(); imgs.push(await new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(b); })); }
+      catch { imgs.push(u); }
+    }
+    out.push({ ...p, images: imgs, assetIds: [] });
+  }
+  save(`나의서재-백업-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify({ version: 1, exportedAt: Date.now(), settings, posts: out }));
+};
+$('#importFile').onchange = async e => {
+  const file = e.target.files[0]; if (!file) return; const st = $('#settingsStatus');
+  try {
+    const data = JSON.parse(await file.text());
+    if (!Array.isArray(data.posts)) throw new Error('서재 백업 파일이 아니에요');
+    status(st, '<span class="spinner"></span> 불러오는 중…');
+    for (const p of data.posts) {
+      if (posts.some(x => x.id === p.id)) continue;
+      const n = { ...p, images: [], assetIds: [] };
+      for (const u of p.images || []) {
+        if (u.startsWith('data:') && store === 'db' && assets) { const r = await Store.putImage(await (await fetch(u)).blob()); n.images.push(r.src); n.assetIds.push(r.assetId); }
+        else n.images.push(u);
+      }
+      await Store.putPost(n);
+    }
+    if (data.settings?.cats && settings.cats === DEFAULT_CATS) { settings = { ...settings, ...data.settings }; await Store.saveSettings(); loadSettingsForm(); }
+    status(st, `${data.posts.length}편을 불러왔어요 (이미 있던 글은 건너뜀).`, 'ok');
+  } catch (err) { status(st, '불러오기 실패: ' + esc(err.message || err.code), 'err'); }
+  e.target.value = '';
+};
+
+connect();
+})();
+</script>
+</body>
+</html>
