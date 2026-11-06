@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>나의 서재</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F5F0; --surface:#FFFFFF; --surface-2:#EFEDE3; --ink:#1B1F1A; --ink-soft:#5B6058;
+  --border:#E1DDCF; --primary:#10140F; --accent:#B9893C; --accent-soft:#F3E7D1;
+  --good:#3F8F68; --good-soft:#E1F0E7; --bad:#B23B2E; --bad-soft:#F7E4DE;
+  --shadow:0 1px 2px rgba(16,20,15,.06),0 8px 22px rgba(16,20,15,.06); --radius:6px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0D100C; --surface:#161B14; --surface-2:#1C2218; --ink:#E7E4D8; --ink-soft:#9BA095;
+  --border:#2A3027; --primary:#D1A458; --accent:#D1A458; --accent-soft:#2A2316;
+  --good:#5FB389; --good-soft:#16281E; --bad:#E07A6A; --bad-soft:#33201B;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 22px rgba(0,0,0,.3); color-scheme:dark;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 'Noto Sans KR',system-ui,sans-serif}
+h1,h2,h3,.serif{font-family:'Noto Serif KR',serif}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:10px;padding:14px 0 4px}
+.brand h1{font-size:21px;margin:0;color:var(--primary)}
+.brand small{color:var(--ink-soft)}
+nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+nav button{flex:0 0 auto;border:0;border-bottom:3px solid transparent;background:none;color:var(--ink-soft);padding:10px 13px 9px;font:600 14px inherit;font-family:inherit;cursor:pointer}
+nav button[aria-selected=true]{color:var(--primary);border-bottom-color:var(--accent)}
+main{padding:24px 0 80px}
+section.panel{display:none}section.panel.active{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:16px}
+.card h2{font-size:18px;margin:0 0 6px}
+.hint{color:var(--ink-soft);font-size:13.5px;margin:0 0 12px}
+label{display:block;font-weight:600;font-size:13.5px;margin:12px 0 6px}
+input[type=text],input[type=password],input[type=url],select,textarea{width:100%;border:1px solid var(--border);background:var(--bg);color:var(--ink);border-radius:var(--radius);padding:10px 12px;font:inherit}
+textarea{min-height:140px;resize:vertical}
+textarea.tall{min-height:340px;font-family:'Noto Serif KR',serif;line-height:1.9}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1 1 180px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.btn{border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:999px;padding:9px 16px;font:600 14px inherit;font-family:inherit;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--primary);color:var(--bg);border-color:var(--primary)}
+.btn.accent{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn.sm{padding:6px 11px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:wait}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 14px}
+.chip{border:1px solid var(--border);background:var(--surface);color:var(--ink-soft);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--accent-soft);color:var(--ink);border-color:var(--accent)}
+.tag{display:inline-block;background:var(--surface-2);color:var(--ink-soft);border-radius:4px;padding:1px 7px;font-size:12px;margin:0 4px 4px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:.15s}
+.item:hover{border-color:var(--accent);transform:translateY(-1px)}
+.item img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--surface-2)}
+.item .in{padding:14px}
+.item h3{font-size:16px;margin:0 0 4px}
+.item p{margin:0;color:var(--ink-soft);font-size:13.5px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.meta{font-size:12px;color:var(--ink-soft);margin-top:8px}
+.empty{text-align:center;color:var(--ink-soft);padding:40px 10px}
+.status{font-size:13.5px;margin-top:10px;min-height:1.4em}
+.status.ok{color:var(--good)}.status.err{color:var(--bad)}
+.article{font-family:'Noto Serif KR',serif;font-size:16.5px;line-height:2;white-space:pre-wrap}
+.article-title{font-size:24px;margin:4px 0 10px}
+.preview-img{max-width:100%;max-height:520px;display:block;margin:10px auto;border-radius:var(--radius)}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.thumbs img{width:90px;height:90px;object-fit:cover;border-radius:4px;border:1px solid var(--border)}
+dialog{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--ink);width:min(820px,94vw);max-height:90vh;padding:0;box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface)}
+.dlg-body{padding:20px}
+.platforms{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.pf{border:1px solid var(--border);border-radius:var(--radius);padding:14px;background:var(--surface)}
+.pf h3{margin:0 0 4px;font-size:15.5px;font-family:'Noto Sans KR',sans-serif;display:flex;justify-content:space-between;align-items:center}
+.pf textarea{min-height:150px;font-size:13.5px}
+.badge{font-size:11.5px;font-weight:600;border-radius:999px;padding:2px 8px}
+.badge.auto{background:var(--good-soft);color:var(--good)}
+.badge.semi{background:var(--accent-soft);color:var(--accent)}
+.badge.done{background:var(--surface-2);color:var(--ink-soft)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--primary);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:99}
+.toast.show{opacity:1}
+.layout{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:900px){.layout.two{grid-template-columns:1fr 1fr}}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand"><h1>나의 서재</h1><small>메모가 글이 되고, 글이 세상과 만나는 곳</small></div>
+    <nav role="tablist">
+      <button role="tab" data-tab="write" aria-selected="true">✍️ 메모하기</button>
+      <button role="tab" data-tab="library">📚 서재</button>
+      <button role="tab" data-tab="calli">🖌 캘리그라피</button>
+      <button role="tab" data-tab="publish">📤 발행하기</button>
+      <button role="tab" data-tab="settings">⚙️ 설정</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ============ 메모하기 ============ -->
+<section class="panel active" id="tab-write">
+  <div class="layout two">
+    <div class="card">
+      <h2>메모 남기기</h2>
+      <p class="hint">떠오른 생각, 단어, 문장 조각을 편하게 적어 주세요. AI가 한 편의 글로 다듬고 알맞은 분류에 넣어 드립니다.</p>
+      <textarea id="memo" placeholder="예) 공동체 화폐 — 동네 빵집, 품앗이, 시간은행. AI 시대엔 '일'의 정의가 바뀐다. 기여를 어떻게 측정할까? 돌봄도 기여다."></textarea>
+      <div class="row">
+        <div><label for="tone">글의 결</label>
+          <select id="tone">
+            <option value="칼럼">칼럼 · 논설</option>
+            <option value="에세이">에세이 · 성찰</option>
+            <option value="정책제안">정책 제안서</option>
+            <option value="강연원고">강연 · 발표 원고</option>
+            <option value="짧은글">짧은 글 · 단상</option>
+          </select></div>
+        <div><label for="length">분량</label>
+          <select id="length">
+            <option value="짧게(600자 내외)">짧게 (600자)</option>
+            <option value="보통(1500자 내외)" selected>보통 (1,500자)</option>
+            <option value="길게(3000자 내외)">길게 (3,000자)</option>
+          </select></div>
+      </div>
+      <div class="btns">
+        <button class="btn primary" id="btnCompose">✨ 글로 완성하기</button>
+        <button class="btn" id="btnSaveRaw">메모 그대로 저장</button>
+        <button class="btn" id="btnCopyPrompt" title="API 키 없이 Claude 앱에 붙여넣어 쓰는 방법">프롬프트 복사</button>
+      </div>
+      <div class="status" id="composeStatus"></div>
+    </div>
+
+    <div class="card" id="draftCard" hidden>
+      <h2>완성된 글 (수정 가능)</h2>
+      <label for="dTitle">제목</label><input type="text" id="dTitle">
+      <div class="row">
+        <div><label for="dCat">분류</label><select id="dCat"></select></div>
+        <div><label for="dTags">태그 (쉼표로 구분)</label><input type="text" id="dTags"></div>
+      </div>
+      <label for="dBody">본문</label><textarea id="dBody" class="tall"></textarea>
+      <div class="btns">
+        <button class="btn primary" id="btnSaveDraft">📚 서재에 저장</button>
+        <button class="btn" id="btnDiscard">버리기</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 서재 ============ -->
+<section class="panel" id="tab-library">
+  <div class="card">
+    <div class="row">
+      <input type="text" id="search" placeholder="제목, 본문, 태그로 찾기">
+      <select id="typeFilter" style="flex:0 0 160px">
+        <option value="">전체</option><option value="writing">글</option><option value="calligraphy">캘리그라피</option>
+      </select>
+    </div>
+    <div class="chips" id="catChips"></div>
+    <div class="meta" id="libCount"></div>
+  </div>
+  <div class="grid" id="libGrid"></div>
+</section>
+
+<!-- ============ 캘리그라피 ============ -->
+<section class="panel" id="tab-calli">
+  <div class="layout two">
+    <div class="card">
+      <h2>캘리그라피 올리기</h2>
+      <p class="hint">작품 사진을 올리고 글귀를 적어 주세요. 글귀를 비워 두면 AI가 이미지에서 읽어 드립니다.</p>
+      <label for="cFiles">작품 이미지 (여러 장 가능)</label>
+      <input type="file" id="cFiles" accept="image/*" multiple>
+      <div class="thumbs" id="cThumbs"></div>
+      <label for="cText">글귀</label><textarea id="cText" style="min-height:90px" placeholder="작품에 쓴 글귀"></textarea>
+      <label for="cTitle">작품 제목</label><input type="text" id="cTitle">
+      <label for="cNote">작품 이야기 · 해설</label><textarea id="cNote" placeholder="이 글귀를 쓴 마음, 배경 등"></textarea>
+      <div class="row">
+        <div><label for="cCat">분류</label><select id="cCat"></select></div>
+        <div><label for="cTags">태그</label><input type="text" id="cTags"></div>
+      </div>
+      <div class="btns">
+        <button class="btn accent" id="btnCalliAI">✨ AI로 글귀 읽고 해설 쓰기</button>
+        <button class="btn primary" id="btnCalliSave">📚 서재에 저장</button>
+      </div>
+      <div class="status" id="calliStatus"></div>
+    </div>
+    <div class="card">
+      <h2>캘리그라피 갤러리</h2>
+      <div class="grid" id="calliGrid" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 발행하기 ============ -->
+<section class="panel" id="tab-publish">
+  <div class="card">
+    <h2>발행하기</h2>
+    <p class="hint">서재의 글이나 작품을 고르면, 플랫폼마다 알맞게 다듬은 게시 문구를 만들어 드립니다. <b>자동</b> 표시는 설정의 웹훅(Make·Zapier)으로 바로 올라가고, <b>반자동</b>은 복사·공유 버튼으로 한 번에 올리는 방식입니다.</p>
+    <div class="row">
+      <select id="pubSelect"></select>
+      <button class="btn accent" id="btnSnsAI" style="flex:0 0 auto">✨ 플랫폼별 문구 만들기</button>
+    </div>
+    <div class="status" id="pubStatus"></div>
+  </div>
+  <div id="pubPreview"></div>
+  <div class="platforms" id="platforms"></div>
+</section>
+
+<!-- ============ 설정 ============ -->
+<section class="panel" id="tab-settings">
+  <div class="card">
+    <h2>AI 연결 (Claude)</h2>
+    <p class="hint">메모를 글로 완성할 때 사용합니다. <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">Anthropic 콘솔</a>에서 API 키를 발급받아 넣어 주세요. 키는 <b>이 기기 브라우저에만</b> 저장되며 Anthropic 외 어디에도 전송되지 않습니다. 공용 PC에서는 넣지 마세요.</p>
+    <label for="sKey">API 키</label><input type="password" id="sKey" placeholder="sk-ant-..." autocomplete="off">
+    <label for="sAuthor">글쓴이 이름 · 서명</label><input type="text" id="sAuthor" placeholder="예) 차○○ 씀">
+    <label for="sVoice">나의 문체 · 관점 (AI가 참고)</label>
+    <textarea id="sVoice" style="min-height:90px" placeholder="예) AI 대전환 시대의 새로운 사회계약을 연구하고 정책으로 제안하는 사람. 따뜻하지만 단단한 문체, 공동체와 관계성을 중시."></textarea>
+  </div>
+  <div class="card">
+    <h2>분류 (서재의 칸)</h2>
+    <p class="hint">한 줄에 하나씩. 언제든 늘리거나 고칠 수 있어요.</p>
+    <textarea id="sCats" style="min-height:160px"></textarea>
+  </div>
+  <div class="card">
+    <h2>자동 발행 연결 (웹훅)</h2>
+    <p class="hint">Make.com 또는 Zapier에서 만든 웹훅 주소를 넣으면 ‘자동 발행’ 버튼이 이 주소로 글·이미지를 보냅니다. 연결 방법은 <code>library/AUTOMATION.md</code>에 정리해 두었습니다.</p>
+    <label for="sHook">웹훅 주소 (전체 플랫폼 공통)</label><input type="url" id="sHook" placeholder="https://hook.eu2.make.com/...">
+    <label for="sTags">항상 붙일 해시태그</label><input type="text" id="sTags" placeholder="#나의서재 #캘리그라피">
+  </div>
+  <div class="card">
+    <h2>백업 · 옮기기</h2>
+    <p class="hint">서재는 이 브라우저에 저장됩니다. 정기적으로 백업 파일을 내려받아 두세요. 다른 기기에서는 ‘불러오기’로 옮길 수 있습니다.</p>
+    <div class="btns">
+      <button class="btn primary" id="btnSaveSettings">설정 저장</button>
+      <button class="btn" id="btnExport">⬇️ 전체 백업 내려받기</button>
+      <label class="btn" style="margin:0">⬆️ 백업 불러오기<input type="file" id="importFile" accept="application/json" hidden></label>
+    </div>
+    <div class="status" id="settingsStatus"></div>
+  </div>
+</section>
+</main>
+
+<dialog id="detail">
+  <div class="dlg-head"><b id="dlgType"></b><button class="btn sm" id="dlgClose">닫기</button></div>
+  <div class="dlg-body" id="dlgBody"></div>
+</dialog>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+/* =========================================================
+   저장소 (IndexedDB) — 글 / 이미지
+   ========================================================= */
+const DB_NAME = 'my-library', DB_VER = 1;
+let dbp;
+function db() {
+  return dbp ??= new Promise((res, rej) => {
+    const r = indexedDB.open(DB_NAME, DB_VER);
+    r.onupgradeneeded = () => {
+      const d = r.result;
+      if (!d.objectStoreNames.contains('posts')) d.createObjectStore('posts', { keyPath: 'id' });
+      if (!d.objectStoreNames.contains('images')) d.createObjectStore('images');
+    };
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  });
+}
+async function tx(store, mode, fn) {
+  const d = await db();
+  return new Promise((res, rej) => {
+    const t = d.transaction(store, mode), s = t.objectStore(store);
+    const out = fn(s);
+    t.oncomplete = () => res(out?.result ?? out); t.onerror = () => rej(t.error);
+  });
+}
+const Posts = {
+  all: () => tx('posts', 'readonly', s => s.getAll()),
+  put: p => tx('posts', 'readwrite', s => s.put(p)),
+  del: id => tx('posts', 'readwrite', s => s.delete(id)),
+  get: id => tx('posts', 'readonly', s => s.get(id)),
+};
+const Images = {
+  put: (id, blob) => tx('images', 'readwrite', s => s.put(blob, id)),
+  get: id => tx('images', 'readonly', s => s.get(id)),
+  del: id => tx('images', 'readwrite', s => s.delete(id)),
+};
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+/* =========================================================
+   설정 (localStorage)
+   ========================================================= */
+const DEFAULT_CATS = ['사회계약 · 정책', '경제 생태계', '공동체 · 관계', 'AI 대전환', '삶 · 성찰', '캘리그라피 글귀', '기타'];
+const S = {
+  get key() { return localStorage.getItem('lib.key') || ''; },
+  get author() { return localStorage.getItem('lib.author') || ''; },
+  get voice() { return localStorage.getItem('lib.voice') || ''; },
+  get hook() { return localStorage.getItem('lib.hook') || ''; },
+  get tags() { return localStorage.getItem('lib.tags') || ''; },
+  get cats() { try { const c = JSON.parse(localStorage.getItem('lib.cats')); if (c?.length) return c; } catch {} return DEFAULT_CATS; },
+};
+
+/* =========================================================
+   공통 UI
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2200); }
+function status(el, msg, kind = '') { el.className = 'status ' + kind; el.innerHTML = msg; }
+const fmtDate = ts => new Date(ts).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+const splitTags = s => (s || '').split(/[,#\s]+/).map(t => t.trim()).filter(Boolean);
+async function copy(text) { await navigator.clipboard.writeText(text); toast('복사했어요'); }
+
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => showTab(b.dataset.tab));
+function showTab(name, arg) {
+  document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === name));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+  if (name === 'library') renderLibrary();
+  if (name === 'calli') renderCalliGrid();
+  if (name === 'publish') renderPublishSelect(arg);
+  scrollTo({ top: 0 });
+}
+function fillCats(sel, value) {
+  sel.innerHTML = S.cats.map(c => `<option ${c === value ? 'selected' : ''}>${esc(c)}</option>`).join('');
+  if (value && !S.cats.includes(value)) sel.insertAdjacentHTML('beforeend', `<option selected>${esc(value)}</option>`);
+}
+
+/* =========================================================
+   Claude 연결
+   ========================================================= */
+let sdkPromise;
+async function claude() {
+  if (!S.key) throw new Error('NO_KEY');
+  sdkPromise ??= import('https://esm.sh/@anthropic-ai/sdk');
+  const { default: Anthropic } = await sdkPromise;
+  return { Anthropic, client: new Anthropic({ apiKey: S.key, dangerouslyAllowBrowser: true }) };
+}
+
+// JSON 스키마로 응답을 받아 파싱. onProgress(문자수)로 진행 상황 표시.
+async function askJSON({ system, content, schema, onProgress, effort = 'high' }) {
+  const { Anthropic, client } = await claude();
+  try {
+    const stream = client.beta.messages.stream({
+      model: 'claude-opus-5-5',
+      max_tokens: 16000,
+      betas: ['server-side-fallback-2026-07-01'],
+      fallbacks: 'default',
+      output_config: { effort, format: { type: 'json_schema', schema } },
+      system,
+      messages: [{ role: 'user', content }],
+    });
+    let n = 0;
+    stream.on('text', t => { n += t.length; onProgress?.(n); });
+    const msg = await stream.finalMessage();
+    if (msg.stop_reason === 'refusal') throw new Error('AI가 이 요청을 처리하지 않았어요. 표현을 바꿔 다시 시도해 주세요.');
+    if (msg.stop_reason === 'max_tokens') throw new Error('글이 너무 길어 중간에 끊겼어요. 분량을 줄여 다시 시도해 주세요.');
+    const text = msg.content.filter(b => b.type === 'text').map(b => b.text).join('');
+    return JSON.parse(text);
+  } catch (e) {
+    if (e instanceof Anthropic.AuthenticationError) throw new Error('API 키가 올바르지 않아요. 설정에서 확인해 주세요.');
+    if (e instanceof Anthropic.RateLimitError) throw new Error('요청이 몰렸어요. 잠시 후 다시 시도해 주세요.');
+    if (e instanceof Anthropic.APIConnectionError) throw new Error('인터넷 연결을 확인해 주세요.');
+    if (e instanceof Anthropic.APIError) throw new Error('AI 서버 오류: ' + e.message);
+    throw e;
+  }
+}
+function keyHint(el, e) {
+  if (e.message === 'NO_KEY') status(el, '설정 탭에서 API 키를 먼저 넣어 주세요. 키가 없다면 <b>프롬프트 복사</b>로 Claude 앱에서 쓸 수 있어요.', 'err');
+  else status(el, esc(e.message), 'err');
+}
+function persona() {
+  return `당신은 이 서재 주인의 글쓰기 동반자입니다. 주인의 메모를 존중하며, 그 생각을 주인의 목소리로 완성된 한국어 글로 다듬습니다.
+메모에 없는 사실·통계·인용을 지어내지 않습니다. 필요한 경우 '~라는 질문이 남는다'처럼 열어 둡니다.
+${S.voice ? '주인의 관점과 문체: ' + S.voice : ''}`;
+}
+
+/* =========================================================
+   1) 메모 → 글
+   ========================================================= */
+const COMPOSE_SCHEMA = {
+  type: 'object', additionalProperties: false,
+  required: ['title', 'body', 'category', 'tags', 'summary'],
+  properties: {
+    title: { type: 'string', description: '글 제목' },
+    body: { type: 'string', description: '완성된 본문. 문단 사이는 빈 줄.' },
+    category: { type: 'string', description: '주어진 분류 목록 중 가장 알맞은 하나' },
+    tags: { type: 'array', items: { type: 'string' }, description: '핵심어 3~6개, # 없이' },
+    summary: { type: 'string', description: '두 문장 요약' },
+  },
+};
+function composePrompt(memo) {
+  return `아래 메모를 '${$('#tone').value}' 형식의 글로 완성해 주세요. 분량: ${$('#length').value}.
+분류 목록: ${S.cats.join(' / ')}
+메모:
+"""
+${memo}
+"""`;
+}
+let draftSource = null;
+$('#btnCompose').onclick = async () => {
+  const memo = $('#memo').value.trim(); const st = $('#composeStatus');
+  if (!memo) return status(st, '메모를 먼저 적어 주세요.', 'err');
+  const btn = $('#btnCompose'); btn.disabled = true;
+  status(st, '<span class="spinner"></span> 생각을 정리하는 중…');
+  try {
+    const r = await askJSON({ system: persona(), content: composePrompt(memo), schema: COMPOSE_SCHEMA,
+      onProgress: n => status(st, `<span class="spinner"></span> 글을 쓰는 중… (${n.toLocaleString()}자)`) });
+    showDraft({ ...r, memo });
+    status(st, '완성했어요. 오른쪽에서 다듬은 뒤 저장해 주세요.', 'ok');
+  } catch (e) { keyHint(st, e); }
+  finally { btn.disabled = false; }
+};
+$('#btnCopyPrompt').onclick = () => {
+  const memo = $('#memo').value.trim();
+  if (!memo) return status($('#composeStatus'), '메모를 먼저 적어 주세요.', 'err');
+  copy(persona() + '\n\n' + composePrompt(memo) + '\n\n제목, 분류, 태그, 본문 순서로 답해 주세요.');
+  status($('#composeStatus'), 'Claude 앱(claude.ai)에 붙여넣고, 완성된 글을 아래 ‘메모 그대로 저장’ 후 서재에서 수정해 넣으면 됩니다.', 'ok');
+};
+$('#btnSaveRaw').onclick = () => {
+  const memo = $('#memo').value.trim();
+  if (!memo) return status($('#composeStatus'), '메모를 먼저 적어 주세요.', 'err');
+  showDraft({ title: memo.split('\n')[0].slice(0, 40), body: memo, category: '기타', tags: [], memo });
+};
+function showDraft(d) {
+  draftSource = d;
+  $('#draftCard').hidden = false;
+  $('#dTitle').value = d.title; $('#dBody').value = d.body; $('#dTags').value = (d.tags || []).join(', ');
+  fillCats($('#dCat'), d.category);
+  $('#draftCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+$('#btnDiscard').onclick = () => { $('#draftCard').hidden = true; draftSource = null; };
+$('#btnSaveDraft').onclick = async () => {
+  const now = Date.now();
+  await Posts.put({
+    id: uid(), type: 'writing', title: $('#dTitle').value.trim() || '제목 없음', body: $('#dBody').value,
+    memo: draftSource?.memo || '', summary: draftSource?.summary || '', category: $('#dCat').value,
+    tags: splitTags($('#dTags').value), images: [], sns: null, published: {}, createdAt: now, updatedAt: now,
+  });
+  $('#draftCard').hidden = true; $('#memo').value = ''; status($('#composeStatus'), '');
+  toast('서재에 꽂았어요 📚'); showTab('library');
+};
+
+/* =========================================================
+   2) 캘리그라피
+   ========================================================= */
+let calliFiles = [];
+$('#cFiles').onchange = e => {
+  calliFiles = [...e.target.files];
+  $('#cThumbs').innerHTML = calliFiles.map(f => `<img src="${URL.createObjectURL(f)}" alt="">`).join('');
+};
+fillCats($('#cCat'), '캘리그라피 글귀');
+
+// 이미지를 AI 전송용으로 축소 (긴 변 1568px, JPEG)
+async function toBase64Jpeg(blob, max = 1568) {
+  const img = await createImageBitmap(blob);
+  const k = Math.min(1, max / Math.max(img.width, img.height));
+  const c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+  c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+  return c.toDataURL('image/jpeg', 0.88).split(',')[1];
+}
+const CALLI_SCHEMA = {
+  type: 'object', additionalProperties: false, required: ['text', 'title', 'note', 'tags'],
+  properties: {
+    text: { type: 'string', description: '작품에 쓰인 글귀 (읽을 수 없으면 주어진 글귀 그대로)' },
+    title: { type: 'string' }, note: { type: 'string', description: '작품 해설·이야기 3~6문장' },
+    tags: { type: 'array', items: { type: 'string' } },
+  },
+};
+$('#btnCalliAI').onclick = async () => {
+  const st = $('#calliStatus');
+  if (!calliFiles.length && !$('#cText').value.trim()) return status(st, '이미지나 글귀 중 하나는 있어야 해요.', 'err');
+  const btn = $('#btnCalliAI'); btn.disabled = true; status(st, '<span class="spinner"></span> 작품을 감상하는 중…');
+  try {
+    const content = [];
+    if (calliFiles[0]) content.push({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: await toBase64Jpeg(calliFiles[0]) } });
+    content.push({ type: 'text', text: `이 캘리그라피 작품의 글귀를 읽고, 제목과 작품 해설을 써 주세요.
+${$('#cText').value.trim() ? '작가가 알려준 글귀: ' + $('#cText').value.trim() : '글귀는 이미지에서 읽어 주세요. 확실하지 않은 글자는 [?]로 표시.'}
+${$('#cNote').value.trim() ? '작가 메모: ' + $('#cNote').value.trim() : ''}` });
+    const r = await askJSON({ system: persona(), content, schema: CALLI_SCHEMA, effort: 'medium' });
+    if (!$('#cText').value.trim()) $('#cText').value = r.text;
+    $('#cTitle').value ||= r.title; $('#cNote').value = r.note; $('#cTags').value ||= r.tags.join(', ');
+    status(st, '채워 넣었어요. 확인 후 저장해 주세요.', 'ok');
+  } catch (e) { keyHint(st, e); }
+  finally { btn.disabled = false; }
+};
+$('#btnCalliSave').onclick = async () => {
+  const st = $('#calliStatus');
+  if (!calliFiles.length) return status(st, '작품 이미지를 올려 주세요.', 'err');
+  const imgIds = [];
+  for (const f of calliFiles) { const id = uid(); await Images.put(id, f); imgIds.push(id); }
+  const now = Date.now();
+  await Posts.put({
+    id: uid(), type: 'calligraphy', title: $('#cTitle').value.trim() || $('#cText').value.trim().slice(0, 30) || '무제',
+    body: $('#cText').value.trim(), note: $('#cNote').value.trim(), category: $('#cCat').value,
+    tags: splitTags($('#cTags').value), images: imgIds, sns: null, published: {}, createdAt: now, updatedAt: now,
+  });
+  ['#cText', '#cTitle', '#cNote', '#cTags'].forEach(s => $(s).value = ''); $('#cFiles').value = ''; $('#cThumbs').innerHTML = ''; calliFiles = [];
+  status(st, '갤러리에 걸었어요 🖌', 'ok'); renderCalliGrid();
+};
+const urlCache = new Map();
+async function imgURL(id) {
+  if (!id) return '';
+  if (!urlCache.has(id)) { const b = await Images.get(id); urlCache.set(id, b ? URL.createObjectURL(b) : ''); }
+  return urlCache.get(id);
+}
+async function renderCalliGrid() {
+  const list = (await Posts.all()).filter(p => p.type === 'calligraphy').sort((a, b) => b.createdAt - a.createdAt);
+  const g = $('#calliGrid');
+  if (!list.length) { g.innerHTML = '<div class="empty">아직 걸린 작품이 없어요.</div>'; return; }
+  g.innerHTML = (await Promise.all(list.map(async p => `<div class="item" data-id="${p.id}"><img src="${await imgURL(p.images[0])}" alt=""><div class="in"><h3 style="font-size:14px">${esc(p.title)}</h3></div></div>`))).join('');
+  g.querySelectorAll('.item').forEach(el => el.onclick = () => openDetail(el.dataset.id));
+}
+
+/* =========================================================
+   3) 서재 (목록 · 분류 · 검색 · 상세)
+   ========================================================= */
+let curCat = '';
+$('#search').oninput = renderLibrary; $('#typeFilter').onchange = renderLibrary;
+async function renderLibrary() {
+  const all = (await Posts.all()).sort((a, b) => b.createdAt - a.createdAt);
+  const counts = {}; all.forEach(p => counts[p.category] = (counts[p.category] || 0) + 1);
+  const cats = [...new Set([...S.cats, ...Object.keys(counts)])];
+  $('#catChips').innerHTML = `<button class="chip" data-c="" aria-pressed="${!curCat}">전체 ${all.length}</button>` +
+    cats.map(c => `<button class="chip" data-c="${esc(c)}" aria-pressed="${curCat === c}">${esc(c)} ${counts[c] || 0}</button>`).join('');
+  $('#catChips').querySelectorAll('.chip').forEach(b => b.onclick = () => { curCat = b.dataset.c; renderLibrary(); });
+  const q = $('#search').value.trim().toLowerCase(), t = $('#typeFilter').value;
+  const list = all.filter(p => (!curCat || p.category === curCat) && (!t || p.type === t) &&
+    (!q || [p.title, p.body, p.note, ...(p.tags || [])].join(' ').toLowerCase().includes(q)));
+  $('#libCount').textContent = `${list.length}편`;
+  const g = $('#libGrid');
+  if (!list.length) { g.innerHTML = '<div class="empty card">이 칸은 아직 비어 있어요. ✍️ 메모하기에서 첫 글을 써 보세요.</div>'; return; }
+  g.innerHTML = (await Promise.all(list.map(async p => `
+    <div class="item" data-id="${p.id}">
+      ${p.images?.[0] ? `<img src="${await imgURL(p.images[0])}" alt="">` : ''}
+      <div class="in">
+        <div class="meta" style="margin:0 0 4px">${p.type === 'calligraphy' ? '🖌' : '✍️'} ${esc(p.category)}</div>
+        <h3>${esc(p.title)}</h3><p>${esc(p.summary || p.note || p.body)}</p>
+        <div class="meta">${fmtDate(p.createdAt)} ${Object.keys(p.published || {}).length ? '· 발행 ' + Object.keys(p.published).length + '곳' : ''}</div>
+      </div>
+    </div>`))).join('');
+  g.querySelectorAll('.item').forEach(el => el.onclick = () => openDetail(el.dataset.id));
+}
+
+async function openDetail(id) {
+  const p = await Posts.get(id); if (!p) return;
+  const imgs = await Promise.all((p.images || []).map(imgURL));
+  $('#dlgType').textContent = p.type === 'calligraphy' ? '🖌 캘리그라피' : '✍️ 글';
+  $('#dlgBody').innerHTML = `
+    <div class="meta" style="margin:0">${esc(p.category)} · ${fmtDate(p.createdAt)}</div>
+    <h2 class="article-title serif">${esc(p.title)}</h2>
+    <div>${(p.tags || []).map(t => `<span class="tag">#${esc(t)}</span>`).join('')}</div>
+    ${imgs.map(u => `<img class="preview-img" src="${u}" alt="">`).join('')}
+    <div class="article">${esc(p.body)}</div>
+    ${p.note ? `<p class="hint" style="margin-top:16px;white-space:pre-wrap">${esc(p.note)}</p>` : ''}
+    ${p.memo ? `<details style="margin-top:16px"><summary class="hint">처음 남긴 메모 보기</summary><p style="white-space:pre-wrap">${esc(p.memo)}</p></details>` : ''}
+    ${Object.keys(p.published || {}).length ? `<p class="meta">발행: ${Object.entries(p.published).map(([k, v]) => `${PF[k]?.name || k} (${fmtDate(v)})`).join(', ')}</p>` : ''}
+    <div class="btns">
+      <button class="btn primary" data-act="publish">📤 발행하기</button>
+      <button class="btn" data-act="edit">수정</button>
+      <button class="btn" data-act="md">마크다운으로 내려받기</button>
+      <button class="btn danger" data-act="del">삭제</button>
+    </div>`;
+  $('#dlgBody').querySelector('[data-act=publish]').onclick = () => { $('#detail').close(); showTab('publish', id); };
+  $('#dlgBody').querySelector('[data-act=edit]').onclick = () => editDetail(p);
+  $('#dlgBody').querySelector('[data-act=md]').onclick = () => download(`${p.title}.md`, toMarkdown(p), 'text/markdown');
+  $('#dlgBody').querySelector('[data-act=del]').onclick = async () => {
+    if (!confirm(`‘${p.title}’을(를) 서재에서 지울까요? 되돌릴 수 없어요.`)) return;
+    for (const i of p.images || []) await Images.del(i);
+    await Posts.del(id); $('#detail').close(); toast('지웠어요'); renderLibrary(); renderCalliGrid();
+  };
+  if (!$('#detail').open) $('#detail').showModal();
+}
+function editDetail(p) {
+  $('#dlgBody').innerHTML = `
+    <label>제목</label><input type="text" id="eTitle" value="${esc(p.title)}">
+    <div class="row"><div><label>분류</label><select id="eCat"></select></div>
+    <div><label>태그</label><input type="text" id="eTags" value="${esc((p.tags || []).join(', '))}"></div></div>
+    <label>${p.type === 'calligraphy' ? '글귀' : '본문'}</label><textarea id="eBody" class="tall">${esc(p.body)}</textarea>
+    ${p.type === 'calligraphy' ? `<label>작품 이야기</label><textarea id="eNote">${esc(p.note || '')}</textarea>` : ''}
+    <div class="btns"><button class="btn primary" id="eSave">저장</button><button class="btn" id="eCancel">취소</button></div>`;
+  fillCats($('#eCat'), p.category);
+  $('#eCancel').onclick = () => openDetail(p.id);
+  $('#eSave').onclick = async () => {
+    Object.assign(p, { title: $('#eTitle').value.trim(), category: $('#eCat').value, tags: splitTags($('#eTags').value), body: $('#eBody').value, updatedAt: Date.now(), sns: null });
+    if ($('#eNote')) p.note = $('#eNote').value;
+    await Posts.put(p); toast('고쳤어요'); openDetail(p.id); renderLibrary();
+  };
+}
+$('#dlgClose').onclick = () => $('#detail').close();
+function toMarkdown(p) {
+  return `---\ntitle: "${p.title.replace(/"/g, '\\"')}"\ncategory: "${p.category}"\ntags: [${(p.tags || []).map(t => `"${t}"`).join(', ')}]\ndate: ${new Date(p.createdAt).toISOString().slice(0, 10)}\ntype: ${p.type}\n---\n\n# ${p.title}\n\n${p.body}\n${p.note ? '\n' + p.note + '\n' : ''}`;
+}
+function download(name, data, type) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(data instanceof Blob ? data : new Blob([data], { type }));
+  a.download = name.replace(/[\\/:*?"<>|]/g, '_'); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+/* =========================================================
+   4) 발행하기
+   ========================================================= */
+// mode: auto = 웹훅으로 자동 게시 가능 / semi = 복사·공유로 반자동
+const PF = {
+  facebook:  { name: '페이스북', mode: 'auto', open: 'https://www.facebook.com/', tip: '페이지(Page)는 웹훅 자동 게시 가능. 개인 프로필은 공유 버튼으로.' },
+  instagram: { name: '인스타그램', mode: 'auto', open: 'https://www.instagram.com/', tip: '비즈니스·크리에이터 계정 + 이미지 필수. 모바일은 공유 버튼으로 앱에 바로 전달.' },
+  blog:      { name: '블로그', mode: 'semi', open: 'https://blog.naver.com/', tip: '네이버 블로그·티스토리는 글쓰기 API가 종료되어 복사 후 붙여넣기. WordPress·Blogger는 웹훅 자동 가능.' },
+  kakaotalk: { name: '카카오톡', mode: 'semi', open: '', tip: '모바일에서 공유 버튼 → 카카오톡 선택. 채널 게시물은 카카오톡 채널 관리자센터에서.' },
+  kakaostory:{ name: '카카오스토리', mode: 'semi', open: 'https://story.kakao.com/', tip: '카카오스토리 API는 2023.11 종료. 공유 버튼 또는 복사 후 앱에서 게시.' },
+  daumcafe:  { name: '다음 카페', mode: 'semi', open: 'https://cafe.daum.net/', tip: '공개 글쓰기 API 없음. 복사 후 카페 글쓰기에 붙여넣기.' },
+};
+const SNS_SCHEMA = {
+  type: 'object', additionalProperties: false, required: Object.keys(PF),
+  properties: Object.fromEntries(Object.keys(PF).map(k => [k, { type: 'string' }])),
+};
+async function renderPublishSelect(want) {
+  const list = (await Posts.all()).sort((a, b) => b.createdAt - a.createdAt);
+  const cur = want || $('#pubSelect').value;
+  $('#pubSelect').innerHTML = '<option value="">— 발행할 글/작품을 고르세요 —</option>' +
+    list.map(p => `<option value="${p.id}">${p.type === 'calligraphy' ? '🖌' : '✍️'} ${esc(p.title)} · ${esc(p.category)}</option>`).join('');
+  $('#pubSelect').value = cur; renderPublish();
+}
+$('#pubSelect').onchange = renderPublish;
+
+function defaultSns(p) {
+  const tags = [...(p.tags || []).map(t => '#' + t.replace(/\s/g, '')), ...splitTags(S.tags).map(t => '#' + t)].join(' ');
+  const sign = S.author ? `\n\n— ${S.author}` : '';
+  const text = p.type === 'calligraphy' ? `${p.body}\n\n${p.note || ''}` : p.body;
+  const head = p.title && p.title !== p.body ? p.title + '\n\n' : '';
+  const short = text.length > 400 ? text.slice(0, 400) + '…' : text;
+  return {
+    facebook: `${head}${text}${sign}\n\n${tags}`,
+    instagram: `${head}${short}${sign}\n.\n.\n${tags}`,
+    blog: `${head}${text}${sign}`,
+    kakaotalk: `[${p.title}]\n${short}${sign}`,
+    kakaostory: `${head}${short}${sign}\n${tags}`,
+    daumcafe: `${head}${text}${sign}`,
+  };
+}
+async function renderPublish() {
+  const id = $('#pubSelect').value, box = $('#platforms'), pv = $('#pubPreview');
+  if (!id) { box.innerHTML = ''; pv.innerHTML = ''; return; }
+  const p = await Posts.get(id);
+  const sns = p.sns || defaultSns(p);
+  const img = p.images?.[0] ? await imgURL(p.images[0]) : '';
+  pv.innerHTML = img ? `<div class="card" style="text-align:center"><img src="${img}" style="max-height:220px;border-radius:6px" alt=""><div class="meta">함께 올라갈 이미지 ${p.images.length}장</div></div>` : '';
+  box.innerHTML = Object.entries(PF).map(([k, f]) => `
+    <div class="pf" data-k="${k}">
+      <h3>${f.name} ${p.published?.[k] ? `<span class="badge done">발행함 ${fmtDate(p.published[k])}</span>` : `<span class="badge ${f.mode}">${f.mode === 'auto' ? '자동' : '반자동'}</span>`}</h3>
+      <p class="hint" style="font-size:12.5px">${f.tip}</p>
+      <textarea>${esc(sns[k])}</textarea>
+      <div class="btns">
+        <button class="btn sm primary" data-a="copy">복사</button>
+        ${navigator.share ? '<button class="btn sm" data-a="share">공유…</button>' : ''}
+        ${img ? '<button class="btn sm" data-a="img">이미지 저장</button>' : ''}
+        ${f.open ? `<a class="btn sm" href="${f.open}" target="_blank" rel="noopener">열기</a>` : ''}
+        ${f.mode === 'auto' ? '<button class="btn sm accent" data-a="hook">자동 발행</button>' : ''}
+        <button class="btn sm" data-a="done">발행 완료 표시</button>
+      </div>
+    </div>`).join('');
+  box.querySelectorAll('.pf').forEach(el => {
+    const k = el.dataset.k, ta = el.querySelector('textarea');
+    ta.onchange = async () => { p.sns = { ...(p.sns || defaultSns(p)), [k]: ta.value }; await Posts.put(p); };
+    el.querySelectorAll('[data-a]').forEach(b => b.onclick = () => pubAction(b.dataset.a, k, p, ta.value, b));
+  });
+}
+async function pubAction(a, k, p, text, btn) {
+  if (a === 'copy') return copy(text);
+  if (a === 'img') { for (const [i, id] of (p.images || []).entries()) download(`${p.title}-${i + 1}.jpg`, await Images.get(id)); return; }
+  if (a === 'share') {
+    const files = [];
+    for (const [i, id] of (p.images || []).entries()) { const b = await Images.get(id); files.push(new File([b], `${p.title}-${i + 1}.${(b.type.split('/')[1] || 'jpg')}`, { type: b.type })); }
+    const data = { title: p.title, text };
+    if (files.length && navigator.canShare?.({ files })) data.files = files;
+    try { await copy(text); await navigator.share(data); } catch (e) { if (e.name !== 'AbortError') toast('공유를 열 수 없어요: ' + e.message); }
+    return;
+  }
+  if (a === 'done') { p.published = { ...p.published, [k]: Date.now() }; await Posts.put(p); toast(`${PF[k].name}에 발행 완료로 표시했어요`); return renderPublish(); }
+  if (a === 'hook') {
+    if (!S.hook) { toast('설정에서 웹훅 주소를 먼저 넣어 주세요'); return showTab('settings'); }
+    if (!confirm(`${PF[k].name}에 지금 게시할까요? 게시물은 바로 공개될 수 있어요.`)) return;
+    btn.disabled = true;
+    try {
+      const images = [];
+      for (const id of p.images || []) images.push('data:image/jpeg;base64,' + await toBase64Jpeg(await Images.get(id), 2048));
+      const res = await fetch(S.hook, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ platform: k, title: p.title, text, category: p.category, tags: p.tags, type: p.type, images, postId: p.id, author: S.author }) });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      p.published = { ...p.published, [k]: Date.now() }; await Posts.put(p);
+      toast(`${PF[k].name}로 보냈어요 ✅`); renderPublish();
+    } catch (e) { toast('자동 발행 실패: ' + e.message); }
+    finally { btn.disabled = false; }
+  }
+}
+$('#btnSnsAI').onclick = async () => {
+  const id = $('#pubSelect').value, st = $('#pubStatus');
+  if (!id) return status(st, '먼저 글이나 작품을 골라 주세요.', 'err');
+  const p = await Posts.get(id); const btn = $('#btnSnsAI'); btn.disabled = true;
+  status(st, '<span class="spinner"></span> 플랫폼마다 어울리게 다듬는 중…');
+  try {
+    const r = await askJSON({ system: persona(), effort: 'medium', schema: SNS_SCHEMA,
+      onProgress: n => status(st, `<span class="spinner"></span> 다듬는 중… (${n.toLocaleString()}자)`),
+      content: `다음 ${p.type === 'calligraphy' ? '캘리그라피 작품' : '글'}을 각 플랫폼 게시물로 다듬어 주세요. 원문의 생각을 바꾸지 말고 형식만 맞춥니다.
+- facebook: 원문 중심, 도입 한 줄로 관심을 끌고 끝에 질문 하나, 해시태그 3~5개
+- instagram: 첫 줄 강렬하게, 짧은 문단과 줄바꿈, 이모지 절제, 마지막에 해시태그 10개 내외
+- blog: 소제목을 넣은 블로그 본문(원문 거의 전체), 검색에 잡힐 핵심어 자연스럽게
+- kakaotalk: 지인에게 보내는 3~5줄 짧은 소개
+- kakaostory: 따뜻한 일상 톤의 중간 길이, 해시태그 3개
+- daumcafe: 카페 회원에게 나누는 글, 인사말로 시작, 원문 전체
+${S.author ? '서명: ' + S.author : ''}
+${S.tags ? '항상 넣을 해시태그: ' + S.tags : ''}
+
+제목: ${p.title}
+분류: ${p.category}
+본문:
+${p.body}
+${p.note ? '\n작품 이야기:\n' + p.note : ''}` });
+    p.sns = r; await Posts.put(p); await renderPublish();
+    status(st, '다듬었어요. 각 칸에서 고친 내용은 자동 저장됩니다.', 'ok');
+  } catch (e) { keyHint(st, e); }
+  finally { btn.disabled = false; }
+};
+
+/* =========================================================
+   5) 설정 · 백업
+   ========================================================= */
+function loadSettings() {
+  $('#sKey').value = S.key; $('#sAuthor').value = S.author; $('#sVoice').value = S.voice;
+  $('#sHook').value = S.hook; $('#sTags').value = S.tags; $('#sCats').value = S.cats.join('\n');
+}
+$('#btnSaveSettings').onclick = () => {
+  localStorage.setItem('lib.key', $('#sKey').value.trim());
+  localStorage.setItem('lib.author', $('#sAuthor').value.trim());
+  localStorage.setItem('lib.voice', $('#sVoice').value.trim());
+  localStorage.setItem('lib.hook', $('#sHook').value.trim());
+  localStorage.setItem('lib.tags', $('#sTags').value.trim());
+  const cats = $('#sCats').value.split('\n').map(s => s.trim()).filter(Boolean);
+  localStorage.setItem('lib.cats', JSON.stringify(cats.length ? cats : DEFAULT_CATS));
+  fillCats($('#cCat'), '캘리그라피 글귀');
+  status($('#settingsStatus'), '저장했어요.', 'ok');
+};
+const blobToDataURL = b => new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(b); });
+$('#btnExport').onclick = async () => {
+  const posts = await Posts.all(), images = {};
+  for (const p of posts) for (const id of p.images || []) { const b = await Images.get(id); if (b) images[id] = await blobToDataURL(b); }
+  const settings = { author: S.author, voice: S.voice, tags: S.tags, cats: S.cats }; // API 키·웹훅은 백업에 넣지 않음
+  download(`나의서재-백업-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify({ version: 1, exportedAt: Date.now(), settings, posts, images }), 'application/json');
+};
+$('#importFile').onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try {
+    const data = JSON.parse(await f.text());
+    if (!Array.isArray(data.posts)) throw new Error('서재 백업 파일이 아니에요');
+    for (const [id, url] of Object.entries(data.images || {})) await Images.put(id, await (await fetch(url)).blob());
+    for (const p of data.posts) await Posts.put(p);
+    if (data.settings?.cats && !localStorage.getItem('lib.cats')) localStorage.setItem('lib.cats', JSON.stringify(data.settings.cats));
+    loadSettings(); status($('#settingsStatus'), `${data.posts.length}편을 불러왔어요.`, 'ok');
+  } catch (err) { status($('#settingsStatus'), '불러오기 실패: ' + esc(err.message), 'err'); }
+  e.target.value = '';
+};
+
+loadSettings();
+</script>
+</body>
+</html>
