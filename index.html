@@ -379,6 +379,8 @@ footer::before{content:"MEDICAL BRIDGE";display:block;font-weight:800;letter-spa
 .case-para{font-size:13.5px;color:var(--ink-soft);max-width:68ch;margin:6px 0 12px;line-height:1.8}
 .case-who{display:inline-block;font-size:11px;font-weight:800;line-height:1.6;padding:0 8px;margin-right:8px;border-radius:2px;vertical-align:middle;background:var(--panel);color:var(--gold-strong)}
 .case-who.p{background:var(--green);color:#fff}
+.callout.alert{border-left-color:var(--star);background-color:var(--star-soft)}
+.callout.alert b{color:var(--star)}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;800&family=Noto+Serif+KR:wght@500;700&display=swap" rel="stylesheet">
@@ -848,7 +850,7 @@ function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 /* ============ i18n (JA base / KO sub) ============ */
 let LANG=lsGet('mb_lang','ja')==='ko'?'ko':'ja';
 const JA={
-"실전 상황":"実践ケース","banner_cases":"実際に経験した通訳の現場を、事例ごとに整理","case_lead":"実際に経験した通訳の場面を、事例ごとにまとめる場所です。事例を開くと、場面ごとの想定会話（韓国語–日本語）、重要用語、注意事項を見られます。","case_empty":"まだ登録された事例はありません。","case_open":"事例を開く","case_back":"事例一覧","case_search":"この事例内を韓国語・日本語で検索","case_toc":"目次","case_terms_title":"医療通訳の重要用語","case_cautions_title":"医療通訳時の注意事項","case_note_title":"ご利用にあたって","case_count":"フレーズ","case_yomi":"読み","case_who_d":"医師","case_who_p":"患者","case_check_title":"医療通訳者チェックリスト",
+"실전 상황":"実践ケース","banner_cases":"実際に経験した通訳の現場を、事例ごとに整理","case_lead":"実際に経験した通訳の場面を、事例ごとにまとめる場所です。事例を開くと、場面ごとの想定会話（韓国語–日本語）、重要用語、注意事項を見られます。","case_empty":"まだ登録された事例はありません。","case_open":"事例を開く","case_back":"事例一覧","case_search":"この事例内を韓国語・日本語で検索","case_toc":"目次","case_terms_title":"医療通訳の重要用語","case_cautions_title":"医療通訳時の注意事項","case_note_title":"ご利用にあたって","case_count":"フレーズ","case_yomi":"読み","case_who_d":"医師","case_who_p":"患者","case_who_s":"医療スタッフ","case_who_g":"保護者","case_check_title":"医療通訳者チェックリスト",
 /* tabs / ui */
 "자세와 원칙":"心構えと原則","업무 흐름":"業務の流れ","용어사전":"用語辞典","실전 문장":"実践フレーズ","진료과 표현":"診療科別表現","헷갈리는 표현":"紛らわしい表現","체크리스트·서식":"チェックリスト・書式","연습 퀴즈":"練習クイズ",
 "다크모드":"ダークモード","라이트모드":"ライトモード","섹션":"セクション","전체":"すべて",
@@ -969,6 +971,8 @@ case_count:`문장`,
 case_yomi:`읽기`,
 case_who_d:`의사`,
 case_who_p:`환자`,
+case_who_s:`의료진`,
+case_who_g:`보호자`,
 case_check_title:`의료통역사 체크리스트`,
 hero_h1:`말과 마음을 잇는<br><span class="hl">의료통역 코디네이터</span>`,
 hero_p:`일본인 환자가 낯선 병원에서도 안심하고 진료받을 수 있도록. 정확한 통역, 병원 동선 안내, 진료 조정, 심리 지원까지 현장에서 바로 쓰는 실전 가이드입니다.`,
@@ -1532,7 +1536,7 @@ function caseDetailHtml(c,ci){
     <h2 class="disp">${esc(pickL(c.title))}</h2>
     <div class="case-meta">${esc(pickL(c.meta))}</div>
   </div>
-  ${c.note?`<div class="callout"><b>${T('case_note_title')} \u00b7</b> ${esc(pickL(c.note))}</div>`:''}
+  ${c.note?`<div class="callout${c.noteTone==='alert'?' alert':''}"><b>${c.noteLabel?esc(pickL(c.noteLabel)):T('case_note_title')} \u00b7</b> ${esc(pickL(c.note))}</div>`:''}
   <nav class="case-toc" aria-label="${T('case_toc')}">${c.sections.map((s,si)=>`<a href="#cs-${ci}-${si}" data-case-jump="cs-${ci}-${si}" class="chip">${si+1}. ${esc(pickL({ko:s.ko,ja:s.ja}))}</a>`).join('')}${c.terms&&c.terms.length?`<a href="#cs-${ci}-terms" data-case-jump="cs-${ci}-terms" class="chip">${T('case_terms_title')}</a>`:''}${c.checklist&&c.checklist.length?`<a href="#cs-${ci}-check" data-case-jump="cs-${ci}-check" class="chip">${T('case_check_title')}</a>`:''}${c.cautions&&c.cautions.length?`<a href="#cs-${ci}-caut" data-case-jump="cs-${ci}-caut" class="chip">${T('case_cautions_title')}</a>`:''}</nav>
   <div class="searchbar"><input type="search" id="caseSearch" placeholder="${T('case_search')}" autocomplete="off" value="${esc(caseQuery)}"></div>
   <div id="caseSections"></div>`;
@@ -1560,7 +1564,7 @@ function paintCaseSections(){
       flush();
       if(r.t==='sub') body+=`<h4 class="case-sub">${esc(pickL({ko:r.ko,ja:r.ja}))}</h4>`;
       else if(r.t==='para') body+=`<p class="case-para">${rubyize(pickL({ko:r.ko,ja:r.ja}))}</p>`;
-      else body+=`<div class="sent-card case-row"><div class="sent-jp">${r.w?`<span class="case-who ${r.w==='P'?'p':'d'}">${T(r.w==='P'?'case_who_p':'case_who_d')}</span>`:''}${rubyize(r.ja)}</div>${r.yomi?`<div class="case-yomi"><span>${T('case_yomi')}</span> ${esc(r.yomi)}</div>`:''}<div class="sent-kr">${esc(r.ko)}</div><div class="sent-actions"><button class="pillbtn" type="button" data-audio-id="ck:${ci}:${si}:${ri}">${speakerSvg}<span class="lbl">${T('듣기')}</span></button><button class="pillbtn" type="button" data-copy="${esc(plainJa(r.ja))}">${copySvg}<span class="lbl">${T('복사')}</span></button></div></div>`;
+      else body+=`<div class="sent-card case-row"><div class="sent-jp">${r.w?`<span class="case-who ${(r.w==='P'||r.w==='G')?'p':'d'}">${T('case_who_'+r.w.toLowerCase())}</span>`:''}${rubyize(r.ja)}</div>${r.yomi?`<div class="case-yomi"><span>${T('case_yomi')}</span> ${esc(r.yomi)}</div>`:''}<div class="sent-kr">${esc(r.ko)}</div><div class="sent-actions"><button class="pillbtn" type="button" data-audio-id="ck:${ci}:${si}:${ri}">${speakerSvg}<span class="lbl">${T('듣기')}</span></button><button class="pillbtn" type="button" data-copy="${esc(plainJa(r.ja))}">${copySvg}<span class="lbl">${T('복사')}</span></button></div></div>`;
     });
     flush();
     html+=`<section class="sent-group case-sec" id="cs-${ci}-${si}"><h3>${si+1}. ${esc(pickL({ko:s.ko,ja:s.ja}))} ${n?`<span class="cnt">${n}${T('문장')}</span>`:''}</h3>${s.intro&&!q?`<p class="case-intro">${esc(pickL(s.intro))}</p>`:''}${body}</section>`;
